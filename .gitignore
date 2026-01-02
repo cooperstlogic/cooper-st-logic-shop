@@ -1,36 +1,4 @@
-# SHOP HYGIENE
-# Classification: Ignored Materials
-
-# 1. Dependency Inventory (Heavy Machinery)
-# We track the manifest (package.json) but not the actual parts.
 node_modules/
-
-# 2. System Debris (Sawdust)
-# OS-generated files that clutter the shop floor.
+_site/
 .DS_Store
-.DS_Store?
-._*
-Thumbs.db
-Desktop.ini
-
-# 3. Environment Variables (Keys to the Safe)
-# Never commit credentials or local configuration overrides.
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# 4. Logs (Temporary Records)
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# 5. IDE Settings (Personal Tool Calibration)
-# Keep your editor settings local.
-.vscode/
-.idea/
-
-# 6. Netlify Local
-# Generated if you run 'netlify dev' locally
-.netlify/

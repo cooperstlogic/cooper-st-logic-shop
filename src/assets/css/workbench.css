@@ -1,0 +1,282 @@
+/* IMPORT DEPENDENCIES */
+@import "variables.css";
+@import "reset.css";
+
+/* -----------------------------------------------------------
+   5.1 PROTOCOL A: THE WORKBENCH (Base)
+   ----------------------------------------------------------- */
+body {
+  background-color: var(--c-metal);
+  color: var(--c-carbon);
+  font-family: var(--font-manual);
+  overflow-x: hidden;
+  min-height: 100vh;
+
+  /* The Grid Layout Engine */
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar content";
+}
+
+/* Metal Texture Overlay (Noise) */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../img/noise.svg");
+  opacity: 0.03; /* Subtle imperfection */
+  pointer-events: none;
+  z-index: 999;
+  mix-blend-mode: multiply;
+}
+
+/* -----------------------------------------------------------
+   5.2 PROTOCOL B: THE ETCHING (Text on Metal)
+   ----------------------------------------------------------- */
+.engraved-text {
+  font-family: var(--font-engraving);
+  color: var(--c-carbon);
+  text-shadow:
+    1px 1px 0 rgba(255, 255, 255, 0.7),
+    -1px -1px 0 rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
+}
+
+.engraved-zinc {
+  color: var(--c-zinc);
+  text-shadow:
+    1px 1px 0 rgba(255, 255, 255, 0.7),
+    -1px -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* -----------------------------------------------------------
+   5.3 PROTOCOL C: THE GROOVE (Dividers on Metal)
+   ----------------------------------------------------------- */
+.zinc-groove {
+  height: 0;
+  border-top: 1px solid var(--c-metal-shadow);
+  border-bottom: 1px solid var(--c-metal-highlight);
+  width: 100%;
+}
+
+.zinc-groove-vertical {
+  width: 0;
+  border-left: 1px solid var(--c-metal-shadow);
+  border-right: 1px solid var(--c-metal-highlight);
+  height: 100%;
+}
+
+/* -----------------------------------------------------------
+   ZONES: SIDEBAR (Control Panel)
+   ----------------------------------------------------------- */
+.bench-sidebar {
+  grid-area: sidebar;
+  background-color: var(--c-metal);
+  border-right: 1px solid var(--c-metal-shadow); /* Groove right side */
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid transparent; /* Placeholder for groove */
+  position: relative;
+  transition: none; /* Mechanical switch */
+}
+
+/* Groove between links */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  border-top: 1px solid var(--c-metal-shadow);
+  border-bottom: 1px solid var(--c-metal-highlight);
+}
+
+/* Hover State: The Physical Switch */
+.nav-link:hover {
+  background-color: var(--c-carbon);
+}
+
+.nav-link:hover .engraved-text {
+  color: var(--c-vellum);
+  text-shadow: none; /* Ink fills the cut */
+}
+
+.nav-link:hover .engraved-zinc {
+  color: var(--c-zinc); /* Dim mark stays zinc */
+  text-shadow: none;
+}
+
+/* Active State */
+.nav-link[aria-current="page"] .engraved-text {
+  color: var(--c-redwood);
+}
+
+/* -----------------------------------------------------------
+   ZONES: HEADER (Title Block)
+   ----------------------------------------------------------- */
+.bench-header {
+  grid-area: header;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: relative;
+}
+
+/* Groove at bottom of header */
+.bench-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  border-top: 1px solid var(--c-metal-shadow);
+  border-bottom: 1px solid var(--c-metal-highlight);
+}
+
+.brand-stencil {
+  font-family: var(--font-signage);
+  font-weight: 900;
+  font-variation-settings:
+    "SOFT" 100,
+    "opsz" 144;
+  line-height: 0.85;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  /* Stamped Look */
+  color: var(--c-carbon);
+  opacity: 0.9;
+  mix-blend-mode: multiply;
+}
+
+/* -----------------------------------------------------------
+   5.4 PROTOCOL D: THE VELLUM (Content)
+   ----------------------------------------------------------- */
+.content-zone {
+  grid-area: content;
+  padding: 2rem;
+  display: flex;
+  justify-content: center; /* Dynamic Centering */
+  align-items: flex-start;
+  min-height: calc(100vh - var(--header-height));
+}
+
+.vellum-sheet {
+  background-color: var(--c-vellum);
+  width: 100%;
+  max-width: var(--vellum-width); /* 65ch */
+  padding: 4rem 3rem;
+  border: 1px solid var(--c-vellum-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  position: relative;
+  margin-bottom: 4rem; /* Breathing room at bottom */
+}
+
+/* Vellum Grain */
+.vellum-sheet::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../img/noise.svg");
+  opacity: 0.15;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* Ink Absorption */
+.vellum-sheet h1,
+.vellum-sheet p,
+.vellum-sheet a {
+  mix-blend-mode: multiply;
+}
+
+.vellum-sheet h1 {
+  font-family: var(--font-signage);
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 900;
+}
+
+.vellum-sheet p {
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* 5.5 PROTOCOL E: THE DRAUGHTSMAN'S LINE */
+hr.draughtsman-line {
+  border: none;
+  height: 2px;
+  margin: 3rem 0;
+  opacity: 0.8;
+  background-image: url("../img/line-dash.svg");
+  background-repeat: repeat-x;
+  background-position: center;
+  mix-blend-mode: multiply;
+}
+
+/* -----------------------------------------------------------
+   RESPONSIVE: THE FIELD TOOL (Mobile)
+   ----------------------------------------------------------- */
+@media (max-width: 900px) {
+  body {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "content";
+  }
+
+  .bench-sidebar {
+    position: fixed;
+    left: -100%; /* Hidden in drawer */
+    width: 85%;
+    height: 100%;
+    transition: left 0.2s cubic-bezier(0, 0, 0.2, 1); /* Mechanical snap */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .bench-sidebar.active {
+    left: 0;
+  }
+
+  .content-zone {
+    padding: 1rem;
+  }
+
+  .vellum-sheet {
+    padding: 2rem 1.5rem;
+  }
+
+  /* Mobile Clamp Trigger */
+  .mobile-clamp {
+    display: block !important;
+  }
+}
+
+/* Desktop Hide Clamp */
+.mobile-clamp {
+  display: none;
+}

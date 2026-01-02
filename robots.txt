@@ -1,8 +1,0 @@
-# COOPER ST LOGIC SHOP
-# Access Protocol
-
-User-agent: *
-Allow: /
-
-# Sitemap Location
-Sitemap: https://cooperstlogicshop.com/sitemap.xml

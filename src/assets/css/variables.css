@@ -1,0 +1,25 @@
+:root {
+  /* 5.1 Protocol A: The Workbench */
+  --c-metal: #e3e5e6;
+  --c-metal-shadow: #b0b3b5;
+  --c-metal-highlight: #ffffff;
+
+  /* 5.4 Protocol D: The Vellum */
+  --c-vellum: #f2f0e9;
+  --c-vellum-border: #d4d2cb;
+
+  /* Ink & Etching */
+  --c-carbon: #1c1c1c;
+  --c-zinc: #5f6b6d;
+  --c-redwood: #8b3a3a;
+
+  /* Typography */
+  --font-signage: "Fraunces", serif;
+  --font-manual: "Public Sans", sans-serif;
+  --font-engraving: "IBM Plex Mono", monospace;
+
+  /* Dimensions */
+  --sidebar-width: 280px;
+  --header-height: 80px;
+  --vellum-width: 65ch;
+}

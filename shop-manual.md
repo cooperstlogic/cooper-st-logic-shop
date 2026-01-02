@@ -9,7 +9,7 @@
 STATUS: ACTIVE
 VERSION: 2.0.0
 
-------
+---
 
 ## 1.0 THE CORE ETHOS
 
@@ -23,7 +23,7 @@ The Interface Metaphor: The site is a "Warm Manual" (Vellum) resting on a "Cold 
 
 This repository is itself an instantion of a Digital Workshop.
 
-------
+---
 
 ## 2.0 WORKBENCH PREPARATION
 
@@ -48,9 +48,9 @@ This repository is itself an instantion of a Digital Workshop.
    npm install
    ```
 
-   *(Installs @11ty/eleventy, Prettier, HTMLHint, and local server utilities)*
+   _(Installs @11ty/eleventy, Prettier, HTMLHint, and local server utilities)_
 
-------
+---
 
 ## 3.0 ARCHITECTURE (The 11ty Structure)
 
@@ -80,7 +80,7 @@ cooper-st-logic-shop/
 └── _site/                 # FINISHED GOODS (Gitignored)
 ```
 
-------
+---
 
 ## 4.0 THE LAYOUT ENGINE (Dynamic Centering)
 
@@ -103,7 +103,7 @@ We treat the Vellum as a physical object with a maximum width, centered on the a
    - **Vellum:** Full width minus `16px` safety margins.
    - **Header:** Condenses to a "Strip".
 
-------
+---
 
 ## 5.0 THE MATERIALITY ENGINE (Advanced Realism)
 
@@ -141,7 +141,7 @@ The page is organic material.
 
 - **Base:** `#F2F0E9`.
 - **Grain:** An SVG Fractal Noise filter (`feTurbulence`) layered via `::before`.
-- **Ink Absorption:** All text on Vellum uses `mix-blend-mode: multiply`. The black ink must appear to soak *into* the grain, not float above it.
+- **Ink Absorption:** All text on Vellum uses `mix-blend-mode: multiply`. The black ink must appear to soak _into_ the grain, not float above it.
 - **Thickness:** The Vellum sheet has a `1px solid #D4D2CB` border (the cut edge) and a tight `box-shadow: 0 1px 2px rgba(0,0,0,0.05)` to imply the gauge of the paper.
 
 ### 5.5 Protocol E: The Draughtsman's Line (Dividers on Vellum)
@@ -152,7 +152,7 @@ Lines inside the manual are drawn by hand.
 - **Visual:** Irregular dash array. Variation in stroke width (0.8px to 1.2px).
 - **Feeling:** "The imperfect stroke of a 1974 Rotring pen."
 
-------
+---
 
 ## 6.0 FABRICATION (Development Workflow)
 
@@ -179,7 +179,7 @@ npm run format
 npm run lint
 ```
 
-------
+---
 
 ## 7.0 SHIPPING (Deployment)
 
@@ -200,7 +200,7 @@ We use **Netlify** as our shipping container. The deployment is atomic and immut
    - Directory: `_site`
 4. Netlify will auto-detect the `.nvmrc` or `engines` field in `package.json`.
 
-------
+---
 
 ## 8.0 STANDARD OPERATING PROCEDURES (SOP)
 
@@ -209,7 +209,7 @@ We use **Netlify** as our shipping container. The deployment is atomic and immut
 1. Navigate to `src/`.
 2. Open the relevant Markdown file (`index.md`, `shop.md`).
 3. Edit the content using standard Markdown.
-   - *Note:* Do not use HTML tags for structure unless absolutely necessary.
+   - _Note:_ Do not use HTML tags for structure unless absolutely necessary.
 4. Commit and Push. Netlify handles the rest.
 
 ### SOP-02: Image Processing
@@ -221,7 +221,7 @@ All imagery must pass through the **Dither Protocol**.
 3. **Halftone:** Apply a visible dot pattern (or dithering).
 4. **Save:** Optimized PNG/WebP to `src/assets/img/`.
 
-------
+---
 
 ## 9.0 CONTENT STRATEGY ("Coming Soon")
 
@@ -244,7 +244,7 @@ Since the shop is being fitted out, secondary pages must communicate status with
 - **Status:** Offline.
 - **Message:** "SHIFT CHANGE. SWEEPING UP SAWDUST."
 
-------
+---
 
 ## 10.0 LICENSE & LEGAL
 
@@ -254,12 +254,12 @@ The visual identity, including the "Cooper St" wordmark, the "Structural C" icon
 
 - **Repository License:** UNLICENSED (All rights reserved).
 - **Open Source Components:**
-  - *11ty:* MIT License.
-  - *Fraunces Font:* OFL.
-  - *Public Sans Font:* OFL.
-  - *IBM Plex Mono Font:* OFL.
+  - _11ty:_ MIT License.
+  - _Fraunces Font:_ OFL.
+  - _Public Sans Font:_ OFL.
+  - _IBM Plex Mono Font:_ OFL.
 
-------
+---
 
 [ REF: 02.0 ]
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COOPER ST LOGIC SHOP | {{ title }}</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,100..900,0..100&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/assets/css/workbench.css">
+</head>
+<body>
+  
+  {% include "nav.njk" %}
+  {% include "header.njk" %}
+
+  <main class="content-zone">
+    <article class="vellum-sheet">
+      {{ content | safe }}
+      
+      <hr class="draughtsman-line">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; opacity: 0.7;">
+         <div style="font-family: var(--font-engraving); font-size: 0.8rem; color: var(--c-zinc);">
+           © 2026 DYLAN WEBSTER
+         </div>
+         <img src="/assets/img/icon-c.svg" width="24" height="24" alt="Quality Seal" style="opacity: 0.5;">
+      </div>
+    </article>
+  </main>
+
+  <script src="/assets/js/clamp.js"></script>
+</body>
+</html>
