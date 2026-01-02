@@ -1,0 +1,20 @@
+{
+  "name": "cooper-st-logic-shop",
+  "version": "1.0.0",
+  "description": "Purveyors of Product Strategy & Digital Goods. Santa Cruz, California.",
+  "scripts": {
+    "start": "serve .",
+    "format": "prettier --write '**/*.{html,css,js,md}'",
+    "lint": "htmlhint index.html"
+  },
+  "author": "Dylan Webster",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "serve": "^14.2.0",
+    "prettier": "^3.0.0",
+    "htmlhint": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

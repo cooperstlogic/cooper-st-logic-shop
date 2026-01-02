@@ -1,0 +1,20 @@
+# THE SHIPPING CONTAINER
+# Deployment Configuration for Netlify
+
+[build]
+  publish = "."
+  command = "# No build step required. We ship raw materials."
+
+[dev]
+  framework = "#static"
+
+# Shop Safety Rules (Security Headers)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Go fast
+    Cache-Control = "public, max-age=31536000, immutable"
