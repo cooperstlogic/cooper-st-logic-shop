@@ -1,176 +1,266 @@
-<!-- markdownlint-disable-next-line MD033 -->
-# COOPER ST <br> LOGIC SHOP: <br> SHOP MANUAL
+# SHOP MANUAL: COOPER ST LOGIC SHOP
 
-**VERSION:** 1.0.0
+## Pacific Pragmatism / Santa Cruz, CA
 
----
+```text
+      [ C ]
+```
+
+STATUS: ACTIVE
+VERSION: 2.0.0
+
+------
 
 ## 1.0 THE CORE ETHOS
 
-This repository is a Digital Workshop. It contains the raw materials (HTML/CSS) and the tools (Scripts) required to manufacture the company landing page.
+We operate at the intersection of high-level reasoning and hands-on craftsmanship. We do not view software as "magic." We view it as a material to be worked on—like timber or steel.
 
----
+The Interface Metaphor: The site is a "Warm Manual" (Vellum) resting on a "Cold Metal Workbench" (Industrial Steel).
+
+- **The Workbench:** Rigid, immovable, etched.
+- **The Manual:** Organic, readable, stamped.
+- **The Relationship:** The Manual is a physical object centered on the bench. It does not stretch to fill the void; it maintains the width of a printed page.
+
+This repository is itself an instantion of a Digital Workshop.
+
+------
 
 ## 2.0 WORKBENCH PREPARATION
 
-Before commencing work, ensure your local environment meets the shop standards.
+### 2.1 Required Tooling
 
-### 2.1 First-Time Setup (Fitting Out)
+- **Runtime:** Node.js v18+ (The Power Source).
+- **The Machine:** **Eleventy (11ty)**. We utilize a Static Site Generator (SSG) to assemble the "Inventory" and "Fabrication" catalogs from raw data.
+- **Version Control:** Git.
 
-If you are initializing the shop for the first time, execute the following sequence:
+### 2.2 First-Time Setup (Fitting Out)
 
-1. **Clone the Repository**
-   Bring the materials onto your local workbench.
+1. **Clone the Repository:**
 
    ```bash
    git clone https://github.com/your-username/cooper-st-logic-shop.git
    cd cooper-st-logic-shop
    ```
 
-2. **Install Shop Tools**
-   We use minimal dependencies (`serve`, `prettier`, `htmlhint`) to keep the shop floor clean.
+2. **Install Shop Tools:**
 
    ```bash
    npm install
    ```
 
-   _Note: This command reads the inventory in `package.json` and provisions the necessary equipment._
+   *(Installs @11ty/eleventy, Prettier, HTMLHint, and local server utilities)*
 
----
+------
 
-## 3.0 FABRICATION (Development)
+## 3.0 ARCHITECTURE (The 11ty Structure)
 
-We work with Structural Honesty. We edit the raw files directly. There is no compilation step, no bundler, and no "transpiling." What you write is what the browser renders.
+We separate "Raw Materials" (Source) from "Finished Goods" (Output).
 
-### 3.1 Firing Up (Local Server)
+```text
+cooper-st-logic-shop/
+├── .eleventy.js           # The Machine Config
+├── .gitignore             # Shop Hygiene
+├── netlify.toml           # Shipping Label
+├── package.json           # Inventory
+├── README.md              # Shop Manual (This Document)
+├── src/                   # RAW MATERIALS
+│   ├── _data/             # Global Site Data
+│   ├── _includes/         # Layouts & Partials
+│   │   ├── base.njk       # The Workbench Frame (HTML5 Shell)
+│   │   ├── header.njk     # The Title Block
+│   │   └── nav.njk        # The Sidebar (Engraved Control Panel)
+│   ├── assets/
+│   │   ├── css/           # The Materiality Engine
+│   │   ├── img/           # SVGs (Noise, Icons, Lines)
+│   │   └── js/            # Client Logic (Mobile Drawer)
+│   ├── index.md           # [01 // INDEX]
+│   ├── inventory.md       # [02 // INVENTORY]
+│   ├── fabrication.md     # [03 // FABRICATION]
+│   └── shop.md            # [04 // THE SHOP]
+└── _site/                 # FINISHED GOODS (Gitignored)
+```
 
-To inspect the work-in-progress, start the local static server.
+------
+
+## 4.0 THE LAYOUT ENGINE (Dynamic Centering)
+
+We treat the Vellum as a physical object with a maximum width, centered on the available workbench surface.
+
+### 4.1 The Physics of the Grid
+
+- **Sidebar:** Fixed width (`280px`). The Control Panel.
+- **Vellum:** `max-width: 65ch`. The ideal measure of a printed page.
+- **Margins:** Flexible (`1fr`). The "Metal" fills whatever space remains around the Vellum.
+
+### 4.2 Responsive States
+
+1. **The Workbench (Desktop > 900px):**
+   - **Sidebar:** Fixed Left.
+   - **Vellum:** Centered in the remaining viewport space.
+   - **Metal:** Visible on Left, Right, Top, and Bottom.
+2. **The Field Tool (Mobile < 900px):**
+   - **Sidebar:** Collapsed (Drawer).
+   - **Vellum:** Full width minus `16px` safety margins.
+   - **Header:** Condenses to a "Strip".
+
+------
+
+## 5.0 THE MATERIALITY ENGINE (Advanced Realism)
+
+We do not use flat colors. We use **Texture Protocols** to simulate physical interaction without looking "cheesy."
+
+### 5.1 Protocol A: The Workbench (Cold Rolled Steel)
+
+The bench is not just grey; it is imperfect metal.
+
+- **Base:** `#E3E5E6` (Shop Primer).
+- **Texture:** A subtle, high-frequency monochromatic noise filter (SVG) applied at 3% opacity. This breaks the "digital smoothness."
+- **Lighting:** Flat. Metal absorbs light.
+
+### 5.2 Protocol B: The Etching (Text on Metal)
+
+Text on the workbench is **milled**, not printed. It has depth.
+
+- **Technique:** CSS `text-shadow`.
+- **Highlight:** `1px 1px 0 rgba(255, 255, 255, 0.7)` (Bottom Right - Light catches the edge).
+- **Shadow:** `-1px -1px 0 rgba(0, 0, 0, 0.1)` (Top Left - Shadow inside the cut).
+- **Color:** `#1C1C1C` (Filled with Carbon ink) or `#5F6B6D` (Raw Zinc).
+
+### 5.3 Protocol C: The Groove (Dividers on Metal)
+
+Lines on the workbench are **machine-tooled channels**.
+
+- **Technique:** Double borders.
+- **Top Border:** `1px solid #B0B3B5` (Shadow/Depth).
+- **Bottom Border:** `1px solid #FFFFFF` (Highlight/Edge).
+- **Result:** Looks like a physical groove cut into the steel.
+
+### 5.4 Protocol D: The Vellum (Paper Physics)
+
+The page is organic material.
+
+- **Base:** `#F2F0E9`.
+- **Grain:** An SVG Fractal Noise filter (`feTurbulence`) layered via `::before`.
+- **Ink Absorption:** All text on Vellum uses `mix-blend-mode: multiply`. The black ink must appear to soak *into* the grain, not float above it.
+- **Thickness:** The Vellum sheet has a `1px solid #D4D2CB` border (the cut edge) and a tight `box-shadow: 0 1px 2px rgba(0,0,0,0.05)` to imply the gauge of the paper.
+
+### 5.5 Protocol E: The Draughtsman's Line (Dividers on Vellum)
+
+Lines inside the manual are drawn by hand.
+
+- **Technique:** An SVG background image containing a path with slightly randomized control points.
+- **Visual:** Irregular dash array. Variation in stroke width (0.8px to 1.2px).
+- **Feeling:** "The imperfect stroke of a 1974 Rotring pen."
+
+------
+
+## 6.0 FABRICATION (Development Workflow)
+
+### 6.1 Firing Up (Local Server)
+
+We use 11ty's hot-reloading server for development.
 
 ```bash
 npm start
 ```
 
-- **Output:** `http://localhost:3000`
-- **Behavior:** Serves the current directory as a static site. Changes to HTML/CSS require a browser refresh.
+- **Output:** `http://localhost:8080`
+- **Process:** 11ty watches `src/` and rebuilds instantly upon save.
 
-### 3.2 The Materiality Engine (CSS Architecture)
-
-All styling is handled in `assets/css/styles.css`. We use CSS Custom Properties (Variables) to define the physics of the brand.
-
-**The Palette:**
-
-- `--c-vellum` (#F2F0E9): The Page Background (Warm Manual).
-- `--c-primer` (#E3E5E6): The Workbench Background (Cool Bench).
-- `--c-carbon` (#1C1C1C): The Ink.
-- `--c-zinc` (#5F6B6D): The Grid/Metadata.
-- `--c-redwood` (#8B3A3A): Action items.
-
-**The Physics:**
-
-- **Transitions:** `none`. Feedback must be instant.
-- **Depth:** Flat. No drop shadows. Use borders to define edges.
-
-### 3.3 Shop Safety Checks (Linting)
+### 6.2 Shop Safety Checks (Linting)
 
 Before committing any code, sweep the floor.
 
 ```bash
-# Format code (Prettier)
+# Format Code (Prettier)
 npm run format
 
-# Inspect HTML structure (HTMLHint)
+# Inspect HTML Structure (HTMLHint)
 npm run lint
 ```
 
----
+------
 
-## 4.0 ASSEMBLY (File Structure)
-
-The repository is organized like a physical workshop. Everything has a place.
-
-```text
-cooper-st-logic-shop/
-├── .well-known/           # Standard Protocols (Security)
-│   └── security.txt       # Reporting contact
-├── assets/                # Raw Materials
-│   ├── css/               # The Paint Shop
-│   └── img/               # The Parts Bin
-├── index.html             # The Main Assembly
-├── netlify.toml           # Shipping Label
-├── package.json           # Tool Inventory
-├── robots.txt             # Access Control
-└── sitemap.xml            # Shop Map
-```
-
-**WARNING:** Do not add "junk" folders. Keep the work zone clear of debris.
-
----
-
-## 5.0 SHIPPING (Deployment)
+## 7.0 SHIPPING (Deployment)
 
 We use **Netlify** as our shipping container. The deployment is atomic and immutable.
 
-### 5.1 Configuration (`netlify.toml`)
+### 7.1 Configuration (`netlify.toml`)
 
-The repository includes a `netlify.toml` file that defines the shipping parameters.
+- **Build Command:** `npm run build` (Runs `eleventy`).
+- **Publish Directory:** `_site`.
+- **Headers:** Configured for security (`X-Frame-Options: DENY`) and cache control.
 
-- **Build Command:** (Empty). We ship raw HTML.
-- **Publish Directory:** `.` (Root).
+### 7.2 Connection Procedure
 
-### 5.2 Connecting the Pipe (First Run)
+1. Push `main` branch to GitHub.
+2. Connect Repository to Netlify.
+3. **Build Settings:**
+   - Command: `npm run build`
+   - Directory: `_site`
+4. Netlify will auto-detect the `.nvmrc` or `engines` field in `package.json`.
 
-1. Log in to Netlify.
-2. Select **"Import from Git"**.
-3. Choose this repository (`cooper-st-logic-shop`).
-4. **Build Settings:**
-   - _Build Command:_ Leave blank.
-   - _Publish Directory:_ `.`
-5. Click **Deploy Site**.
+------
 
-### 5.3 Domain Binding
-
-1. Navigate to **Domain Management** in Netlify.
-2. Add custom domain: `cooperstlogicshop.com`.
-3. Update DNS records (A Record / CNAME) at your registrar to point to Netlify's load balancers.
-4. **SSL:** Netlify will automatically provision a Let's Encrypt certificate. This is non-negotiable.
-
----
-
-## 6.0 STANDARD OPERATING PROCEDURES (SOP)
+## 8.0 STANDARD OPERATING PROCEDURES (SOP)
 
 ### SOP-01: Updating Content
 
-1. Edit `index.html`.
-2. [Ensure text hierarchy follows the "Fraunces" (Header) vs "Public Sans" (Body) rule.
-3. Run `npm run format`.
-4. Commit and Push.
+1. Navigate to `src/`.
+2. Open the relevant Markdown file (`index.md`, `shop.md`).
+3. Edit the content using standard Markdown.
+   - *Note:* Do not use HTML tags for structure unless absolutely necessary.
+4. Commit and Push. Netlify handles the rest.
 
-   ```bash
-   git add .
-   git commit -m "Update: Revised copy for Q1 Strategy"
-   git push origin main
-   ```
+### SOP-02: Image Processing
 
-5. Netlify triggers a deploy automatically.
+All imagery must pass through the **Dither Protocol**.
 
-### SOP-02: Adding Images
+1. **Desaturate:** Convert to Grayscale.
+2. **Threshold:** Increase contrast (High blacks).
+3. **Halftone:** Apply a visible dot pattern (or dithering).
+4. **Save:** Optimized PNG/WebP to `src/assets/img/`.
 
-1. **Process:** All images must be desaturated, high-contrast, and halftoned.
-2. **Storage:** Save processed images to `assets/img/`.
+------
 
----
+## 9.0 CONTENT STRATEGY ("Coming Soon")
 
-## 7.0 LICENSE & LEGAL
+Since the shop is being fitted out, secondary pages must communicate status without breaking the "Industrial" narrative.
 
-**Proprietary / Closed Source.**
+### 9.1 Inventory (`/inventory`)
+
+- **Status:** Offline.
+- **Message:** "STOCKROOM LOCKED. ANNUAL INVENTORY AUDIT IN PROGRESS."
+- **Visual:** A single dashed line and a timestamp of the next expected shipment.
+
+### 9.2 Fabrication (`/fabrication`)
+
+- **Status:** Offline.
+- **Message:** "MACHINERY UNDER MAINTENANCE. CALIBRATING LOGIC GATES."
+- **Visual:** A technical diagram of a placeholder component.
+
+### 9.3 The Shop (`/shop`)
+
+- **Status:** Offline.
+- **Message:** "SHIFT CHANGE. SWEEPING UP SAWDUST."
+
+------
+
+## 10.0 LICENSE & LEGAL
+
+Proprietary / Closed Source.
+
 The visual identity, including the "Cooper St" wordmark, the "Structural C" icon, and the specific CSS implementation of the "Materiality Engine," is the property of Cooper St Logic Shop.
 
-- **Code License:** UNLICENSED (All rights reserved).
-- **Font Licenses:**
-  - _Fraunces:_ OFL (Open Font License).
-  - _Public Sans:_ OFL (Open Font License).
-  - _IBM Plex Mono:_ OFL (Open Font License).
+- **Repository License:** UNLICENSED (All rights reserved).
+- **Open Source Components:**
+  - *11ty:* MIT License.
+  - *Fraunces Font:* OFL.
+  - *Public Sans Font:* OFL.
+  - *IBM Plex Mono Font:* OFL.
 
----
+------
+
+[ REF: 02.0 ]
 
 © 2026 Dylan Webster. Santa Cruz, California.
