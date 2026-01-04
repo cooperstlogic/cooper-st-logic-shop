@@ -25,16 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Resize Handler for Transitions & State
-    let resizeTimer;
+    // Resize Handler for State Management
     window.addEventListener("resize", () => {
-      document.body.classList.add("resizing");
-      
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        document.body.classList.remove("resizing");
-      }, 400);
-
       // Check for breakpoint cross
       const isMobile = window.matchMedia("(max-width: 900px)").matches;
       if (isMobile) {

@@ -95,13 +95,18 @@ We treat the Vellum as a physical object with a maximum width, centered on the a
 
 ### 4.2 Responsive States
 
+**Transition Specification:** All layout transitions use `0.5s cubic-bezier(0.25, 1, 0.5, 1)` for consistent feel across all interactions.
+
 1. **The Workbench (Desktop > 900px):**
    - **Sidebar:** Fixed Left. Collapsable via the "C" clamp.
-   - **Transitions:** Structural changes (Grid/Sidebar) do NOT animate during window resize to prevent jarring layout shifts. Animation is reserved for user-initiated toggles.
+   - **Desktop Sidebar Collapse:** Grid columns and sidebar width transition smoothly when toggled.
+   - **Window Resize:** Transitions occur in real-time during resize for smooth layout changes between desktop and mobile states.
+   - **Vellum Movement:** Content zone transitions smoothly when sidebar state changes, maintaining visual continuity.
 2. **The Field Tool (Mobile < 900px):**
    - **Sidebar:** Hidden by default.
    - **Hamburger Menu:**
      - **Mechanism:** "Drawer" style. Slides down from **UNDER** the Header.
+     - **Transition:** Uses the same `0.5s cubic-bezier(0.25, 1, 0.5, 1)` timing as desktop collapse for consistent feel.
      - **Spacing:** No gap between header and first item; immediate utility.
    - **Vellum:** Full width minus `16px` safety margins.
    - **Header:** Always persistent.

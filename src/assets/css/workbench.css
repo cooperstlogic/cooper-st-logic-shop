@@ -23,10 +23,6 @@ body {
   transition: grid-template-columns 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-body.resizing {
-  transition: none !important;
-}
-
 /* Desktop Collapsed Grid State */
 @media (min-width: 901px) {
   body.sidebar-collapsed {
@@ -100,12 +96,9 @@ body::before {
   z-index: 100;
   box-shadow: none; /* Flattened for realism */
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-              width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+              width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   overflow: hidden; /* For collapsing */
-}
-
-body.resizing .bench-sidebar {
-  transition: none !important;
 }
 
 /* Desktop Collapsed State (Only apply on desktop) */
@@ -288,28 +281,41 @@ hr.draughtsman-line {
    ----------------------------------------------------------- */
 @media (max-width: 900px) {
   body {
-    grid-template-columns: 1fr;
+    /* Keep sidebar in grid for smooth collapse transition, but column width is 0 */
+    grid-template-columns: 0 1fr;
     grid-template-areas:
-      "header"
-      "content"
-      "footer"; /* Footer stacks */
+      "sidebar header"
+      "sidebar content"
+      "footer footer"; /* Footer spans full width */
   }
 
   .bench-sidebar {
+    /* In mobile, sidebar collapses left (width: 0) smoothly from desktop state */
+    /* The grid column collapse handles the visual transition, sidebar width follows */
+    position: sticky;
+    top: 0;
+    width: 0;
+    height: 100vh;
+    transform: none;
+    z-index: 100;
+    border-right: none;
+    /* Width transition ensures smooth collapse from desktop width to 0 */
+    transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Mobile drawer mode - only when .active class is present */
+  .bench-sidebar.active {
     position: fixed;
-    top: var(--header-height); /* Slide from UNDER header */
+    top: var(--header-height);
     left: 0;
     width: 100%;
     height: calc(100vh - var(--header-height));
-    transform: translateY(-100%); /* Start hidden "behind" header technically, but we clip it or simple slide down */
-    /* Actually to slide from under, we can start at -100% Y */
-    /* Revised: To slide from under the header, we position it there but use z-index to manage visibility or clip-path. 
-       Easier: transform translateY(-120%) and z-index < header.
-    */
-    /* revised z-index and top handled above, checking logic */
-    z-index: 400; /* Below Header (500) */
-    border-right: none;
+    transform: translateY(0);
+    z-index: 400;
     border-bottom: 1px solid var(--c-metal-shadow);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   .sidebar-header-spacer {
