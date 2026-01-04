@@ -119,11 +119,18 @@ We do not use flat colors. We use **Texture Protocols** to simulate physical int
 
 ### 5.1 Protocol A: The Workbench (Cold Rolled Steel)
 
-The bench is not just grey; it is imperfect metal.
+The bench is not just grey; it is imperfect metal with physical presence.
 
-- **Base:** `#E3E5E6` (Shop Primer).
-- **Texture:** A subtle, high-frequency monochromatic noise filter (SVG) applied at 3% opacity. This breaks the "digital smoothness."
-- **Lighting:** Flat. Metal absorbs light.
+- **Base Color:** `#D5D9DC` (Cool Blue-Gray). Cold rolled steel has a distinctly cool, bluish tone.
+- **Color Palette:**
+  - Shadow: `#A8AEB3` (Cooler shadow tone)
+  - Highlight: `#F0F2F4` (Slightly cool highlight)
+  - Deep Shadow: `#9AA1A8` (For machined grooves)
+- **Texture Layers:**
+  1. **Brushed Grain:** Horizontal directional texture (6% opacity) simulating the cold rolling process.
+  2. **Surface Noise:** High-frequency monochromatic noise (4% opacity, overlay blend) for microscopic imperfections.
+- **Lighting:** Subtle radial gradients simulate ambient light reflection on metal surface. Not flat—metal has depth.
+- **Depth:** Inner shadows on panels and box-shadows on grooves create recessed/raised surface illusion.
 
 ### 5.2 Protocol B: The Etching (Text on Metal)
 

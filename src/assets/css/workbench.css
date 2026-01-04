@@ -7,6 +7,20 @@
    ----------------------------------------------------------- */
 body {
   background-color: var(--c-metal);
+  /* Metal texture with metallic sheen gradient */
+  background-image: 
+    url("/assets/img/brushed-metal.svg"),
+    url("/assets/img/noise.svg"),
+    /* Metallic sheen - diagonal highlight */
+    linear-gradient(135deg, 
+      rgba(255,255,255,0) 0%, 
+      rgba(255,255,255,0.15) 25%, 
+      rgba(255,255,255,0.05) 50%, 
+      rgba(255,255,255,0.1) 75%, 
+      rgba(255,255,255,0) 100%);
+  background-size: 200px 200px, 150px 150px, 100% 100%;
+  background-repeat: repeat, repeat, no-repeat;
+  background-blend-mode: multiply, overlay, normal;
   color: var(--c-carbon);
   font-family: var(--font-manual);
   overflow-x: hidden;
@@ -30,21 +44,6 @@ body {
   }
 }
 
-/* Metal Texture Overlay (Noise) */
-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("../img/noise.svg");
-  opacity: 0.03; /* Subtle imperfection */
-  pointer-events: none;
-  z-index: 999;
-  mix-blend-mode: multiply;
-}
-
 /* -----------------------------------------------------------
    5.2 PROTOCOL B: THE ETCHING (Text on Metal)
    ----------------------------------------------------------- */
@@ -52,9 +51,8 @@ body::before {
   font-family: var(--font-engraving);
   color: var(--c-carbon);
   text-shadow:
-    1px 1px 0 rgba(255, 255, 255, 0.9),
-    -0.5px -0.5px 0 rgba(0, 0, 0, 0.2),
-    0 0 0.5px rgba(0, 0, 0, 0.1); /* Subtle depth for realism */
+    0.5px 0.5px 0 rgba(255, 255, 255, 0.5),  /* Softer highlight */
+    -0.5px -0.5px 0 rgba(0, 0, 0, 0.25);     /* Stronger shadow for depth */
   letter-spacing: 0.5px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -64,9 +62,8 @@ body::before {
 .engraved-zinc {
   color: var(--c-zinc);
   text-shadow:
-    1px 1px 0 rgba(255, 255, 255, 0.9),
-    -0.5px -0.5px 0 rgba(0, 0, 0, 0.2),
-    0 0 0.5px rgba(0, 0, 0, 0.1); /* Subtle depth for realism */
+    0.5px 0.5px 0 rgba(255, 255, 255, 0.5),  /* Softer highlight */
+    -0.5px -0.5px 0 rgba(0, 0, 0, 0.25);     /* Stronger shadow for depth */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -77,31 +74,45 @@ body::before {
    ----------------------------------------------------------- */
 .zinc-groove {
   height: 0;
-  border-top: 1px solid var(--c-metal-shadow);
+  border-top: 1px solid var(--c-metal-deep);
   border-bottom: 1px solid var(--c-metal-highlight);
   width: 100%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle depth */
 }
 
 .zinc-groove-vertical {
   width: 0;
-  border-left: 1px solid var(--c-metal-shadow);
+  border-left: 1px solid var(--c-metal-deep);
   border-right: 1px solid var(--c-metal-highlight);
   height: 100%;
+  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.05); /* Subtle depth */
 }
 
 /* -----------------------------------------------------------
-   ZONES: SIDEBAR (Control Panel)
+   ZONES: SIDEBAR (Control Panel) - Cold Rolled Steel
    ----------------------------------------------------------- */
 .bench-sidebar {
   grid-area: sidebar;
+  /* Light brushed steel with metallic sheen */
   background-color: var(--c-metal);
+  background-image: 
+    url("/assets/img/brushed-metal.svg"),
+    url("/assets/img/noise.svg"),
+    /* Vertical metallic sheen */
+    linear-gradient(180deg, 
+      rgba(255,255,255,0.08) 0%, 
+      rgba(255,255,255,0) 30%, 
+      rgba(255,255,255,0.04) 70%, 
+      rgba(255,255,255,0.1) 100%);
+  background-size: 200px 200px, 150px 150px, 100% 100%;
+  background-repeat: repeat, repeat, no-repeat;
+  background-blend-mode: multiply, overlay, normal;
   height: 100vh;
   position: sticky;
   top: 0;
   display: flex;
   flex-direction: column;
   z-index: 100;
-  box-shadow: none; /* Flattened for realism */
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
               width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
               opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
@@ -138,7 +149,7 @@ body::before {
   transition: none; /* Mechanical switch */
 }
 
-/* Groove between links */
+/* Groove between links - machined channels */
 .nav-link::after {
   content: "";
   position: absolute;
@@ -146,7 +157,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 0;
-  border-top: 1px solid var(--c-metal-shadow);
+  border-top: 1px solid var(--c-metal-deep);
   border-bottom: 1px solid var(--c-metal-highlight);
 }
 
@@ -171,7 +182,7 @@ body::before {
 }
 
 /* -----------------------------------------------------------
-   ZONES: HEADER (Title Block)
+   ZONES: HEADER (Title Block) - Cold Rolled Steel
    ----------------------------------------------------------- */
 .bench-header {
   grid-area: header;
@@ -183,7 +194,19 @@ body::before {
   position: sticky;
   top: 0;
   z-index: 500; /* Above sidebar in mobile "under" mode */
-  background-color: var(--c-metal); /* Opaque for sliding under */
+  /* Light brushed steel with horizontal sheen */
+  background-color: var(--c-metal);
+  background-image: 
+    url("/assets/img/brushed-metal.svg"),
+    url("/assets/img/noise.svg"),
+    linear-gradient(90deg, 
+      rgba(255,255,255,0) 0%, 
+      rgba(255,255,255,0.1) 30%, 
+      rgba(255,255,255,0.05) 60%, 
+      rgba(255,255,255,0) 100%);
+  background-size: 200px 200px, 150px 150px, 100% 100%;
+  background-repeat: repeat, repeat, no-repeat;
+  background-blend-mode: multiply, overlay, normal;
 }
 
 /* Groove at bottom of header */
@@ -194,7 +217,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 0;
-  border-top: 1px solid var(--c-metal-shadow);
+  border-top: 1px solid var(--c-metal-deep);
   border-bottom: 1px solid var(--c-metal-highlight);
 }
 
@@ -214,7 +237,7 @@ body::before {
 }
 
 /* -----------------------------------------------------------
-   5.4 PROTOCOL D: THE VELLUM (Content)
+   5.4 PROTOCOL D: THE VELLUM (Content) - Cold Rolled Steel Background
    ----------------------------------------------------------- */
 .content-zone {
   grid-area: content;
@@ -222,7 +245,19 @@ body::before {
   display: flex;
   justify-content: center; /* Dynamic Centering */
   align-items: flex-start;
-  /* Remove min-height to let grid handle footer positioning */
+  /* Light brushed steel with subtle sheen */
+  background-color: var(--c-metal);
+  background-image: 
+    url("/assets/img/brushed-metal.svg"),
+    url("/assets/img/noise.svg"),
+    linear-gradient(145deg, 
+      rgba(255,255,255,0.08) 0%, 
+      rgba(255,255,255,0) 40%, 
+      rgba(255,255,255,0.05) 80%, 
+      rgba(255,255,255,0) 100%);
+  background-size: 200px 200px, 150px 150px, 100% 100%;
+  background-repeat: repeat, repeat, no-repeat;
+  background-blend-mode: multiply, overlay, normal;
 }
 
 .vellum-sheet {
@@ -231,12 +266,21 @@ body::before {
   max-width: 85ch; /* 85ch ~ 900px */
   padding: 4rem 3rem;
   border: 1px solid var(--c-vellum-border);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   position: relative;
+  z-index: 10; /* Above metal textures */
   margin-bottom: 4rem; /* Breathing room at bottom */
+  
+  /* Rough-cut paper edge effect */
+  filter: url("/assets/img/rough-edge.svg#roughEdge");
+  
+  /* Natural paper shadow - single soft shadow */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  
+  /* Subtle casual rotation - like placed on a desk */
+  transform: rotate(-0.15deg);
 }
 
-/* Vellum Grain */
+/* Subtle paper texture layer */
 .vellum-sheet::before {
   content: "";
   position: absolute;
@@ -244,10 +288,34 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("../img/noise.svg");
-  opacity: 0.15;
+  background-image: 
+    url("../img/paper-grain.svg"),
+    /* Edge darkening - aged paper yellows more at edges */
+    radial-gradient(ellipse at center, 
+      transparent 60%, 
+      rgba(180, 155, 100, 0.06) 100%);
+  background-size: 200px 200px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  opacity: 0.4;
   pointer-events: none;
   mix-blend-mode: multiply;
+}
+
+/* Corner wear from handling */
+.vellum-sheet::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Subtle corner wear from handling */
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(139, 119, 80, 0.06) 0%, transparent 15%),
+    radial-gradient(ellipse at 100% 0%, rgba(139, 119, 80, 0.04) 0%, transparent 12%),
+    radial-gradient(ellipse at 0% 100%, rgba(139, 119, 80, 0.04) 0%, transparent 12%),
+    radial-gradient(ellipse at 100% 100%, rgba(139, 119, 80, 0.06) 0%, transparent 15%);
 }
 
 /* Ink Absorption */
@@ -283,7 +351,7 @@ hr.draughtsman-line {
 }
 
 /* -----------------------------------------------------------
-   5.6 PROTOCOL F: THE FOOTER
+   5.6 PROTOCOL F: THE FOOTER - Cold Rolled Steel
    ----------------------------------------------------------- */
 .bench-footer {
   grid-column: 1 / -1; /* Span full width of grid */
@@ -291,7 +359,19 @@ hr.draughtsman-line {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  /* Light brushed steel with horizontal sheen */
   background-color: var(--c-metal);
+  background-image: 
+    url("/assets/img/brushed-metal.svg"),
+    url("/assets/img/noise.svg"),
+    linear-gradient(90deg, 
+      rgba(255,255,255,0) 0%, 
+      rgba(255,255,255,0.08) 40%, 
+      rgba(255,255,255,0.03) 70%, 
+      rgba(255,255,255,0) 100%);
+  background-size: 200px 200px, 150px 150px, 100% 100%;
+  background-repeat: repeat, repeat, no-repeat;
+  background-blend-mode: multiply, overlay, normal;
   margin-top: auto;
   position: relative; /* For pseudo-element positioning */
 }
@@ -304,7 +384,7 @@ hr.draughtsman-line {
   left: 0;
   width: 100%;
   height: 0;
-  border-top: 1px solid var(--c-metal-shadow);
+  border-top: 1px solid var(--c-metal-deep);
   border-bottom: 1px solid var(--c-metal-highlight);
 }
 

@@ -1,12 +1,13 @@
 :root {
-  /* 5.1 Protocol A: The Workbench */
-  --c-metal: #e3e5e6;
-  --c-metal-shadow: #b0b3b5;
-  --c-metal-highlight: #ffffff;
+  /* 5.1 Protocol A: The Workbench (Cold Rolled Steel) */
+  --c-metal: #e4e7ea;           /* Light silver - like real brushed steel */
+  --c-metal-shadow: #c0c6cc;    /* Mid shadow */
+  --c-metal-highlight: #f4f6f8; /* Bright edge catch */
+  --c-metal-deep: #a8b0b8;      /* Deep groove shadow */
 
-  /* 5.4 Protocol D: The Vellum */
-  --c-vellum: #f2f0e9;
-  --c-vellum-border: #d4d2cb;
+  /* 5.4 Protocol D: The Vellum (Vintage 70s Field Guide) */
+  --c-vellum: #f7f3ea;        /* Subtle warm cream - lightly aged paper */
+  --c-vellum-border: #d8d0c0; /* Soft aged edge tone */
 
   /* Ink & Etching */
   --c-carbon: #1c1c1c;
