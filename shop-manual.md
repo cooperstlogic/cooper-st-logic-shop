@@ -89,19 +89,22 @@ We treat the Vellum as a physical object with a maximum width, centered on the a
 ### 4.1 The Physics of the Grid
 
 - **Sidebar:** Fixed width (`280px`). The Control Panel.
-- **Vellum:** `max-width: 65ch`. The ideal measure of a printed page.
+- **Vellum:** `max-width: 85ch` (approx. 900px). The content should feel like a substantial technical field guide.
 - **Margins:** Flexible (`1fr`). The "Metal" fills whatever space remains around the Vellum.
+- **Alignment:** The top divider of the Sidebar MUST align perfectly with the top divider of the Header/Vellum.
 
 ### 4.2 Responsive States
 
 1. **The Workbench (Desktop > 900px):**
-   - **Sidebar:** Fixed Left.
-   - **Vellum:** Centered in the remaining viewport space.
-   - **Metal:** Visible on Left, Right, Top, and Bottom.
+   - **Sidebar:** Fixed Left. Collapsable via the "C" clamp.
+   - **Transitions:** Structural changes (Grid/Sidebar) do NOT animate during window resize to prevent jarring layout shifts. Animation is reserved for user-initiated toggles.
 2. **The Field Tool (Mobile < 900px):**
-   - **Sidebar:** Collapsed (Drawer).
+   - **Sidebar:** Hidden by default.
+   - **Hamburger Menu:**
+     - **Mechanism:** "Drawer" style. Slides down from **UNDER** the Header.
+     - **Spacing:** No gap between header and first item; immediate utility.
    - **Vellum:** Full width minus `16px` safety margins.
-   - **Header:** Condenses to a "Strip".
+   - **Header:** Always persistent.
 
 ---
 
@@ -122,9 +125,10 @@ The bench is not just grey; it is imperfect metal.
 Text on the workbench is **milled**, not printed. It has depth.
 
 - **Technique:** CSS `text-shadow`.
-- **Highlight:** `1px 1px 0 rgba(255, 255, 255, 0.7)` (Bottom Right - Light catches the edge).
-- **Shadow:** `-1px -1px 0 rgba(0, 0, 0, 0.1)` (Top Left - Shadow inside the cut).
-- **Color:** `#1C1C1C` (Filled with Carbon ink) or `#5F6B6D` (Raw Zinc).
+- **Highlight:** `1px 1px 0 rgba(255, 255, 255, 0.9)` (Bottom Right - Sharp Light).
+- **Shadow:** `-0.5px -0.5px 0 rgba(0, 0, 0, 0.2)` (Top Left - Deep Cut).
+- **Color:** `#2C2C2C` (Carbon) or `#6A7375` (Zinc).
+- **Result:** Crisp, machined legibility.
 
 ### 5.3 Protocol C: The Groove (Dividers on Metal)
 
@@ -152,6 +156,14 @@ Lines inside the manual are drawn by hand.
 - **Visual:** Irregular dash array. Variation in stroke width (0.8px to 1.2px).
 - **Feeling:** "The imperfect stroke of a 1974 Rotring pen."
 
+### 5.6 Protocol F: The Etched Copyright (Global Footer)
+
+The footer frames the bottom of the workbench.
+
+- **Location:** Below the main content zone, spanning the full width (or content width).
+- **Style:** Etched into the steel (Protocol B).
+- **Content:** Copyright and location. No links. Just a stamped mark of origin.
+
 ---
 
 ## 6.0 FABRICATION (Development Workflow)
@@ -167,7 +179,7 @@ npm start
 - **Output:** `http://localhost:8080`
 - **Process:** 11ty watches `src/` and rebuilds instantly upon save.
 
-### 6.2 Shop Safety Checks (Linting)
+### 6.2 Shop Safety Checks (Linting & Testing)
 
 Before committing any code, sweep the floor.
 
@@ -177,7 +189,12 @@ npm run format
 
 # Inspect HTML Structure (HTMLHint)
 npm run lint
+
+# Run Unit Tests (Coming Soon)
+# npm test
 ```
+
+We will implement basic regression tests for critical flows (visual regression or snapshot testing) to ensure the "Physicalism" isn't broken by CSS updates.
 
 ---
 

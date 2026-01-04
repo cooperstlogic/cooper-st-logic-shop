@@ -15,10 +15,23 @@ body {
   /* The Grid Layout Engine */
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto; /* Header, Content, Footer */
   grid-template-areas:
     "sidebar header"
-    "sidebar content";
+    "sidebar content"
+    "footer footer"; /* Full width footer */
+  transition: grid-template-columns 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+body.resizing {
+  transition: none !important;
+}
+
+/* Desktop Collapsed Grid State */
+@media (min-width: 901px) {
+  body.sidebar-collapsed {
+    grid-template-columns: 0 1fr;
+  }
 }
 
 /* Metal Texture Overlay (Noise) */
@@ -43,16 +56,16 @@ body::before {
   font-family: var(--font-engraving);
   color: var(--c-carbon);
   text-shadow:
-    1px 1px 0 rgba(255, 255, 255, 0.7),
-    -1px -1px 0 rgba(0, 0, 0, 0.1);
+    1px 1px 0 rgba(255, 255, 255, 0.9),
+    -0.5px -0.5px 0 rgba(0, 0, 0, 0.2);
   letter-spacing: 0.5px;
 }
 
 .engraved-zinc {
   color: var(--c-zinc);
   text-shadow:
-    1px 1px 0 rgba(255, 255, 255, 0.7),
-    -1px -1px 0 rgba(0, 0, 0, 0.1);
+    1px 1px 0 rgba(255, 255, 255, 0.9),
+    -0.5px -0.5px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* -----------------------------------------------------------
@@ -85,6 +98,22 @@ body::before {
   display: flex;
   flex-direction: column;
   z-index: 100;
+  box-shadow: none; /* Flattened for realism */
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden; /* For collapsing */
+}
+
+body.resizing .bench-sidebar {
+  transition: none !important;
+}
+
+/* Desktop Collapsed State (Only apply on desktop) */
+@media (min-width: 901px) {
+  .bench-sidebar.collapsed {
+    width: 0;
+    border-right: none;
+  }
 }
 
 .nav-link {
@@ -140,6 +169,8 @@ body::before {
   justify-content: space-between;
   padding: 0 2rem;
   position: relative;
+  z-index: 500; /* Above sidebar in mobile "under" mode */
+  background-color: var(--c-metal); /* Opaque for sliding under */
 }
 
 /* Groove at bottom of header */
@@ -184,7 +215,7 @@ body::before {
 .vellum-sheet {
   background-color: var(--c-vellum);
   width: 100%;
-  max-width: var(--vellum-width); /* 65ch */
+  max-width: 85ch; /* 85ch ~ 900px */
   padding: 4rem 3rem;
   border: 1px solid var(--c-vellum-border);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -239,6 +270,20 @@ hr.draughtsman-line {
 }
 
 /* -----------------------------------------------------------
+   5.6 PROTOCOL F: THE FOOTER
+   ----------------------------------------------------------- */
+.bench-footer {
+  grid-column: 1 / -1; /* Span full width of grid */
+  padding: 2rem;
+  border-top: 1px solid var(--c-metal-shadow);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: var(--c-metal);
+  margin-top: auto;
+}
+
+/* -----------------------------------------------------------
    RESPONSIVE: THE FIELD TOOL (Mobile)
    ----------------------------------------------------------- */
 @media (max-width: 900px) {
@@ -246,22 +291,38 @@ hr.draughtsman-line {
     grid-template-columns: 1fr;
     grid-template-areas:
       "header"
-      "content";
+      "content"
+      "footer"; /* Footer stacks */
   }
 
   .bench-sidebar {
     position: fixed;
-    left: -100%; /* Hidden in drawer */
-    width: 85%;
-    height: 100%;
-    transition: left 0.2s cubic-bezier(0, 0, 0.2, 1); /* Mechanical snap */
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    top: var(--header-height); /* Slide from UNDER header */
+    left: 0;
+    width: 100%;
+    height: calc(100vh - var(--header-height));
+    transform: translateY(-100%); /* Start hidden "behind" header technically, but we clip it or simple slide down */
+    /* Actually to slide from under, we can start at -100% Y */
+    /* Revised: To slide from under the header, we position it there but use z-index to manage visibility or clip-path. 
+       Easier: transform translateY(-120%) and z-index < header.
+    */
+    /* revised z-index and top handled above, checking logic */
+    z-index: 400; /* Below Header (500) */
+    border-right: none;
+    border-bottom: 1px solid var(--c-metal-shadow);
+  }
+
+  .sidebar-header-spacer {
+    display: none;
   }
 
   .bench-sidebar.active {
-    left: 0;
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
 
+  /* When active on mobile, verify "collapsed" class is removed or ignored */
+  
   .content-zone {
     padding: 1rem;
   }
@@ -270,13 +331,34 @@ hr.draughtsman-line {
     padding: 2rem 1.5rem;
   }
 
-  /* Mobile Clamp Trigger */
-  .mobile-clamp {
-    display: block !important;
+  /* Show "MENU" text trigger only on mobile */
+  .mobile-clamp .engraved-text {
+    display: inline-block;
   }
 }
 
-/* Desktop Hide Clamp */
+/* Desktop CLAMP visibility (Always visible now) */
 .mobile-clamp {
-  display: none;
+  display: flex !important; /* Force flex */
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* Hide "MENU" text on Desktop, only Icon */
+@media (min-width: 901px) {
+  .mobile-clamp .engraved-text {
+    display: none;
+  }
+  
+  /* When collapsed, main grid needs to adjust?
+     Actually we are using grid-template-columns: var(--sidebar-width) 1fr;
+     We need JS to update the variable or class on body if we want the grid to stick.
+     OR we rely on the sidebar width transition and grid auto-adjust? 
+     Grid tracks don't auto-animate well.
+     Let's keep sidebar fixed width but use negative margin or width: 0 on the sidebar element itself.
+     If sidebar becomes width 0, the grid column might stay fixed if defined as px.
+     Let's handle the grid collapse in body.collapsed-sidebar if needed, or rely on sidebar-width var.
+  */
 }

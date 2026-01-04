@@ -3,11 +3,9 @@ layout: base.njk
 title: Index
 ---
 
-# 01 // INDEX
+# WELCOME TO COOPER ST
 
-<!-- markdownlint-disable-next-line MD033 -->
-
-## Purveyors of Product Strategy & Digital Goods <br> Santa Cruz, California
+The LOGIC SHOP has an inventory of off the shelf software products and fabrication capacity for custom crafted product strategy.
 
 We are currently fitting out the shop. Sweeping up the sawdust and getting the tools organized.
 
