@@ -337,40 +337,31 @@ hr.draughtsman-line {
   }
 
   .bench-sidebar {
-    /* In mobile, sidebar starts collapsed in grid (sticky, width: 0) */
-    position: sticky;
-    top: 0;
-    width: 0;
-    height: 100vh;
-    transform: none;
-    z-index: 100;
-    border-right: none;
-    transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-                transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-                position 0s 0.5s; /* Delay position change until after transform */
-  }
-
-  /* Mobile drawer mode - when .active class is present, slide down from above header */
-  .bench-sidebar.active {
+    /* In mobile, sidebar starts hidden above header, ready to slide down */
     position: fixed;
     top: var(--header-height);
     left: 0;
     width: 100%;
     height: calc(100vh - var(--header-height));
-    transform: translateY(0); /* Slide down to visible */
+    transform: translateY(-100%); /* Hidden above header */
     z-index: 400;
     border-bottom: 1px solid var(--c-metal-shadow);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Disable transition during window resize to prevent animation when crossing breakpoint */
+  body.resizing .bench-sidebar {
+    transition: none !important;
+  }
+
+  /* Mobile drawer mode - when .active class is present, slide down to visible */
+  .bench-sidebar.active {
+    transform: translateY(0); /* Slide down to visible */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
 
   .sidebar-header-spacer {
     display: none;
-  }
-
-  .bench-sidebar.active {
-    transform: translateY(0);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
 
   /* When active on mobile, verify "collapsed" class is removed or ignored */

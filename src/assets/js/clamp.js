@@ -29,7 +29,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Resize Handler for State Management
+    let resizeTimer;
     window.addEventListener("resize", () => {
+      // Disable transitions during resize to prevent drawer animation
+      document.body.classList.add("resizing");
+      
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        document.body.classList.remove("resizing");
+      }, 100); // Short delay to ensure breakpoint state is applied
+
       // Check for breakpoint cross
       const isMobile = window.matchMedia("(max-width: 900px)").matches;
       if (isMobile) {
@@ -38,6 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
         sidebar.classList.remove("collapsed");
         // Also ensure sidebar-open is removed on resize
         document.body.classList.remove("sidebar-open");
+        // Ensure sidebar is hidden (not active) when crossing to mobile
+        sidebar.classList.remove("active");
       }
     });
   }
