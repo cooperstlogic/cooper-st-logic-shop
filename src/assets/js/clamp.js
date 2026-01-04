@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
       
       if (isMobile) {
         sidebar.classList.toggle("active");
+        // Toggle body scroll lock when hamburger menu opens/closes
+        document.body.classList.toggle("sidebar-open", sidebar.classList.contains("active"));
       } else {
         sidebar.classList.toggle("collapsed");
         document.body.classList.toggle("sidebar-collapsed");
@@ -21,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isMobile && sidebar.classList.contains("active")) {
         if (!sidebar.contains(e.target) && !clamp.contains(e.target)) {
           sidebar.classList.remove("active");
+          document.body.classList.remove("sidebar-open");
         }
       }
     });
@@ -33,6 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Reset desktop state if we shrink to mobile
         document.body.classList.remove("sidebar-collapsed");
         sidebar.classList.remove("collapsed");
+        // Also ensure sidebar-open is removed on resize
+        document.body.classList.remove("sidebar-open");
       }
     });
   }
