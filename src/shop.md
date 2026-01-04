@@ -3,10 +3,10 @@ layout: base.njk
 title: The Shop
 ---
 
-# 04 // THE SHOP
+# 01. THE SHOP
 
-**COOPER ST LOGIC SHOP** is a digital workshop based in Santa Cruz, California.
+Welcome to COOPER ST. The LOGIC SHOP has an inventory of off the shelf software products and fabrication capacity for custom crafted product strategy.
 
-<hr class="draughtsman-line">
+We are currently fitting out the shop. Sweeping up the sawdust and getting the tools organized.
 
-_Shift Change. Sweeping up sawdust._
+Leave a note: [hello@cooperstlogicshop.com](mailto:hello@cooperstlogicshop.com)

@@ -3,7 +3,7 @@ layout: base.njk
 title: Inventory
 ---
 
-# 02 // INVENTORY
+# 02. INVENTORY
 
 **STATUS: OFFLINE**
 

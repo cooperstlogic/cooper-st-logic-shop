@@ -3,7 +3,7 @@ layout: base.njk
 title: Fabrication
 ---
 
-# 03 // FABRICATION
+# 03. FABRICATION
 
 **STATUS: MAINTENANCE**
 
