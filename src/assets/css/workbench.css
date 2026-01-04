@@ -87,7 +87,6 @@ body::before {
 .bench-sidebar {
   grid-area: sidebar;
   background-color: var(--c-metal);
-  border-right: 1px solid var(--c-metal-shadow); /* Groove right side */
   height: 100vh;
   position: sticky;
   top: 0;
@@ -99,6 +98,18 @@ body::before {
               width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
               opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   overflow: hidden; /* For collapsing */
+}
+
+/* Beveled engraved groove on right side of sidebar */
+.bench-sidebar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 100%;
+  border-left: 1px solid var(--c-metal-shadow);
+  border-right: 1px solid var(--c-metal-highlight);
 }
 
 /* Desktop Collapsed State (Only apply on desktop) */
@@ -161,7 +172,8 @@ body::before {
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 500; /* Above sidebar in mobile "under" mode */
   background-color: var(--c-metal); /* Opaque for sliding under */
 }
@@ -268,12 +280,24 @@ hr.draughtsman-line {
 .bench-footer {
   grid-column: 1 / -1; /* Span full width of grid */
   padding: 2rem;
-  border-top: 1px solid var(--c-metal-shadow);
   display: flex;
   justify-content: flex-start;
   align-items: center;
   background-color: var(--c-metal);
   margin-top: auto;
+  position: relative; /* For pseudo-element positioning */
+}
+
+/* Beveled engraved groove at top of footer */
+.bench-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  border-top: 1px solid var(--c-metal-shadow);
+  border-bottom: 1px solid var(--c-metal-highlight);
 }
 
 /* Prevent body scroll when mobile hamburger menu is open */

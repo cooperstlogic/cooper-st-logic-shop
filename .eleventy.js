@@ -4,6 +4,7 @@ module.exports = function (eleventyConfig) {
   
   // Watch for changes in the paint shop (CSS)
   eleventyConfig.addWatchTarget("src/assets/css/");
+  eleventyConfig.addWatchTarget("src/_includes/");
 
   return {
     dir: {
