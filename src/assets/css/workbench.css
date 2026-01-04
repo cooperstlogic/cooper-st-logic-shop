@@ -53,15 +53,23 @@ body::before {
   color: var(--c-carbon);
   text-shadow:
     1px 1px 0 rgba(255, 255, 255, 0.9),
-    -0.5px -0.5px 0 rgba(0, 0, 0, 0.2);
+    -0.5px -0.5px 0 rgba(0, 0, 0, 0.2),
+    0 0 0.5px rgba(0, 0, 0, 0.1); /* Subtle depth for realism */
   letter-spacing: 0.5px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .engraved-zinc {
   color: var(--c-zinc);
   text-shadow:
     1px 1px 0 rgba(255, 255, 255, 0.9),
-    -0.5px -0.5px 0 rgba(0, 0, 0, 0.2);
+    -0.5px -0.5px 0 rgba(0, 0, 0, 0.2),
+    0 0 0.5px rgba(0, 0, 0, 0.1); /* Subtle depth for realism */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* -----------------------------------------------------------
@@ -300,6 +308,14 @@ hr.draughtsman-line {
   border-bottom: 1px solid var(--c-metal-highlight);
 }
 
+/* Footer text styling */
+.bench-footer .engraved-zinc {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  width: 100%;
+  text-align: center;
+}
+
 /* Prevent body scroll when mobile hamburger menu is open */
 @media (max-width: 900px) {
   body.sidebar-open {
@@ -382,7 +398,12 @@ hr.draughtsman-line {
   padding: 0;
 }
 
-/* Hide "MENU" text on Desktop, only Icon */
+/* INDEX button text styling */
+.mobile-clamp .engraved-text {
+  font-size: 0.8rem;
+}
+
+/* Hide "INDEX" text on Desktop, only Icon */
 @media (min-width: 901px) {
   .mobile-clamp .engraved-text {
     display: none;
