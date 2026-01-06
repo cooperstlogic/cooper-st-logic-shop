@@ -1,9 +1,9 @@
 module.exports = function (eleventyConfig) {
   // Pass raw materials through to the finished goods
   eleventyConfig.addPassthroughCopy("src/assets");
-  
-  // Watch for changes in the paint shop (CSS)
   eleventyConfig.addWatchTarget("src/assets/css/");
+  eleventyConfig.addWatchTarget("src/assets/img/");
+  eleventyConfig.addWatchTarget("src/assets/js/");
   eleventyConfig.addWatchTarget("src/_includes/");
 
   return {
