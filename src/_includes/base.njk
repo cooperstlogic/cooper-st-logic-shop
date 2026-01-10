@@ -18,10 +18,22 @@
 </head>
 <body {% if page.url != '/' %}data-state="open"{% endif %}>
 
-  <!-- 5.1 Protocol A: The Workbench Decor (Engraved Icon) -->
   <div class="workbench-icon">
     <img src="/assets/img/icon-c.svg" width="64" height="64" alt="Cooper St Logic Shop">
   </div>
+  
+  <!-- Global Filter Definitions -->
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+    <defs>
+      <filter id="inkBleed" x="-20%" y="-20%" width="140%" height="140%">
+        <!-- Turbulence for edge roughness and wobble -->
+        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+        <!-- Slight blur to soften the harsh digital edges -->
+        <feGaussianBlur stdDeviation="0.4" />
+      </filter>
+    </defs>
+  </svg>
   
   <main class="field-guide-container">
     <div class="field-guide-book">

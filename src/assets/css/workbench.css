@@ -132,11 +132,12 @@ body {
   border-right: 1px solid rgba(0,0,0,0.08); /* Spine seam */
   background-image: 
     url("../img/paper-grain.svg"),
-    linear-gradient(to right, #E6DCC3 0%, #DBD1B8 90%, #C9BEA5 100%);
-  background-position: top left, center;
-  background-repeat: repeat, no-repeat;
-  background-size: 300px 300px, cover;
-  background-blend-mode: overlay, normal;
+    radial-gradient(ellipse at center, transparent 40%, rgba(140, 120, 90, 0.15) 100%),
+    linear-gradient(to right, #E6DCC3 0%, #DBD1B8 85%, #B0A080 100%);
+  background-position: top left, center, center;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-size: 512px 512px, cover, cover;
+  background-blend-mode: multiply, multiply, normal;
   
   /* Depth on Left Side */
   box-shadow: 
@@ -153,11 +154,12 @@ body {
 .guide-page.right {
   background-image: 
     url("../img/paper-grain.svg"),
-    linear-gradient(to left, #E6DCC3 0%, #DBD1B8 90%, #C9BEA5 100%);
-  background-position: top left, center;
-  background-repeat: repeat, no-repeat;
-  background-size: 300px 300px, cover;
-  background-blend-mode: overlay, normal;
+    radial-gradient(ellipse at center, transparent 40%, rgba(140, 120, 90, 0.15) 100%),
+    linear-gradient(to left, #E6DCC3 0%, #DBD1B8 85%, #B0A080 100%);
+  background-position: top left, center, center;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-size: 512px 512px, cover, cover;
+  background-blend-mode: multiply, multiply, normal;
   
   /* Depth on Right Side */
   box-shadow: 
@@ -204,13 +206,25 @@ body[data-state="open"] .field-guide-container {
   color: var(--c-carbon);
   text-transform: uppercase;
   mix-blend-mode: multiply; /* Ink Bleed */
-  filter: blur(0.2px); /* Ink Spread */
 }
 
 /* Standard text ink bleed */
-p, h1, h2, h3, li {
+/* Standard text ink bleed */
+.guide-page p, 
+.guide-page h1, 
+.guide-page h2, 
+.guide-page h3, 
+.guide-page h4, 
+.guide-page h5, 
+.guide-page h6, 
+.guide-page li, 
+.guide-page span,
+.guide-page a,
+.guide-title,
+.engraved-text {
   mix-blend-mode: multiply;
   color: #1a1a1a; /* Almost black */
+  filter: url(#inkBleed); /* Imperfect print registration */
 }
 
 /* -----------------------------------------------------------

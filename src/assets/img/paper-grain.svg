@@ -1,12 +1,24 @@
-<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Subtle paper fiber texture -->
-    <filter id="paperFiber" x="0%" y="0%" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.04,0.12" numOctaves="3" seed="8" stitchTiles="stitch"/>
-      <feColorMatrix type="saturate" values="0"/>
+    <!-- Base Paper Texture (High Frequency) -->
+    <filter id="paperGrain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise"/>
+      <feColorMatrix type="matrix" values="0.7 0 0 0 0  0 0.7 0 0 0  0 0 0.7 0 0  0 0 0 0.5 0" in="noise" result="coloredNoise"/>
+    </filter>
+    
+    <!-- Paper Creases / Uneven Surface (Low Frequency) -->
+    <filter id="paperCrease">
+      <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="5" seed="5" result="turbulence"/>
+      <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="20" xChannelSelector="R" yChannelSelector="G"/>
+      <feDiffuseLighting in="turbulence" lighting-color="#fff" surfaceScale="2">
+        <feDistantLight azimuth="45" elevation="60"/>
+      </feDiffuseLighting>
     </filter>
   </defs>
   
-  <!-- Slightly more visible paper grain -->
-  <rect width="100%" height="100%" filter="url(#paperFiber)" opacity="0.15"/>
+  <!-- 1. The Fiber Noise -->
+  <rect width="100%" height="100%" filter="url(#paperGrain)" opacity="0.2"/>
+  
+  <!-- 2. Subtle Creasing/Shadows overlay -->
+  <rect width="100%" height="100%" filter="url(#paperCrease)" opacity="0.1" style="mix-blend-mode: multiply"/>
 </svg>
