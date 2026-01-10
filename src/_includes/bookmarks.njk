@@ -1,0 +1,47 @@
+{# 
+  Bookmarks Logic:
+  1. SHOP (/)
+  2. INVENTORY (/inventory/)
+  3. FABRICATION (/fabrication/)
+  4. PERSONNEL (/personnel/)
+#}
+
+{% if page.url != '/' %}
+
+  {# Define Order #}
+  {% set navItems = [
+    { url: "/shop/", label: "SHOP", id: 1 },
+    { url: "/inventory/", label: "INV", id: 2 },
+    { url: "/fabrication/", label: "FAB", id: 3 },
+    { url: "/personnel/", label: "PERS", id: 4 }
+  ] %}
+
+  {# Determine Current ID #}
+  {% set currentId = 1 %}
+  {% if page.url == '/inventory/' %} {% set currentId = 2 %} {% endif %}
+  {% if page.url == '/fabrication/' %} {% set currentId = 3 %} {% endif %}
+  {% if page.url == '/personnel/' %} {% set currentId = 4 %} {% endif %}
+
+  <!-- Left Tabs (Previous) -->
+  {% set topOffset = 80 %}
+  {% for item in navItems %}
+    {% if item.id < currentId %}
+      <a href="{{ item.url }}" class="bookmark-tab left" style="top: {{ topOffset }}px">
+        {{ item.label }}
+      </a>
+      {% set topOffset = topOffset + 70 %}
+    {% endif %}
+  {% endfor %}
+
+  <!-- Right Tabs (Next) -->
+  {% set topOffset = 80 %}
+  {% for item in navItems %}
+    {% if item.id > currentId %}
+      <a href="{{ item.url }}" class="bookmark-tab right" style="top: {{ topOffset }}px">
+        {{ item.label }}
+      </a>
+      {% set topOffset = topOffset + 70 %}
+    {% endif %}
+  {% endfor %}
+
+{% endif %}

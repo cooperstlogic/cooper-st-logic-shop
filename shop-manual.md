@@ -7,7 +7,7 @@
 ```
 
 STATUS: ACTIVE
-VERSION: 2.0.0
+VERSION: 3.0.0 (Redesign)
 
 ---
 
@@ -15,13 +15,13 @@ VERSION: 2.0.0
 
 We operate at the intersection of high-level reasoning and hands-on craftsmanship. We do not view software as "magic." We view it as a material to be worked on—like timber or steel.
 
-The Interface Metaphor: The site is a "Warm Manual" (Vellum) resting on a "Cold Metal Workbench" (Industrial Steel).
+The Interface Metaphor: The site is a "Field Guide" (Vellum) resting on a "Warm Wooden Workbench" (Organic).
 
-- **The Workbench:** Rigid, immovable, etched.
-- **The Manual:** Organic, readable, stamped.
-- **The Relationship:** The Manual is a physical object centered on the bench. It does not stretch to fill the void; it maintains the width of a printed page.
+- **The Workbench:** Organic, warm, scarred.
+- **The Field Guide:** Physical, readable, bound.
+- **The Relationship:** The Guide is a physical object centered on the bench. It does not stretch to fill the void; it maintains the dimensions of a printed book.
 
-This repository is itself an instantion of a Digital Workshop.
+This repository is itself an instantiation of a Digital Workshop.
 
 ---
 
@@ -82,99 +82,78 @@ cooper-st-logic-shop/
 
 ---
 
-## 4.0 THE LAYOUT ENGINE (Dynamic Centering)
+## 4.0 THE LAYOUT ENGINE (The Field Guide)
 
-We treat the Vellum as a physical object with a maximum width, centered on the available workbench surface.
+We treat the content as a physical "Field Guide" book with specific dimensions, resting on a wooden surface.
 
-### 4.1 The Physics of the Grid
+### 4.1 The Physics of the Book
 
-- **Sidebar:** Fixed width (`280px`). The Control Panel.
-- **Vellum:** `max-width: 85ch` (approx. 900px). The content should feel like a substantial technical field guide.
-- **Margins:** Flexible (`1fr`). The "Metal" fills whatever space remains around the Vellum.
-- **Alignment:** The top divider of the Sidebar MUST align perfectly with the top divider of the Header/Vellum.
+- **The Cover (Home Page):** The home page behaves as the closed cover of the Field Guide.
+- **The Open Book:** When entering the shop, the guide "flips" open.
+  - **Left Page:** Contains the "Table of Contents" (Navigation) and structural context.
+  - **Right Page:** Contains the primary content (The Shop intro, etc.).
+- **Bookmark Tabs:** On subsequent pages, navigation is handled via hand-written bookmark tabs sticking out from the side of the pages.
+  - **Previous Pages:** Tabs on the left.
+  - **Next Pages:** Tabs on the right.
+- **Dimensions:** The book maintains a realistic aspect ratio. The content layer rests on top of the background image (`workbench-right.webp`).
 
 ### 4.2 Responsive States
 
-**Transition Specification:** All layout transitions use `0.5s cubic-bezier(0.25, 1, 0.5, 1)` for consistent feel across all interactions.
+**Transition Specification:** All layout transitions use `0.6s cubic-bezier(0.25, 1, 0.5, 1)` to mimic the weight of paper and wood.
 
 1. **The Workbench (Desktop > 900px):**
-   - **Sidebar:** Fixed Left. Collapsable via the "C" clamp.
-   - **Desktop Sidebar Collapse:** Grid columns and sidebar width transition smoothly when toggled.
-   - **Window Resize:** Transitions occur in real-time during resize for smooth layout changes between desktop and mobile states.
-   - **Vellum Movement:** Content zone transitions smoothly when sidebar state changes, maintaining visual continuity.
-2. **The Field Tool (Mobile < 900px):**
-   - **Sidebar:** Hidden by default.
-   - **Hamburger Menu:**
-     - **Mechanism:** "Drawer" style. Slides down from **UNDER** the Header.
-     - **Transition:** Uses the same `0.5s cubic-bezier(0.25, 1, 0.5, 1)` timing as desktop collapse for consistent feel.
-     - **Spacing:** No gap between header and first item; immediate utility.
-   - **Vellum:** Full width minus `16px` safety margins.
-   - **Header:** Always persistent.
+   - **Home:** Centered Cover.
+   - **Open State:** Two-page spread layout.
+   - **Navigation:**
+     - **Home:** "Flip" to open.
+     - **Inner Pages:** Bookmark tabs for navigation.
+2. **The Field Notes (Mobile < 900px):**
+   - **Layout:** Single column "Notebook" feel.
+   - **Navigation:**
+     - **Hamburger Menu:** "Drawer" style, sliding from under the header.
+   - **Background:** Scaled wooden texture to maintain context.
 
 ---
 
-## 5.0 THE MATERIALITY ENGINE (Advanced Realism)
+## 5.0 THE MATERIALITY ENGINE (Organic Realism)
 
-We do not use flat colors. We use **Texture Protocols** to simulate physical interaction without looking "cheesy."
+We move from cold metal to warm wood and paper.
 
-### 5.1 Protocol A: The Workbench (Cold Rolled Steel)
+### 5.1 Protocol A: The Workbench (Warm Wood)
 
-The bench is not just grey; it is imperfect metal with physical presence.
+- **Source:** `src/assets/img/workbench-right.webp` (Fallback: `.jpg`).
+- **Dimensions:** 2560 × 2865 (WebP) / 1920 × 2149 (JPG).
+- **Behavior:** The background extends down to allow for scrolling without breaking the illusion of the desk surface.
+- **Feel:** Warm, lived-in, history. Not a pristine digital surface, but a workspace.
 
-- **Base Color:** `#D5D9DC` (Cool Blue-Gray). Cold rolled steel has a distinctly cool, bluish tone.
-- **Color Palette:**
-  - Shadow: `#A8AEB3` (Cooler shadow tone)
-  - Highlight: `#F0F2F4` (Slightly cool highlight)
-  - Deep Shadow: `#9AA1A8` (For machined grooves)
-- **Texture Layers:**
-  1. **Brushed Grain:** Horizontal directional texture (6% opacity) simulating the cold rolling process.
-  2. **Surface Noise:** High-frequency monochromatic noise (4% opacity, overlay blend) for microscopic imperfections.
-- **Lighting:** Subtle radial gradients simulate ambient light reflection on metal surface. Not flat—metal has depth.
-- **Depth:** Inner shadows on panels and box-shadows on grooves create recessed/raised surface illusion.
+### 5.2 Protocol B: The Carving (Text/Icons on Wood)
 
-### 5.2 Protocol B: The Etching (Text on Metal)
+Elements on the workbench (like the C-Icon) are **carved** or **burned** into the wood, not printed on top.
 
-Text on the workbench is **milled**, not printed. It has depth.
+- **Technique:** Inner shadows and highlights to create depth.
+- **Highlight:** Bottom-right light edge.
+- **Shadow:** Top-left dark recess.
+- **Result:** Realistic engraving effect.
 
-- **Technique:** CSS `text-shadow`.
-- **Highlight:** `1px 1px 0 rgba(255, 255, 255, 0.9)` (Bottom Right - Sharp Light).
-- **Shadow:** `-0.5px -0.5px 0 rgba(0, 0, 0, 0.2)` (Top Left - Deep Cut).
-- **Color:** `#2C2C2C` (Carbon) or `#6A7375` (Zinc).
-- **Result:** Crisp, machined legibility.
+### 5.3 Protocol C: The Field Guide (Paper & Vellum)
 
-### 5.3 Protocol C: The Groove (Dividers on Metal)
+- **Cover:** Textured, thick cardstock feel for the home page.
+- **Pages:** Off-white vellum (`#F2F0E9`) with subtly rough edges or shadow depth to imply a stack of paper.
+- **Typography:**
+  - **Logo:** "Cooper St Logic Shop" behaves as the Book Title on the cover, and a Header on inner pages.
+  - **Body:** Serif for readability (Fraunces/Public Sans mix).
 
-Lines on the workbench are **machine-tooled channels**.
+### 5.4 Protocol D: The Navigation (Tabs & TOC)
 
-- **Technique:** Double borders.
-- **Top Border:** `1px solid #B0B3B5` (Shadow/Depth).
-- **Bottom Border:** `1px solid #FFFFFF` (Highlight/Edge).
-- **Result:** Looks like a physical groove cut into the steel.
+- **Table of Contents:** Only visible on the "open" left page of the home view.
+- **Tabs:** Hand-written style labels protruding from the page edges.
+  - **Visuals:** slightly worn, tape or cardstock texture.
+  - **Interaction:** Hover effects that pull the tab out slightly.
 
-### 5.4 Protocol D: The Vellum (Paper Physics)
+### 5.5 Protocol E: The Etched Copyright (Footer)
 
-The page is organic material.
-
-- **Base:** `#F2F0E9`.
-- **Grain:** An SVG Fractal Noise filter (`feTurbulence`) layered via `::before`.
-- **Ink Absorption:** All text on Vellum uses `mix-blend-mode: multiply`. The black ink must appear to soak _into_ the grain, not float above it.
-- **Thickness:** The Vellum sheet has a `1px solid #D4D2CB` border (the cut edge) and a tight `box-shadow: 0 1px 2px rgba(0,0,0,0.05)` to imply the gauge of the paper.
-
-### 5.5 Protocol E: The Draughtsman's Line (Dividers on Vellum)
-
-Lines inside the manual are drawn by hand.
-
-- **Technique:** An SVG background image containing a path with slightly randomized control points.
-- **Visual:** Irregular dash array. Variation in stroke width (0.8px to 1.2px).
-- **Feeling:** "The imperfect stroke of a 1974 Rotring pen."
-
-### 5.6 Protocol F: The Etched Copyright (Global Footer)
-
-The footer frames the bottom of the workbench.
-
-- **Location:** Below the main content zone, spanning the full width (or content width).
-- **Style:** Etched into the steel (Protocol B).
-- **Content:** Copyright and location. No links. Just a stamped mark of origin.
+- **Location:** Integrated into the bottom of the content page or "burned" into the desk if appropriate.
+- **Style:** Subtle, unobtrusive.
 
 ---
 
@@ -272,6 +251,13 @@ Since the shop is being fitted out, secondary pages must communicate status with
 
 - **Status:** Offline.
 - **Message:** "SHIFT CHANGE. SWEEPING UP SAWDUST."
+
+### 9.4 Personnel (`/personnel`)
+
+- **Title:** "PERSONNEL"
+- **Role:** Nights and Weekends Manager.
+- **Content:** A cheeky bio explaining Dylan Webster is the sole proprietor and this is a side project.
+- **Vibe:** "Employee of the Month" (for 12 months in a row) style humor possible, or just a simple stamped ID card look.
 
 ---
 

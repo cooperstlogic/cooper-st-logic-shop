@@ -16,21 +16,48 @@
   
   <link rel="stylesheet" href="/assets/css/workbench.css">
 </head>
-<body>
+<body {% if page.url != '/' %}data-state="open"{% endif %}>
   
-  {% include "nav.njk" %}
-  {% include "header.njk" %}
-
-  <main class="content-zone">
-    <article class="vellum-sheet">
-      {{ content | safe }}
+  <main class="field-guide-container">
+    <div class="field-guide-book">
       
-      <hr class="draughtsman-line">
-    </article>
+      <!-- LEFT PAGE: Table of Contents / Navigation -->
+      <!-- Only visible when the book is 'open' (i.e., not just the cover, or explicitly opened) -->
+      <section class="guide-page left">
+        <header class="guide-header">
+           <span class="guide-title">Table of Contents</span>
+        </header>
+        {% include "nav.njk" %}
+        
+        <div class="guide-footer">
+           © 2026 Cooper St Logic Shop
+        </div>
+      </section>
+
+      <!-- RIGHT PAGE: Content -->
+      <section class="guide-page right">
+        <!-- Inner page Header (Title) -->
+        <header class="guide-header">
+          <span class="guide-title">
+            {% if title %}{{ title }}{% else %}COOPER ST LOGIC SHOP{% endif %}
+          </span>
+          <!-- Mobile Menu Trigger (C-Clamp) - Only visible on mobile CSS -->
+          <button class="mobile-clamp" aria-label="Open Navigation">
+             <img src="/assets/img/icon-c.svg" class="engraved-wood" width="32" height="32" alt="Menu">
+          </button>
+        </header>
+
+        <article>
+          {{ content | safe }}
+          <hr class="draughtsman-line">
+        </article>
+        
+        <!-- Bookmarks for Navigation on inner pages -->
+        {% include "bookmarks.njk" %}
+      </section>
+
+    </div>
   </main>
-
-  {% include "footer.njk" %}
-
 
   <script src="/assets/js/clamp.js"></script>
 </body>

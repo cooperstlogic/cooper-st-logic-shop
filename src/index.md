@@ -1,15 +1,17 @@
 ---
 layout: base.njk
-title: The Shop
+title: Field Guide
 ---
 
-# 01. THE SHOP
+# COOPER ST LOGIC SHOP
 
-Welcome to COOPER ST.  
+<div style="margin-top: 4rem; text-align: center;">
 
-The LOGIC SHOP has an inventory of off the shelf software products and fabrication capacity for custom crafted product strategy.
+**FIELD GUIDE**  
+**VERSION 3.0**
 
-We are currently fitting out the shop. Sweeping up the sawdust and getting the tools organized.
+<br><br>
 
-Leave a note: [hello@cooperstlogicshop.com](mailto:hello@cooperstlogicshop.com)
+<a href="/shop/" style="font-size: 1.5rem; border: 2px solid var(--c-carbon); padding: 1rem 2rem; display: inline-block; text-decoration: none;" class="engraved-text">OPEN FIELD GUIDE</a>
 
+</div>
