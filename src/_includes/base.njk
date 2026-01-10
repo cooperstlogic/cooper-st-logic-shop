@@ -17,21 +17,42 @@
   <link rel="stylesheet" href="/assets/css/workbench.css">
 </head>
 <body {% if page.url != '/' %}data-state="open"{% endif %}>
+
+  <!-- 5.1 Protocol A: The Workbench Decor (Engraved Icon) -->
+  <div class="workbench-icon">
+    <img src="/assets/img/icon-c.svg" width="64" height="64" alt="Cooper St Logic Shop">
+  </div>
   
   <main class="field-guide-container">
     <div class="field-guide-book">
       
-      <!-- LEFT PAGE: Table of Contents / Navigation -->
-      <!-- Only visible when the book is 'open' (i.e., not just the cover, or explicitly opened) -->
+      <!-- LEFT PAGE logic -->
       <section class="guide-page left">
         <header class="guide-header">
-           <span class="guide-title">Table of Contents</span>
+           <!-- Title varies based on page type -->
+           <span class="guide-title">
+             {% if page.url == '/shop/' %}Table of Contents{% else %}Field Notes{% endif %}
+           </span>
         </header>
-        {% include "nav.njk" %}
-        
-        <div class="guide-footer">
-           © 2026 Cooper St Logic Shop
-        </div>
+
+        {% if page.url == '/shop/' %}
+          <!-- ON THE SHOP PAGE: Show Table of Contents -->
+          {% include "nav.njk" %}
+          
+          <div class="guide-footer">
+             © 2026 Cooper St Logic Shop
+          </div>
+        {% else %}
+           <!-- ON OTHER PAGES: Show specific left page content (e.g. context, diagrams) -->
+           <!-- We pull this from front matter if available, or default to a standard minimal sidebar -->
+           {% if left_page_content %}
+             {{ left_page_content | safe }}
+           {% else %}
+             <div style="opacity: 0.6; font-style: italic;">
+               (Field notes for this section are pending...)
+             </div>
+           {% endif %}
+        {% endif %}
       </section>
 
       <!-- RIGHT PAGE: Content -->
@@ -51,10 +72,10 @@
           {{ content | safe }}
           <hr class="draughtsman-line">
         </article>
-        
-        <!-- Bookmarks for Navigation on inner pages -->
-        {% include "bookmarks.njk" %}
       </section>
+      
+      <!-- Bookmarks are now siblings of the pages, positioned relative to the book container -->
+      {% include "bookmarks.njk" %}
 
     </div>
   </main>

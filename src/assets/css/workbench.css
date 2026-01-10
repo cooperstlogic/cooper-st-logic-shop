@@ -7,13 +7,13 @@
    ----------------------------------------------------------- */
 :root {
   /* Wood Palette */
-  --c-wood-base: #5d4037;
-  --c-wood-highlight: #8d6e63;
-  --c-wood-shadow: #3e2723;
-
+  --c-wood-base: #5D4037;
+  --c-wood-highlight: #8D6E63;
+  --c-wood-shadow: #3E2723;
+  
   /* Textures */
   --bg-workbench: url("/assets/img/workbench-right.webp");
-
+  
   /* Layout Dimensions */
   --book-width: 900px;
   --book-height: 80vh;
@@ -25,9 +25,9 @@ body {
   background-image: var(--bg-workbench);
   background-repeat: no-repeat;
   background-position: center top;
-  background-size: 2560px auto; /* Scaled to ensure detail */
-  background-attachment: scroll; /* Moves with scroll */
-
+  background-size: cover; /* CHANGED: Cover ensures crispness and fill without awkward repeating or stretching to fit width only */
+  background-attachment: fixed; /* CHANGED: Fixed feels more like a desk, image doesn't scroll away */
+  
   color: var(--c-carbon);
   font-family: var(--font-manual);
   min-height: 100vh;
@@ -36,6 +36,7 @@ body {
   flex-direction: column;
   align-items: center;
   overflow-x: hidden;
+  position: relative; /* For icon positioning */
 }
 
 /* Fallback for bg */
@@ -44,6 +45,27 @@ body {
     background-image: url("/assets/img/workbench-right.jpg");
   }
 }
+
+/* -----------------------------------------------------------
+   WORKBENCH DECOR (The Engraved Icon)
+   ----------------------------------------------------------- */
+.workbench-icon {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  width: 64px;
+  height: 64px;
+  z-index: 0; /* Behind the book */
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.workbench-icon svg path,
+.workbench-icon img {
+   /* We use CSS filter for image based engraving or fill for SVG */
+   filter: drop-shadow(1px 1px 0 rgba(255,255,255,0.3)) drop-shadow(-1px -1px 0 rgba(0,0,0,0.5));
+}
+
 
 /* -----------------------------------------------------------
    LAYOUT ENGINE: THE FIELD GUIDE
@@ -69,6 +91,8 @@ body {
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.3),
     /* Deep desk shadow */ 0 0 0 1px rgba(0, 0, 0, 0.1); /* Edge definition */
+    
+  /* Bookmarks are positioned relative to THIS container now */
 }
 
 /* Page Common Styles */
@@ -90,9 +114,9 @@ body {
   border-right: 1px solid rgba(0, 0, 0, 0.1);
   background: linear-gradient(
     to right,
-    #f2f0e9 0%,
-    #ebe8e0 95%,
-    #d6d3cc 100%
+    #F2F0E9 0%,
+    #EBE8E0 95%,
+    #D6D3CC 100%
   ); /* Spine shadow on right */
 
   display: none; /* Hidden by default on home/cover */
@@ -103,9 +127,9 @@ body {
   flex: 1; /* Fills remaining space */
   background: linear-gradient(
     to right,
-    #d6d3cc 0%,
-    #f2f0e9 5%,
-    #f2f0e9 100%
+    #D6D3CC 0%,
+    #F2F0E9 5%,
+    #F2F0E9 100%
   ); /* Spine shadow on left */
 }
 
@@ -128,8 +152,8 @@ body[data-state="open"] .field-guide-container {
 .engraved-wood {
   color: rgba(62, 39, 35, 0.8); /* Dark Brown */
   text-shadow:
-    1px 1px 0 rgba(255, 255, 255, 0.4),
-    /* Highlight bottom right */ -1px -1px 0 rgba(0, 0, 0, 0.6); /* Shadow top left */
+    1px 1px 0 rgba(255,255,255,0.4), /* Highlight bottom right */
+    -1px -1px 0 rgba(0,0,0,0.6); /* Shadow top left */
   font-family: var(--font-engraving);
 }
 
@@ -186,18 +210,15 @@ body[data-state="open"] .field-guide-container {
   top: 100px; /* Dynamic per tab */
   width: 40px;
   height: 60px;
-  background-color: #f8f7f2;
-  border: 1px solid #d4d2cb;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #F8F7F2;
+  border: 1px solid #D4D2CB;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-family: var(
-    --font-handwriting,
-    sans-serif
-  ); /* Fallback to sans for now */
+  font-family: var(--font-handwriting, sans-serif); /* Fallback to sans for now */
   font-size: 0.8rem;
   color: var(--c-wood-shadow);
   cursor: pointer;
@@ -211,8 +232,9 @@ body[data-state="open"] .field-guide-container {
   transform: translateX(5px);
 }
 
+/* Fixed Tabs - Left tabs attach to the LEFT of the BOOK (relative to field-guide-book) */
 .bookmark-tab.left {
-  left: -35px;
+  left: -35px; /* Stick out from the left edge */
   border-right: none;
   border-radius: 4px 0 0 4px;
 }
@@ -221,6 +243,7 @@ body[data-state="open"] .field-guide-container {
   transform: translateX(-5px);
 }
 
+/* Fixed Tabs - Right tabs attach to the RIGHT of the BOOK */
 .bookmark-tab.right {
   right: -35px;
   border-left: none;
