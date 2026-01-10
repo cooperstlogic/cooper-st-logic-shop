@@ -73,7 +73,6 @@ cooper-st-logic-shop/
 │   │   ├── img/           # SVGs & Textures
 │   │   │   ├── icon-c.svg
 │   │   │   ├── paper-grain.svg
-│   │   │   ├── noise.svg
 │   │   │   ├── workbench-right.webp
 │   │   │   └── workbench-right.jpg
 │   │   └── js/            # Client Logic (Mobile Drawer)
