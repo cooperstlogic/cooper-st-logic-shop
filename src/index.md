@@ -12,6 +12,6 @@ title: Field Guide
 
 <br><br>
 
-<a href="/shop/" style="font-size: 1.5rem; border: 2px solid var(--c-carbon); padding: 1rem 2rem; display: inline-block; text-decoration: none;" class="engraved-text">OPEN FIELD GUIDE</a>
+<a href="/shop/" style="font-size: 1.5rem; border: 2px solid var(--c-carbon); padding: 1rem 2rem; display: inline-block; text-decoration: none;">OPEN FIELD GUIDE</a>
 
 </div>

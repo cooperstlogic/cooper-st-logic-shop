@@ -53,28 +53,6 @@ body {
 }
 
 /* -----------------------------------------------------------
-   WORKBENCH DECOR (The Engraved Icon)
-   ----------------------------------------------------------- */
-.workbench-icon {
-  position: absolute; /* Moves with scroll now */
-  top: 3rem;
-  right: 3rem;
-  width: 80px;
-  height: 80px;
-  z-index: 0;
-  opacity: 0.7;
-  pointer-events: none;
-  mix-blend-mode: multiply; /* Burns into wood */
-}
-
-.workbench-icon svg path,
-.workbench-icon img {
-   /* We use CSS filter for image based engraving or fill for SVG */
-   filter: drop-shadow(1px 1px 0 rgba(255,255,255,0.2)) drop-shadow(-1px -1px 0 rgba(0,0,0,0.4));
-}
-
-
-/* -----------------------------------------------------------
    LAYOUT ENGINE: THE FIELD GUIDE
    ----------------------------------------------------------- */
 
@@ -191,24 +169,6 @@ body[data-state="open"] .field-guide-container {
   max-width: 1100px; /* Wider when open */
 }
 
-/* -----------------------------------------------------------
-   5.2 PROTOCOL B: TEXTURE & INK
-   ----------------------------------------------------------- */
-.engraved-wood {
-  color: rgba(62, 39, 35, 0.9);
-  text-shadow: 1px 1px 0 rgba(255,255,255,0.3), -1px -1px 0 rgba(0,0,0,0.5);
-  font-family: var(--font-engraving);
-}
-
-.engraved-text {
-  font-family: var(--font-engraving);
-  letter-spacing: 1px;
-  color: var(--c-carbon);
-  text-transform: uppercase;
-  mix-blend-mode: multiply; /* Ink Bleed */
-}
-
-/* Standard text ink bleed */
 /* Standard text ink bleed */
 .guide-page p, 
 .guide-page h1, 
@@ -221,7 +181,7 @@ body[data-state="open"] .field-guide-container {
 .guide-page span,
 .guide-page a,
 .guide-title,
-.engraved-text {
+.field-guide-book a {
   mix-blend-mode: multiply;
   color: #1a1a1a; /* Almost black */
   filter: url(#inkBleed); /* Imperfect print registration */

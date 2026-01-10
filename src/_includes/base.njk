@@ -18,17 +18,13 @@
 </head>
 <body {% if page.url != '/' %}data-state="open"{% endif %}>
 
-  <div class="workbench-icon">
-    <img src="/assets/img/icon-c.svg" width="64" height="64" alt="Cooper St Logic Shop">
-  </div>
-  
   <!-- Global Filter Definitions -->
   <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
     <defs>
       <filter id="inkBleed" x="-20%" y="-20%" width="140%" height="140%">
         <!-- Turbulence for edge roughness and wobble -->
         <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1" xChannelSelector="R" yChannelSelector="G" />
         <!-- Slight blur to soften the harsh digital edges -->
         <feGaussianBlur stdDeviation="0.4" />
       </filter>
@@ -76,7 +72,7 @@
           </span>
           <!-- Mobile Menu Trigger (C-Clamp) - Only visible on mobile CSS -->
           <button class="mobile-clamp" aria-label="Open Navigation">
-             <img src="/assets/img/icon-c.svg" class="engraved-wood" width="32" height="32" alt="Menu">
+             <img src="/assets/img/icon-c.svg" width="32" height="32" alt="Menu">
           </button>
         </header>
 
