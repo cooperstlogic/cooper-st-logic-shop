@@ -181,7 +181,11 @@ body[data-state="open"] .field-guide-container {
 .guide-page span,
 .guide-page a,
 .guide-title,
-.field-guide-book a {
+.field-guide-book a,
+.guide-header, /* For the divider wobble */
+.mobile-clamp img, /* For the icon wobble */
+hr,
+.draughtsman-line {
   mix-blend-mode: multiply;
   color: #1a1a1a; /* Almost black */
   filter: url(#inkBleed); /* Imperfect print registration */
@@ -302,6 +306,13 @@ body[data-state="open"] .field-guide-container {
   font-size: 0.8rem;
   color: var(--c-zinc);
   font-family: var(--font-mono);
+}
+
+.draughtsman-line {
+  border: none;
+  border-top: 1px solid var(--c-carbon);
+  margin: 2rem 0;
+  opacity: 0.6;
 }
 
 /* -----------------------------------------------------------
