@@ -6,8 +6,8 @@
   --c-metal-deep: #a8b0b8;      /* Deep groove shadow */
 
   /* 5.4 Protocol D: The Vellum (Vintage 70s Field Guide) */
-  --c-vellum: #f7f3ea;        /* Subtle warm cream - lightly aged paper */
-  --c-vellum-border: #d8d0c0; /* Soft aged edge tone */
+  --c-vellum: #E6DCC3;        /* Warm Manila / Aged paper */
+  --c-vellum-border: #C9BEA5; /* Warm aged edge tone */
 
   /* Ink & Etching */
   --c-carbon: #1c1c1c;

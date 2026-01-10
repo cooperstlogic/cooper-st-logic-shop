@@ -112,10 +112,7 @@ body {
   position: relative;
   flex: 1; /* SYMMETRY: Both pages equal width (50/50) */
   
-  /* Paper Texture */
-  background-image: url("../img/paper-grain.svg");
-  background-size: 300px 300px;
-  /* Multiply blend for ink-like feel of content on top */
+  /* Paper Texture Base - stacked in child classes */
 }
 
 /* Page Depth / Stack Effect */
@@ -133,7 +130,13 @@ body {
 /* Left Page (Navigation / TOC) */
 .guide-page.left {
   border-right: 1px solid rgba(0,0,0,0.08); /* Spine seam */
-  background: linear-gradient(to right, #F5F3ED 0%, #EBE8E0 90%, #D6D3CC 100%);
+  background-image: 
+    url("../img/paper-grain.svg"),
+    linear-gradient(to right, #E6DCC3 0%, #DBD1B8 90%, #C9BEA5 100%);
+  background-position: top left, center;
+  background-repeat: repeat, no-repeat;
+  background-size: 300px 300px, cover;
+  background-blend-mode: overlay, normal;
   
   /* Depth on Left Side */
   box-shadow: 
@@ -148,7 +151,13 @@ body {
 
 /* Right Page (Content) */
 .guide-page.right {
-  background: linear-gradient(to left, #F5F3ED 0%, #EBE8E0 90%, #D6D3CC 100%);
+  background-image: 
+    url("../img/paper-grain.svg"),
+    linear-gradient(to left, #E6DCC3 0%, #DBD1B8 90%, #C9BEA5 100%);
+  background-position: top left, center;
+  background-repeat: repeat, no-repeat;
+  background-size: 300px 300px, cover;
+  background-blend-mode: overlay, normal;
   
   /* Depth on Right Side */
   box-shadow: 
