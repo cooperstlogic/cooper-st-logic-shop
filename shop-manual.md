@@ -2,10 +2,6 @@
 
 ## Pacific Pragmatism / Santa Cruz, CA
 
-```text
-      [ C ]
-```
-
 STATUS: ACTIVE
 VERSION: 3.0.0 (Redesign)
 
@@ -66,17 +62,27 @@ cooper-st-logic-shop/
 ├── src/                   # RAW MATERIALS
 │   ├── _data/             # Global Site Data
 │   ├── _includes/         # Layouts & Partials
-│   │   ├── base.njk       # The Workbench Frame (HTML5 Shell)
-│   │   ├── header.njk     # The Title Block
-│   │   └── nav.njk        # The Sidebar (Engraved Control Panel)
+│   │   ├── base.njk       # The Field Guide Frame (HTML5 Shell)
+│   │   ├── nav.njk        # Table of Contents (Left Page)
+│   │   └── bookmarks.njk  # Navigation Tabs (Page Markers)
 │   ├── assets/
 │   │   ├── css/           # The Materiality Engine
-│   │   ├── img/           # SVGs (Noise, Icons, Lines)
+│   │   │   ├── reset.css
+│   │   │   ├── variables.css
+│   │   │   └── workbench.css
+│   │   ├── img/           # SVGs & Textures
+│   │   │   ├── icon-c.svg
+│   │   │   ├── paper-grain.svg
+│   │   │   ├── noise.svg
+│   │   │   ├── workbench-right.webp
+│   │   │   └── workbench-right.jpg
 │   │   └── js/            # Client Logic (Mobile Drawer)
-│   ├── index.md           # [01 // INDEX]
+│   │       └── clamp.js
+│   ├── index.md           # [COVER]
+│   ├── shop.md            # [01 // THE SHOP]
 │   ├── inventory.md       # [02 // INVENTORY]
 │   ├── fabrication.md     # [03 // FABRICATION]
-│   └── shop.md            # [04 // THE SHOP]
+│   └── personnel.md       # [04 // PERSONNEL]
 └── _site/                 # FINISHED GOODS (Gitignored)
 ```
 
@@ -88,14 +94,28 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
 
 ### 4.1 The Physics of the Book
 
-- **The Cover (Home Page):** The home page behaves as the closed cover of the Field Guide.
-- **The Open Book:** When entering the shop, the guide "flips" open.
-  - **Left Page:** Contains the "Table of Contents" (Navigation) and structural context.
-  - **Right Page:** Contains the primary content (The Shop intro, etc.).
-- **Bookmark Tabs:** On subsequent pages, navigation is handled via hand-written bookmark tabs sticking out from the side of the pages.
-  - **Previous Pages:** Tabs on the left.
-  - **Next Pages:** Tabs on the right.
-- **Dimensions:** The book maintains a realistic aspect ratio. The content layer rests on top of the background image (`workbench-right.webp`).
+- **The Cover (Home Page `/`):** The home page behaves as the closed cover of the Field Guide.
+  - **Content:** Centered title "COOPER ST LOGIC SHOP" with "FIELD GUIDE VERSION 3.0" and a link to "OPEN FIELD GUIDE".
+  - **State:** `data-state` attribute is NOT set to "open" on the body element.
+- **The Open Book:** When navigating to any page other than `/`, the guide "flips" open to a two-page spread.
+  - **State:** `data-state="open"` is set on the body element via Nunjucks conditional logic.
+  - **Layout:** `.field-guide-book` container uses `display: flex` to create a horizontal two-page spread.
+- **Left Page Logic:**
+  - **On `/shop/` (The Shop):** Displays the Table of Contents (`nav.njk`) and copyright footer.
+  - **On Other Pages:** Displays contextual "Field Notes" content defined in the page's front matter as `left_page_content`.
+  - **Example:** Inventory page shows "Stockroom Access" rules, Personnel shows an ID card.
+- **Right Page:** Always contains the primary page content (Markdown body).
+
+- **Bookmark Tabs:** Navigation is handled via realistic bookmark tabs sticking out from the book edges.
+  - **Position Logic:** Each tab has a fixed vertical position (e.g., Shop=100px, Inventory=170px, Fabrication=240px, Personnel=310px).
+  - **Stability:** Tabs maintain their vertical position whether they appear on the left or right side, simulating physical tabs attached to specific pages.
+  - **Previous Pages:** Tabs appear on the left side (`.bookmark-tab.left`).
+  - **Next Pages:** Tabs appear on the right side (`.bookmark-tab.right`).
+  - **Implementation:** Managed by `bookmarks.njk` with inline `style="top: {{item.top}}px"`.
+
+- **Symmetry:** Both left and right pages use `flex: 1` for equal 50/50 width distribution.
+
+- **Page Depth:** CSS box-shadows create a visual "stack" effect on both page edges to simulate multiple pages.
 
 ### 4.2 Responsive States
 
@@ -103,14 +123,14 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
 
 1. **The Workbench (Desktop > 900px):**
    - **Home:** Centered Cover.
-   - **Open State:** Two-page spread layout.
-   - **Navigation:**
-     - **Home:** "Flip" to open.
-     - **Inner Pages:** Bookmark tabs for navigation.
-2. **The Field Notes (Mobile < 900px):**
-   - **Layout:** Single column "Notebook" feel.
-   - **Navigation:**
-     - **Hamburger Menu:** "Drawer" style, sliding from under the header.
+   - **Open State:** Two-page spread layout (Left: TOC or Field Notes | Right: Content).
+   - **Navigation:** Bookmark tabs for page-to-page navigation.
+   - **Book Width:** `1100px` max-width when open.
+2. **The Folded Notebook (Mobile < 900px):**
+   - **Layout:** Single column "Folded" view.
+   - **Left Page:** Hidden completely (`display: none !important`).
+   - **Right Page:** Styled with a left border to simulate a folded-back spine.
+   - **Navigation:** Mobile menu via the C-Clamp button.
    - **Background:** Scaled wooden texture to maintain context.
 
 ---
@@ -131,29 +151,42 @@ We move from cold metal to warm wood and paper.
 Elements on the workbench (like the C-Icon) are **carved** or **burned** into the wood, not printed on top.
 
 - **Technique:** Inner shadows and highlights to create depth.
-- **Highlight:** Bottom-right light edge.
-- **Shadow:** Top-left dark recess.
+- **Highlight:** Bottom-right light edge (`rgba(255,255,255,0.3)`).
+- **Shadow:** Top-left dark recess (`rgba(0,0,0,0.4)`).
+- **Blend Mode:** `mix-blend-mode: multiply` to "burn" into the wood.
 - **Result:** Realistic engraving effect.
+- **Implementation:** `.workbench-icon` positioned at `top: 3rem; right: 3rem` with `position: absolute`.
 
 ### 5.3 Protocol C: The Field Guide (Paper & Vellum)
 
 - **Cover:** Textured, thick cardstock feel for the home page.
-- **Pages:** Off-white vellum (`#F2F0E9`) with subtly rough edges or shadow depth to imply a stack of paper.
+- **Pages:** Off-white vellum (`#F5F3ED`) with:
+  - **Texture:** `background-image: url("../img/paper-grain.svg")` at `300px 300px`.
+  - **Depth:** Layered box-shadows creating a "page stack" illusion:
+    - Left page: `-1px 1px 0 #E0DED7, -2px 2px 0 #D6D3CC, ...` (5 layers).
+    - Right page: `1px 1px 0 #E0DED7, 2px 2px 0 #D6D3CC, ...` (5 layers).
+  - **Spine Gradient:** Subtle darkening toward the center spine to simulate book binding shadow.
 - **Typography:**
   - **Logo:** "Cooper St Logic Shop" behaves as the Book Title on the cover, and a Header on inner pages.
   - **Body:** Serif for readability (Fraunces/Public Sans mix).
+  - **Ink Effect:** `mix-blend-mode: multiply` on all text elements (`p, h1, h2, h3, li`) with `color: #1a1a1a`.
+  - **Ink Spread:** `.engraved-text` uses `filter: blur(0.2px)` to simulate ink absorption into paper fibers.
 
 ### 5.4 Protocol D: The Navigation (Tabs & TOC)
 
-- **Table of Contents:** Only visible on the "open" left page of the home view.
+- **Table of Contents:** Only visible on the left page when viewing `/shop/`.
+  - **Implementation:** Conditional logic in `base.njk`: `{% if page.url == '/shop/' %}{% include "nav.njk" %}{% endif %}`.
 - **Tabs:** Hand-written style labels protruding from the page edges.
-  - **Visuals:** slightly worn, tape or cardstock texture.
-  - **Interaction:** Hover effects that pull the tab out slightly.
+  - **Visuals:** Slightly lighter than page color (`#FDFBF6`) with subtle shadow.
+  - **Interaction:** Hover effects that pull the tab out slightly (`transform: translateX(3px)`).
+  - **Stability:** Fixed `top` positions ensure tabs don't jump when switching sides.
 
-### 5.5 Protocol E: The Etched Copyright (Footer)
+### 5.5 Protocol E: The Entry Animation
 
-- **Location:** Integrated into the bottom of the content page or "burned" into the desk if appropriate.
-- **Style:** Subtle, unobtrusive.
+- **Effect:** `@keyframes settleBook` creates a subtle "placement" animation when the book loads.
+- **Motion:** `translateY(10px) rotateX(2deg)` → `translateY(0) rotateX(0)`.
+- **Duration:** `1s cubic-bezier(0.25, 1, 0.5, 1)`.
+- **Purpose:** Enhances the physical realism by making the book feel like it's being set down on the workbench.
 
 ---
 
@@ -275,7 +308,5 @@ The visual identity, including the "Cooper St" wordmark, the "Structural C" icon
   - _IBM Plex Mono Font:_ OFL.
 
 ---
-
-[ REF: 02.0 ]
 
 © 2026 Dylan Webster. Santa Cruz, California.

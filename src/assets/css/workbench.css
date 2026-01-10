@@ -15,7 +15,7 @@
   --bg-workbench: url("/assets/img/workbench-right.webp");
   
   /* Layout Dimensions */
-  --book-width: 900px;
+  --book-width: 1100px; /* Standardizing on the open width */
   --book-height: 80vh;
 }
 
@@ -25,8 +25,14 @@ body {
   background-image: var(--bg-workbench);
   background-repeat: no-repeat;
   background-position: center top;
-  background-size: cover; /* CHANGED: Cover ensures crispness and fill without awkward repeating or stretching to fit width only */
-  background-attachment: fixed; /* CHANGED: Fixed feels more like a desk, image doesn't scroll away */
+  /* 
+     SCROLL PHYSICS: 
+     Set width to cover viewport, height auto to maintain aspect ratio.
+     'scroll' attachment means it stays with the element (body), so as you scroll down, 
+     you see lower parts of the image (scanning down the bench).
+  */
+  background-size: 100% auto; 
+  background-attachment: scroll; 
   
   color: var(--c-carbon);
   font-family: var(--font-manual);
@@ -36,7 +42,7 @@ body {
   flex-direction: column;
   align-items: center;
   overflow-x: hidden;
-  position: relative; /* For icon positioning */
+  position: relative;
 }
 
 /* Fallback for bg */
@@ -50,20 +56,21 @@ body {
    WORKBENCH DECOR (The Engraved Icon)
    ----------------------------------------------------------- */
 .workbench-icon {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  width: 64px;
-  height: 64px;
-  z-index: 0; /* Behind the book */
-  opacity: 0.6;
+  position: absolute; /* Moves with scroll now */
+  top: 3rem;
+  right: 3rem;
+  width: 80px;
+  height: 80px;
+  z-index: 0;
+  opacity: 0.7;
   pointer-events: none;
+  mix-blend-mode: multiply; /* Burns into wood */
 }
 
 .workbench-icon svg path,
 .workbench-icon img {
    /* We use CSS filter for image based engraving or fill for SVG */
-   filter: drop-shadow(1px 1px 0 rgba(255,255,255,0.3)) drop-shadow(-1px -1px 0 rgba(0,0,0,0.5));
+   filter: drop-shadow(1px 1px 0 rgba(255,255,255,0.2)) drop-shadow(-1px -1px 0 rgba(0,0,0,0.4));
 }
 
 
@@ -75,11 +82,11 @@ body {
 .field-guide-container {
   width: 100%;
   max-width: var(--book-width);
-  margin-top: 4rem;
-  margin-bottom: 4rem;
+  margin-top: 6rem; /* More space at top */
+  margin-bottom: 8rem;
   position: relative;
   z-index: 10;
-  perspective: 2000px; /* For 3D flips */
+  perspective: 2500px;
 }
 
 /* The Book Itself */
@@ -88,56 +95,83 @@ body {
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    /* Deep desk shadow */ 0 0 0 1px rgba(0, 0, 0, 0.1); /* Edge definition */
-    
-  /* Bookmarks are positioned relative to THIS container now */
+  /* Simple entry animation */
+  animation: settleBook 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes settleBook {
+  from { transform: translateY(10px) rotateX(2deg); opacity: 0; }
+  to { transform: translateY(0) rotateX(0); opacity: 1; }
 }
 
 /* Page Common Styles */
 .guide-page {
   background-color: var(--c-vellum);
   min-height: 800px; /* Minimal height of the book */
-  padding: 3rem 2.5rem;
+  padding: 4rem 3rem;
   position: relative;
-
+  flex: 1; /* SYMMETRY: Both pages equal width (50/50) */
+  
   /* Paper Texture */
   background-image: url("../img/paper-grain.svg");
-  background-size: 200px 200px;
-  filter: contrast(0.97) sepia(0.05);
+  background-size: 300px 300px;
+  /* Multiply blend for ink-like feel of content on top */
 }
 
-/* Left Page (Navigation / TOC) - Only visible when open */
-.guide-page.left {
-  flex: 0 0 40%; /* 40% width */
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
-  background: linear-gradient(
-    to right,
-    #F2F0E9 0%,
-    #EBE8E0 95%,
-    #D6D3CC 100%
-  ); /* Spine shadow on right */
+/* Page Depth / Stack Effect */
+.guide-page::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  width: 4px;
+  background: 
+    linear-gradient(to right, rgba(0,0,0,0.05), rgba(0,0,0,0.1));
+  z-index: -1;
+}
 
-  display: none; /* Hidden by default on home/cover */
+/* Left Page (Navigation / TOC) */
+.guide-page.left {
+  border-right: 1px solid rgba(0,0,0,0.08); /* Spine seam */
+  background: linear-gradient(to right, #F5F3ED 0%, #EBE8E0 90%, #D6D3CC 100%);
+  
+  /* Depth on Left Side */
+  box-shadow: 
+    -1px 1px 0 #E0DED7,
+    -2px 2px 0 #D6D3CC,
+    -3px 3px 0 #CCC9C2,
+    -4px 4px 0 #C2BFB8,
+    -5px 5px 10px rgba(0,0,0,0.2);
+    
+  transform-origin: right center;
 }
 
 /* Right Page (Content) */
 .guide-page.right {
-  flex: 1; /* Fills remaining space */
-  background: linear-gradient(
-    to right,
-    #D6D3CC 0%,
-    #F2F0E9 5%,
-    #F2F0E9 100%
-  ); /* Spine shadow on left */
+  background: linear-gradient(to left, #F5F3ED 0%, #EBE8E0 90%, #D6D3CC 100%);
+  
+  /* Depth on Right Side */
+  box-shadow: 
+    1px 1px 0 #E0DED7,
+    2px 2px 0 #D6D3CC,
+    3px 3px 0 #CCC9C2,
+    4px 4px 0 #C2BFB8,
+    5px 5px 10px rgba(0,0,0,0.2);
 }
 
 /* -----------------------------------------------------------
    STATES: HOME vs OPEN
    ----------------------------------------------------------- */
 
-/* "Open" state logic applied by Nunjucks */
+/* On Home Page (Cover), we might want different styling, 
+   but per instructions we are treating "The Shop" as page 1.
+   Note: base.njk handles hiding .left page if NOT open, 
+   but for symmetry we want it VISIBLE mostly? 
+   No, user said "only see TOC on left side when THE SHOP is open".
+   For other pages, we have "Field Notes" on left.
+   So .guide-page.left is ALWAYS visible in the "Open" state.
+*/
+
 body[data-state="open"] .guide-page.left {
   display: block;
 }
@@ -147,22 +181,27 @@ body[data-state="open"] .field-guide-container {
 }
 
 /* -----------------------------------------------------------
-   5.2 PROTOCOL B: THE CARVING (Engraved on Wood)
+   5.2 PROTOCOL B: TEXTURE & INK
    ----------------------------------------------------------- */
 .engraved-wood {
-  color: rgba(62, 39, 35, 0.8); /* Dark Brown */
-  text-shadow:
-    1px 1px 0 rgba(255,255,255,0.4), /* Highlight bottom right */
-    -1px -1px 0 rgba(0,0,0,0.6); /* Shadow top left */
+  color: rgba(62, 39, 35, 0.9);
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.3), -1px -1px 0 rgba(0,0,0,0.5);
   font-family: var(--font-engraving);
 }
 
 .engraved-text {
-  /* Used inside the book (printed) */
   font-family: var(--font-engraving);
   letter-spacing: 1px;
   color: var(--c-carbon);
   text-transform: uppercase;
+  mix-blend-mode: multiply; /* Ink Bleed */
+  filter: blur(0.2px); /* Ink Spread */
+}
+
+/* Standard text ink bleed */
+p, h1, h2, h3, li {
+  mix-blend-mode: multiply;
+  color: #1a1a1a; /* Almost black */
 }
 
 /* -----------------------------------------------------------
@@ -207,45 +246,48 @@ body[data-state="open"] .field-guide-container {
    ----------------------------------------------------------- */
 .bookmark-tab {
   position: absolute;
-  top: 100px; /* Dynamic per tab */
-  width: 40px;
-  height: 60px;
-  background-color: #F8F7F2;
+  /* Top is now handled inline by NJK loop for stability */
+  width: 45px;
+  height: 50px;
+  background-color: #FDFBF6; /* Slightly lighter than page for contrast */
   border: 1px solid #D4D2CB;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-family: var(--font-handwriting, sans-serif); /* Fallback to sans for now */
-  font-size: 0.8rem;
+  font-family: var(--font-handwriting, sans-serif);
+  font-size: 0.75rem;
   color: var(--c-wood-shadow);
   cursor: pointer;
-  z-index: -1; /* Behind the page */
-  transition: transform 0.2s ease;
+  z-index: -5; /* Behind pages */
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
   text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   border-radius: 4px;
 }
 
 .bookmark-tab:hover {
-  transform: translateX(5px);
+  transform: translateX(3px);
+  background-color: #FFF;
 }
 
 /* Fixed Tabs - Left tabs attach to the LEFT of the BOOK (relative to field-guide-book) */
 .bookmark-tab.left {
-  left: -35px; /* Stick out from the left edge */
+  left: -40px; /* Aligned to left stack */
   border-right: none;
   border-radius: 4px 0 0 4px;
 }
 
 .bookmark-tab.left:hover {
-  transform: translateX(-5px);
+  transform: translateX(-3px);
 }
 
 /* Fixed Tabs - Right tabs attach to the RIGHT of the BOOK */
 .bookmark-tab.right {
-  right: -35px;
+  right: -40px; /* Aligned to right stack */
   border-left: none;
   border-radius: 0 4px 4px 0;
 }

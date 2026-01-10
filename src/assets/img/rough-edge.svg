@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Very subtle rough paper edge - minimal text distortion -->
-    <filter id="roughEdge" x="-50%" y="-50%" width="104%" height="104%">
-      <feTurbulence type="turbulence" baseFrequency="10.02" numOctaves="8" seed="27" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="10.05" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-  </defs>
-</svg>
