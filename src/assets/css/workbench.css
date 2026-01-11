@@ -178,11 +178,9 @@ body[data-state="open"] .field-guide-container {
 .guide-page h5, 
 .guide-page h6, 
 .guide-page li, 
-.guide-page span,
-.guide-page a,
 .guide-title,
-.field-guide-book a,
-.guide-header, /* For the divider wobble */
+.guide-header, /* For the header divider wobble */
+.guide-footer, /* For footer text and divider wobble */
 .mobile-clamp img, /* For the icon wobble */
 hr,
 .draughtsman-line {

@@ -6,11 +6,6 @@ left_page_content: |
   <p>1. Measure twice, cut once.</p>
   <p>2. Put tools back where you found them.</p>
   <p>3. Do not distract the operator.</p>
-  <br>
-  <div style="border: 1px solid var(--c-carbon); padding: 1rem;">
-    <strong>SAFETY FIRST</strong><br>
-    Eye protection required.
-  </div>
 ---
 
 # 03. FABRICATION
