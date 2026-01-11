@@ -23,7 +23,7 @@ body {
   /* The Workbench Surface */
   background-color: var(--c-wood-base);
   background-image: var(--bg-workbench);
-  background-repeat: no-repeat;
+  background-repeat: repeat-y;
   background-position: center top;
   /* 
      SCROLL PHYSICS: 
