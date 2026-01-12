@@ -169,7 +169,10 @@ body[data-state="open"] .field-guide-container {
   max-width: 1100px; /* Wider when open */
 }
 
-/* Standard text ink bleed */
+/* Standard text ink bleed
+   Applied to block-level containers of "ink" to simulate physical printing.
+   We avoid double-filtering by stripping the filter from children of already-filtered parents.
+*/
 .guide-page p, 
 .guide-page h1, 
 .guide-page h2, 
@@ -178,15 +181,38 @@ body[data-state="open"] .field-guide-container {
 .guide-page h5, 
 .guide-page h6, 
 .guide-page li, 
-.guide-title,
-.guide-header, /* For the header divider wobble */
-.guide-footer, /* For footer text and divider wobble */
-.mobile-clamp img, /* For the icon wobble */
+.guide-page blockquote,
+.guide-page pre,
+.guide-page code,
+.guide-page table,
+.guide-header, 
+.guide-footer, 
+.pending-content,
 hr,
 .draughtsman-line {
   mix-blend-mode: multiply;
-  color: #1a1a1a; /* Almost black */
-  filter: url(#inkBleed); /* Imperfect print registration */
+  color: #1a1a1a; 
+  filter: url(#inkBleed); 
+}
+
+/* Prevent Double-Filtering Layer:
+   If a parent is already filtered, the entire group is warped. 
+   Applying filter to children again causes excessive blur.
+*/
+.guide-header *, 
+.guide-footer *,
+.guide-page p *,
+.guide-page li *,
+.guide-page blockquote *,
+.guide-page table * {
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+
+.pending-content {
+  opacity: 0.6;
+  font-style: italic;
+  margin-top: 1rem;
 }
 
 /* -----------------------------------------------------------
