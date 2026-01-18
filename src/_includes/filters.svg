@@ -34,7 +34,12 @@
       
       <!-- 6. BLEND MICRO: Add the micro texture on top subtley -->
       <!-- Increased visibility of the grain slightly (k3) -->
-      <feComposite operator="arithmetic" in="creased_paper" in2="micro_noise" k1="0" k2="1" k3="0.12" k4="0" result="final_paper" />
+      <feComposite operator="arithmetic" in="creased_paper" in2="micro_noise" k1="0" k2="1" k3="0.12" k4="0" result="final_paper_texture" />
+      
+      <!-- 7. ROUGH EDGES: Displace the entire pixel field to wiggle the edges -->
+      <!-- Reduced scale to 1.5 to make edges less jagged and more subtle -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="99" result="edge_noise" />
+      <feDisplacementMap in="final_paper_texture" in2="edge_noise" scale="1.5" xChannelSelector="R" yChannelSelector="G" result="final_paper" />
 
     </filter>
 

@@ -84,7 +84,6 @@ body {
 
 /* Page Common Styles */
 .guide-page {
-  background-color: var(--c-vellum);
   min-height: 800px; /* Minimal height of the book */
   padding: 4rem 3rem;
   position: relative;
@@ -99,10 +98,11 @@ body {
 .guide-page::before {
   content: "";
   position: absolute;
-  top: 0;
+  top: 4px; /* Inset slightly to allow wiggle room? or just let it wiggle */
   left: 0;
   right: 0;
   bottom: 0;
+  background-color: #d8cdb0; /* Darker base base */
   z-index: -1;
   filter: url(#paperDistress);
   /* Background properties will be inherited/set by specific left/right classes */
@@ -110,61 +110,84 @@ body {
 
 /* Page Depth / Stack Effect (The Edge) */
 .guide-page::after {
-  content: "";
+  content: " ";
+  display: block;
   position: absolute;
-  top: 2px;
-  bottom: 2px;
-  width: 4px;
-  background: 
-    linear-gradient(to right, rgba(0,0,0,0.05), rgba(0,0,0,0.1));
-  z-index: -2; /* Behind the paper layer */
+  top: 5px;
+  bottom: 5px;
+  z-index: -2; 
+  /* This element provides the "thickness" visual if needed, 
+     but the box-shadows on the parent now handle the stack. 
+     We can remove this or use it for a specific deckle edge detail.
+     Disabling for now to let box-shadows do the work cleanly. 
+  */
+  display: none; 
 }
 
 /* Left Page (Navigation / TOC) */
 .guide-page.left {
-  border-right: 1px solid rgba(0,0,0,0.08); /* Spine seam */
+  /* Spine seam is now handled by the gap closure */
+  border-right: none; 
   transform-origin: right center;
   
-  /* Depth on Left Side */
+  /* Page Stack (Left Edge) - layered paper look */
   box-shadow: 
-    -1px 1px 0 #E0DED7,
-    -2px 2px 0 #D6D3CC,
-    -3px 3px 0 #CCC9C2,
-    -4px 4px 0 #C2BFB8,
-    -5px 5px 10px rgba(0,0,0,0.2);
+    -1px 1px 0 #c4b695,
+    -2px 2px 0 #bfa880,
+    -3px 3px 0 #ad9670,
+    -4px 4px 1px #9e8a60,
+    -5px 5px 1px rgba(0,0,0,0.1),
+    -6px 6px 4px rgba(0,0,0,0.3);
 }
 
 .guide-page.left::before {
+  /* Spine Handling: Clip the RIGHT edge (inner) to be straight, allow others to be rough */
+  clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%); 
+  
   background-image: 
     url("../img/paper-grain.svg"),
-    radial-gradient(ellipse at center, transparent 30%, rgba(120, 100, 70, 0.2) 100%),
-    linear-gradient(to right, #e8dfc8 0%, #d4c8a8 85%, #bfa880 100%);
-  background-position: top left, center, center;
-  background-repeat: repeat, no-repeat, no-repeat;
-  background-size: 512px 512px, cover, cover;
-  background-blend-mode: multiply, multiply, normal;
+    /* Deep gutter shadow on the right side */
+    linear-gradient(to right, transparent 80%, rgba(62, 39, 35, 0.4) 100%), 
+    radial-gradient(ellipse at center, transparent 30%, rgba(100, 80, 50, 0.25) 100%),
+    linear-gradient(to right, #d4c8a8 0%, #c4b695 85%, #ad9670 100%);
+  background-position: top left, center, center, center;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 512px 512px, cover, cover, cover;
+  background-blend-mode: multiply, multiply, multiply, normal;
+  
+  /* Ensure the background extends fully to the straight edge */
+  right: -2px; 
 }
 
 /* Right Page (Content) */
 .guide-page.right {
-  /* Depth on Right Side */
+  /* Page Stack (Right Edge) - layered paper look */
   box-shadow: 
-    1px 1px 0 #E0DED7,
-    2px 2px 0 #D6D3CC,
-    3px 3px 0 #CCC9C2,
-    4px 4px 0 #C2BFB8,
-    5px 5px 10px rgba(0,0,0,0.2);
+    1px 1px 0 #c4b695,
+    2px 2px 0 #bfa880,
+    3px 3px 0 #ad9670,
+    4px 4px 1px #9e8a60,
+    5px 5px 1px rgba(0,0,0,0.1),
+    6px 6px 4px rgba(0,0,0,0.3);
 }
 
 .guide-page.right::before {
+  /* Spine Handling: Clip the LEFT edge (inner) to be straight */
+  clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%);
+  
   background-image: 
     url("../img/paper-grain.svg"),
-    radial-gradient(ellipse at center, transparent 30%, rgba(120, 100, 70, 0.2) 100%),
-    linear-gradient(to left, #e8dfc8 0%, #d4c8a8 85%, #bfa880 100%);
-  background-position: top left, center, center;
-  background-repeat: repeat, no-repeat, no-repeat;
-  background-size: 512px 512px, cover, cover;
-  background-blend-mode: multiply, multiply, normal;
+    /* Deep gutter shadow on the left side */
+    linear-gradient(to left, transparent 80%, rgba(62, 39, 35, 0.4) 100%),
+    radial-gradient(ellipse at center, transparent 30%, rgba(100, 80, 50, 0.25) 100%),
+    linear-gradient(to left, #d4c8a8 0%, #c4b695 85%, #ad9670 100%);
+  background-position: top left, center, center, center;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 512px 512px, cover, cover, cover;
+  background-blend-mode: multiply, multiply, multiply, normal;
+  
+  /* Ensure the background extends fully to the straight edge */
+  left: -2px;
 }
 
 /* -----------------------------------------------------------
