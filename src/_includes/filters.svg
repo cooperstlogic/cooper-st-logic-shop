@@ -7,35 +7,34 @@
     <filter id="paperDistress" x="0%" y="0%" width="100%" height="100%">
       
       <!-- 1. MACRO TEXTURE: Large, low-frequency waves to simulate gentle warping/creases -->
-      <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" seed="10" result="macro_noise" />
+      <!-- Lower frequency Y to create horizontal-ish page bending lines -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.002" numOctaves="4" seed="15" result="macro_noise" />
       
       <!-- 2. LIGHTING: Give volume to the macro noise (creases) -->
-      <feDiffuseLighting in="macro_noise" lighting-color="#ffffff" surfaceScale="2" diffuseConstant="1" kernelUnitLength="1" result="macro_light">
-        <feDistantLight azimuth="45" elevation="60" />
+      <!-- Increased surfaceScale significantly to make typical paper undulations visible -->
+      <feDiffuseLighting in="macro_noise" lighting-color="#fff8e1" surfaceScale="12" diffuseConstant="1.2" result="macro_light">
+        <feDistantLight azimuth="135" elevation="45" />
       </feDiffuseLighting>
       
       <!-- 3. CONTRAST: Enhance the lighting effect to make creases visible but subtle -->
+      <!-- Using a table to create a more custom "curve" for the shadows -->
       <feComponentTransfer in="macro_light" result="macro_contrast">
-         <!-- Tuning the slope increases contrast around the midtones -->
-        <feFuncA type="linear" slope="1"/>
-        <feFuncR type="linear" slope="1" intercept="-0.1"/> 
-        <feFuncG type="linear" slope="1" intercept="-0.1"/>
-        <feFuncB type="linear" slope="1" intercept="-0.1"/>
+        <!-- Map the light to a slightly darker range to simulate dirtiness -->
+        <feFuncR type="linear" slope="1.2" intercept="-0.1"/> 
+        <feFuncG type="linear" slope="1.2" intercept="-0.1"/>
+        <feFuncB type="linear" slope="1.2" intercept="-0.1"/>
       </feComponentTransfer>
 
       <!-- 4. MICRO TEXTURE: High-frequency grain (Salt & Pepper) for fibrous feel -->
-      <feTurbulence type="turbulence" baseFrequency="2" numOctaves="3" seed="50" result="micro_noise" />
+      <!-- Increased frequency for finer grain -->
+      <feTurbulence type="turbulence" baseFrequency="0.8" numOctaves="5" seed="50" result="micro_noise" />
       
       <!-- 5. COMPOSITE: Blend Macro creases onto the background first -->
-      <!-- We essentially want to 'dodge' or 'burn' the background with our lighting map -->
-      <!-- Input 1: SourceGraphic (The element, e.g. the paper bg) -->
-      <!-- Input 2: macro_contrast (The creases) -->
-      <!-- arithmetic: k1*i1*i2 + k2*i1 + k3*i2 + k4 -->
-      <!-- We use Multiply logic primarily: result = i1 * i2 -->
-      <feComposite operator="arithmetic" in="SourceGraphic" in2="macro_contrast" k1="0.5" k2="0.8" k3="0.4" k4="0" result="creased_paper" />
+      <feComposite operator="arithmetic" in="SourceGraphic" in2="macro_contrast" k1="0.6" k2="0.5" k3="0.3" k4="0" result="creased_paper" />
       
       <!-- 6. BLEND MICRO: Add the micro texture on top subtley -->
-      <feComposite operator="arithmetic" in="creased_paper" in2="micro_noise" k1="0" k2="1" k3="0.07" k4="0" result="final_paper" />
+      <!-- Increased visibility of the grain slightly (k3) -->
+      <feComposite operator="arithmetic" in="creased_paper" in2="micro_noise" k1="0" k2="1" k3="0.12" k4="0" result="final_paper" />
 
     </filter>
 

@@ -137,8 +137,8 @@ body {
 .guide-page.left::before {
   background-image: 
     url("../img/paper-grain.svg"),
-    radial-gradient(ellipse at center, transparent 40%, rgba(140, 120, 90, 0.15) 100%),
-    linear-gradient(to right, #E6DCC3 0%, #DBD1B8 85%, #B0A080 100%);
+    radial-gradient(ellipse at center, transparent 30%, rgba(120, 100, 70, 0.2) 100%),
+    linear-gradient(to right, #e8dfc8 0%, #d4c8a8 85%, #bfa880 100%);
   background-position: top left, center, center;
   background-repeat: repeat, no-repeat, no-repeat;
   background-size: 512px 512px, cover, cover;
@@ -159,8 +159,8 @@ body {
 .guide-page.right::before {
   background-image: 
     url("../img/paper-grain.svg"),
-    radial-gradient(ellipse at center, transparent 40%, rgba(140, 120, 90, 0.15) 100%),
-    linear-gradient(to left, #E6DCC3 0%, #DBD1B8 85%, #B0A080 100%);
+    radial-gradient(ellipse at center, transparent 30%, rgba(120, 100, 70, 0.2) 100%),
+    linear-gradient(to left, #e8dfc8 0%, #d4c8a8 85%, #bfa880 100%);
   background-position: top left, center, center;
   background-repeat: repeat, no-repeat, no-repeat;
   background-size: 512px 512px, cover, cover;
