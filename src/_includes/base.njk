@@ -19,68 +19,119 @@
 <body {% if page.url != '/' %}data-state="open"{% endif %}>
 
   <!-- Global Filter Definitions -->
-  <!-- Global Filter Definitions -->
   {% include "filters.svg" %}
   
+  {# Define Navigation Order and Fixed Positions #}
+  {% set navItems = [
+    { url: "/shop/", label: "SHOP", id: 1, top: 100 },
+    { url: "/inventory/", label: "INV", id: 2, top: 170 },
+    { url: "/fabrication/", label: "FAB", id: 3, top: 240 },
+    { url: "/personnel/", label: "PERS", id: 4, top: 310 }
+  ] %}
 
+  {# Determine Current ID #}
+  {% set currentId = 1 %}
+  {% if page.url == '/inventory/' %} {% set currentId = 2 %} {% endif %}
+  {% if page.url == '/fabrication/' %} {% set currentId = 3 %} {% endif %}
+  {% if page.url == '/personnel/' %} {% set currentId = 4 %} {% endif %}
+  
 
   <main class="field-guide-container">
     <div class="field-guide-book">
       
-      <!-- LEFT PAGE logic -->
-      <section class="guide-page left">
-        <header class="guide-header">
-           <!-- Title varies based on page type -->
-           <span class="guide-title">
-             {% if page.url == '/shop/' %}Table of Contents{% else %}Field Notes{% endif %}
-           </span>
-        </header>
-
-        {% if page.url == '/shop/' %}
-          <!-- ON THE SHOP PAGE: Show Table of Contents -->
-          {% include "nav.njk" %}
-          
-          <div class="guide-footer">
-             © 2026 Cooper St Logic Shop
-          </div>
-        {% else %}
-           <!-- ON OTHER PAGES: Show specific left page content (e.g. context, diagrams) -->
-           <!-- We pull this from front matter if available, or default to a standard minimal sidebar -->
-           {% if left_page_content %}
-             {{ left_page_content | safe }}
-           {% else %}
-            <div class="pending-content">
-               (Field notes for this section are pending...)
-            </div>
-           {% endif %}
+      <!-- LEFT PAGE WRAPPER & STACK -->
+      <div class="page-wrapper left">
+        <div class="page-stack">
+          <div class="stack-leaf layer-1"></div>
+          <div class="stack-leaf layer-2"></div>
+          <div class="stack-leaf layer-3"></div>
+          <div class="stack-leaf layer-4"></div>
+          <div class="stack-leaf layer-5"></div>
+        </div>
+        
+        <!-- Left Tabs (Previous) -->
+        {% if page.url != '/' %}
+          {% for item in navItems %}
+            {% if item.id < currentId %}
+              <a href="{{ item.url }}" class="bookmark-tab left" style="top: {{ item.top }}px">
+                {{ item.label }}
+              </a>
+            {% endif %}
+          {% endfor %}
         {% endif %}
-      </section>
 
-      <!-- RIGHT PAGE: Content -->
-      <section class="guide-page right">
-        <!-- Inner page Header (Title) -->
-        <header class="guide-header">
-          <span class="guide-title">
-            {% if title %}{{ title }}{% else %}COOPER ST LOGIC SHOP{% endif %}
-          </span>
-          <!-- Mobile Menu Trigger (C-Clamp) - Only visible on mobile CSS -->
-          <button class="mobile-clamp" aria-label="Open Navigation">
-             <img src="/assets/img/icon-c.svg" width="32" height="32" alt="Menu">
-          </button>
-        </header>
+        <section class="guide-page left">
+          <header class="guide-header">
+             <!-- Title varies based on page type -->
+             <span class="guide-title">
+               {% if page.url == '/shop/' %}Table of Contents{% else %}Field Notes{% endif %}
+             </span>
+          </header>
+  
+          {% if page.url == '/shop/' %}
+            <!-- ON THE SHOP PAGE: Show Table of Contents -->
+            {% include "nav.njk" %}
+            
+            <div class="guide-footer">
+               © 2026 Cooper St Logic Shop
+            </div>
+          {% else %}
+             <!-- ON OTHER PAGES: Show specific left page content (e.g. context, diagrams) -->
+             <!-- We pull this from front matter if available, or default to a standard minimal sidebar -->
+             {% if left_page_content %}
+               {{ left_page_content | safe }}
+             {% else %}
+              <div class="pending-content">
+                 (Field notes for this section are pending...)
+              </div>
+             {% endif %}
+          {% endif %}
+        </section>
+      </div>
 
-        <article>
-          {{ content | safe }}
-          <hr class="draughtsman-line">
-        </article>
-      </section>
+      <!-- RIGHT PAGE WRAPPER & STACK -->
+      <div class="page-wrapper right">
+        <div class="page-stack">
+          <div class="stack-leaf layer-1"></div>
+          <div class="stack-leaf layer-2"></div>
+          <div class="stack-leaf layer-3"></div>
+          <div class="stack-leaf layer-4"></div>
+          <div class="stack-leaf layer-5"></div>
+        </div>
+
+        <!-- Right Tabs (Next) -->
+        {% if page.url != '/' %}
+          {% for item in navItems %}
+            {% if item.id > currentId %}
+              <a href="{{ item.url }}" class="bookmark-tab right" style="top: {{ item.top }}px">
+                {{ item.label }}
+              </a>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        <section class="guide-page right">
+          <!-- Inner page Header (Title) -->
+          <header class="guide-header">
+            <span class="guide-title">
+              {% if title %}{{ title }}{% else %}COOPER ST LOGIC SHOP{% endif %}
+            </span>
+            <!-- Mobile Menu Trigger (C-Clamp) - Only visible on mobile CSS -->
+            <button class="mobile-clamp" aria-label="Open Navigation">
+               <img src="/assets/img/icon-c.svg" width="32" height="32" alt="Menu">
+            </button>
+          </header>
+  
+          <article>
+            {{ content | safe }}
+            <hr class="draughtsman-line">
+          </article>
+        </section>
+      </div>
       
-      <!-- Bookmarks are now siblings of the pages, positioned relative to the book container -->
-      {% include "bookmarks.njk" %}
-
     </div>
   </main>
-
+  
   <script src="/assets/js/clamp.js"></script>
 </body>
 </html>

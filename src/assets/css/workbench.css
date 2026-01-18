@@ -56,6 +56,10 @@ body {
    LAYOUT ENGINE: THE FIELD GUIDE
    ----------------------------------------------------------- */
 
+/* -----------------------------------------------------------
+   LAYOUT ENGINE: THE FIELD GUIDE
+   ----------------------------------------------------------- */
+
 /* The Container for the Book */
 .field-guide-container {
   width: 100%;
@@ -82,66 +86,136 @@ body {
   to { transform: translateY(0) rotateX(0); opacity: 1; }
 }
 
-/* Page Common Styles */
+/* -----------------------------------------------------------
+   PAGE WRAPPERS (The Containers)
+   ----------------------------------------------------------- */
+.page-wrapper {
+  flex: 1; /* Match symmetry */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Left Wrapper Logic */
+.page-wrapper.left {
+  /* Pivot on the spine (right edge) */
+  transform-origin: right center;
+  z-index: 2; /* Stack order if they overlap */
+}
+
+/* Right Wrapper Logic */
+.page-wrapper.right {
+  /* Pivot on the spine (left edge) */
+  transform-origin: left center;
+  z-index: 2;
+}
+
+
+/* -----------------------------------------------------------
+   THE PHYSICAL STACK (Behind the Pages)
+   ----------------------------------------------------------- */
+.page-stack {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -1; /* Behind the main content page */
+  pointer-events: none;
+}
+
+.stack-leaf {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #d8cdb0;
+  border: 1px solid rgba(139, 119, 101, 0.1); /* Very subtle edge */
+  
+  /* Texture for realism */
+  /* We use the pseudo element for texture to allow mixing */
+}
+
+.stack-leaf::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-image: url("../img/paper-grain.svg");
+  background-size: 512px 512px;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  filter: url(#paperDistress);
+}
+
+/* LEFT STACK DYNAMICS */
+.page-wrapper.left .stack-leaf {
+  transform-origin: right center;
+  border-right: none; /* Spine connection */
+  /* Spine Clip */
+  clip-path: polygon(0% -2%, 100% -2%, 100% 102%, 0% 102%);
+  
+  /* Shadow Gradient for depth */
+  background-image: linear-gradient(to left, rgba(62, 39, 35, 0.1), transparent 20%);
+}
+
+/* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
+.page-wrapper.left .layer-1 { transform: rotate(-0.05deg) translateY(0px); z-index: -11; }
+.page-wrapper.left .layer-2 { transform: rotate(-0.15deg) translateY(0.5px); z-index: -12; opacity: 0.98; }
+.page-wrapper.left .layer-3 { transform: rotate(-0.08deg) translateY(1.0px); z-index: -13; opacity: 0.95; }
+.page-wrapper.left .layer-4 { transform: rotate(-0.22deg) translateY(1.5px); z-index: -14; opacity: 0.90; }
+.page-wrapper.left .layer-5 { transform: rotate(-0.12deg) translateY(2.0px); z-index: -15; opacity: 0.85; }
+
+
+/* RIGHT STACK DYNAMICS */
+.page-wrapper.right .stack-leaf {
+  transform-origin: left center;
+  border-left: none; /* Spine connection */
+  /* Spine Clip */
+  clip-path: polygon(0% -2%, 100% -2%, 100% 102%, 0% 102%);
+  
+  /* Shadow Gradient for depth */
+  background-image: linear-gradient(to right, rgba(62, 39, 35, 0.1), transparent 20%);
+}
+
+/* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
+.page-wrapper.right .layer-1 { transform: rotate(0.08deg) translateY(0px); z-index: -11; }
+.page-wrapper.right .layer-2 { transform: rotate(0.18deg) translateY(0.5px); z-index: -12; opacity: 0.98; }
+.page-wrapper.right .layer-3 { transform: rotate(0.04deg) translateY(1.0px); z-index: -13; opacity: 0.95; }
+.page-wrapper.right .layer-4 { transform: rotate(0.25deg) translateY(1.5px); z-index: -14; opacity: 0.90; }
+.page-wrapper.right .layer-5 { transform: rotate(0.12deg) translateY(2.0px); z-index: -15; opacity: 0.85; }
+
+
+/* -----------------------------------------------------------
+   THE MAIN CONTENT PAGE (Top Layer)
+   ----------------------------------------------------------- */
 .guide-page {
   min-height: 800px; /* Minimal height of the book */
   padding: 4rem 3rem;
   position: relative;
-  flex: 1; /* SYMMETRY: Both pages equal width (50/50) */
+  width: 100%; 
+  box-sizing: border-box;
+  background-color: #d8cdb0;
+  z-index: 5; /* Top of stack */
   
-  /* Paper Texture Base - stacked in child classes */
-  /* Filter moved to pseudo-element to prevent shadow clipping */
-  z-index: 1; /* Establish stacking context */
+  /* Main shadow casting onto the stack */
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
 /* Page Background & Texture Layer (The Physical Paper) */
 .guide-page::before {
   content: "";
   position: absolute;
-  top: 4px; /* Inset slightly to allow wiggle room? or just let it wiggle */
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #d8cdb0; /* Darker base base */
+  top: 0; left: 0; right: 0; bottom: 0;
   z-index: -1;
   filter: url(#paperDistress);
-  /* Background properties will be inherited/set by specific left/right classes */
+  /* Background properties handled by specific left/right classes */
 }
 
-/* Page Depth / Stack Effect (The Edge) */
-.guide-page::after {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 5px;
-  bottom: 5px;
-  z-index: -2; 
-  /* This element provides the "thickness" visual if needed, 
-     but the box-shadows on the parent now handle the stack. 
-     We can remove this or use it for a specific deckle edge detail.
-     Disabling for now to let box-shadows do the work cleanly. 
-  */
-  display: none; 
-}
 
-/* Left Page (Navigation / TOC) */
+/* Left Page Specifics */
 .guide-page.left {
-  /* Spine seam is now handled by the gap closure */
   border-right: none; 
-  transform-origin: right center;
-  
-  /* Page Stack (Left Edge) - layered paper look */
-  box-shadow: 
-    -1px 1px 0 #c4b695,
-    -2px 2px 0 #bfa880,
-    -3px 3px 0 #ad9670,
-    -4px 4px 1px #9e8a60,
-    -5px 5px 1px rgba(0,0,0,0.1),
-    -6px 6px 4px rgba(0,0,0,0.3);
+  /* Left Page Box Shadow: Left, Top, Bottom ONLY. No Right (Spine) Shadow */
+  box-shadow: -1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .guide-page.left::before {
-  /* Spine Handling: Clip the RIGHT edge (inner) to be straight, allow others to be rough */
+  /* Spine Handling: Clip the RIGHT edge (inner) to be straight */
   clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%); 
   
   background-image: 
@@ -155,20 +229,14 @@ body {
   background-size: 512px 512px, cover, cover, cover;
   background-blend-mode: multiply, multiply, multiply, normal;
   
-  /* Ensure the background extends fully to the straight edge */
   right: -2px; 
 }
 
-/* Right Page (Content) */
+/* Right Page Specifics */
 .guide-page.right {
-  /* Page Stack (Right Edge) - layered paper look */
-  box-shadow: 
-    1px 1px 0 #c4b695,
-    2px 2px 0 #bfa880,
-    3px 3px 0 #ad9670,
-    4px 4px 1px #9e8a60,
-    5px 5px 1px rgba(0,0,0,0.1),
-    6px 6px 4px rgba(0,0,0,0.3);
+  border-left: none;
+  /* Right Page Box Shadow: Right, Top, Bottom ONLY. No Left (Spine) Shadow */
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .guide-page.right::before {
@@ -186,7 +254,6 @@ body {
   background-size: 512px 512px, cover, cover, cover;
   background-blend-mode: multiply, multiply, multiply, normal;
   
-  /* Ensure the background extends fully to the straight edge */
   left: -2px;
 }
 
@@ -194,22 +261,52 @@ body {
    STATES: HOME vs OPEN
    ----------------------------------------------------------- */
 
-/* On Home Page (Cover), we might want different styling, 
-   but per instructions we are treating "The Shop" as page 1.
-   Note: base.njk handles hiding .left page if NOT open, 
-   but for symmetry we want it VISIBLE mostly? 
-   No, user said "only see TOC on left side when THE SHOP is open".
-   For other pages, we have "Field Notes" on left.
-   So .guide-page.left is ALWAYS visible in the "Open" state.
-*/
+/* -----------------------------------------------------------
+   STATES: HOME vs OPEN
+   ----------------------------------------------------------- */
 
-body[data-state="open"] .guide-page.left {
-  display: block;
+/* Default State (Closed Book / Home) */
+.page-wrapper.left {
+  display: none;
+}
+
+.field-guide-container {
+  /* Closed width = half of open width (approx) */
+  max-width: 600px; 
+}
+
+/* On the Cover (Home), we want a cleaner "single board" look without the inner gutter shadow */
+body:not([data-state="open"]) .guide-page.right::before {
+  background-image: 
+    url("../img/paper-grain.svg"),
+    /* No gutter shadow on the left edge */
+    radial-gradient(ellipse at center, transparent 30%, rgba(100, 80, 50, 0.25) 100%),
+    linear-gradient(to left, #d4c8a8 0%, #c4b695 85%, #ad9670 100%);
+  /* Remove the spine clip so it looks like a full cover with natural edges all around? 
+     Actually, a cover usually has a straight spine edge too. keeping clip. 
+  */
+}
+
+
+/* Open State: Show the left page & expand container */
+body[data-state="open"] .page-wrapper.left {
+  display: flex;
 }
 
 body[data-state="open"] .field-guide-container {
   max-width: 1100px; /* Wider when open */
 }
+
+/* Restore Gutter Shadow for Open Right Page */
+body[data-state="open"] .guide-page.right::before {
+  background-image: 
+    url("../img/paper-grain.svg"),
+    /* Deep gutter shadow on the left side */
+    linear-gradient(to left, transparent 80%, rgba(62, 39, 35, 0.4) 100%),
+    radial-gradient(ellipse at center, transparent 30%, rgba(100, 80, 50, 0.25) 100%),
+    linear-gradient(to left, #d4c8a8 0%, #c4b695 85%, #ad9670 100%);
+}
+
 
 /* Standard text ink bleed
    Applied to block-level containers of "ink" to simulate physical printing.
@@ -314,7 +411,12 @@ hr,
   font-size: 0.75rem;
   color: var(--c-wood-shadow);
   cursor: pointer;
-  z-index: -5; /* Behind pages */
+  /* Z-Index Hierarchy:
+     Guide Page: 5 (Standard)
+     Tabs: 1 (Between stack and content page)
+     Stack Leaves: -11 to -15 (Behind everything)
+  */
+  z-index: 1; 
   transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
   text-decoration: none;
   font-weight: 600;
@@ -396,13 +498,14 @@ hr,
   .field-guide-container {
     margin: 1rem;
     width: auto;
+    max-width: none; /* Reset max-width for mobile fluid */
   }
 
   .field-guide-book {
     flex-direction: column;
   }
 
-  .guide-page.left {
+  .page-wrapper.left {
     display: none !important; /* Always hide TOC page on mobile */
   }
 

@@ -96,25 +96,28 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
 - **The Cover (Home Page `/`):** The home page behaves as the closed cover of the Field Guide.
   - **Content:** Centered title "COOPER ST LOGIC SHOP" with "FIELD GUIDE VERSION 3.0" and a link to "OPEN FIELD GUIDE".
   - **State:** `data-state` attribute is NOT set to "open" on the body element.
+  - **Visuals:** Width restricted to single page (~600px) with the inner gutter shadow removed to simulate a flat cover board.
 - **The Open Book:** When navigating to any page other than `/`, the guide "flips" open to a two-page spread.
   - **State:** `data-state="open"` is set on the body element via Nunjucks conditional logic.
-  - **Layout:** `.field-guide-book` container uses `display: flex` to create a horizontal two-page spread.
+  - **Layout:** `.field-guide-book` container uses `display: flex` and expands to ~1100px.
 - **Left Page Logic:**
   - **On `/shop/` (The Shop):** Displays the Table of Contents (`nav.njk`) and copyright footer.
   - **On Other Pages:** Displays contextual "Field Notes" content defined in the page's front matter as `left_page_content`.
   - **Example:** Inventory page shows "Stockroom Access" rules, Personnel shows an ID card.
 - **Right Page:** Always contains the primary page content (Markdown body).
+  - **Spine Shadow:** When open, a deep linear gradient shadow appears on the inner left edge to simulate depth in the gutter.
 
 - **Bookmark Tabs:** Navigation is handled via realistic bookmark tabs sticking out from the book edges.
   - **Position Logic:** Each tab has a fixed vertical position (e.g., Shop=100px, Inventory=170px, Fabrication=240px, Personnel=310px).
   - **Stability:** Tabs maintain their vertical position whether they appear on the left or right side, simulating physical tabs attached to specific pages.
+  - **Layering:** Tabs are positioned between the page stack and the primary page content (`z-index: 1`) to feel materially bound to the book block.
   - **Previous Pages:** Tabs appear on the left side (`.bookmark-tab.left`).
   - **Next Pages:** Tabs appear on the right side (`.bookmark-tab.right`).
-  - **Implementation:** Managed by `bookmarks.njk` with inline `style="top: {{item.top}}px"`.
+  - **Implementation:** Inlined logic in `base.njk` loops through `navItems` within each page wrapper.
 
 - **Symmetry:** Both left and right pages use `flex: 1` for equal 50/50 width distribution.
 
-- **Page Depth:** CSS box-shadows create a visual "stack" effect on both page edges to simulate multiple pages.
+- **Page Depth:** Physical DOM implementation (`.page-stack` containing 5 `.stack-leaf` divs) nested within page wrappers to create a realistic, fanned book edge. Shadow artifacts on the inner spine edges are avoided by clipping the content layer shadows.
 
 ### 4.2 Responsive States
 
@@ -162,9 +165,11 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - **Pages:** Aged Vellum/Bond paper (`#d8cdb0`) with:
   - **Texture:** `background-image: url("../img/paper-grain.svg")` at `512px 512px` with `multiply` blend.
   - **Color Grading:** Transitioned from sterile white to late-60s printed catalog tones (Yellowed Bond).
-  - **Depth:** 6-layer procedural box-shadow creating a "thick page stack" illusion with material-matched colors:
-    - Left page: `-1px 1px 0 #c4b695, -2px 2px 0 #bfa880, -3px 3px 0 #ad9670, ...`
-    - Right page: `1px 1px 0 #c4b695, 2px 2px 0 #bfa880, 3px 3px 0 #ad9670, ...`
+  - **Depth:** Physical DOM implementation (`.page-stack` containing 5 `.stack-leaf` divs) behind each page to create a realistic, fanned book edge.
+    - **Fanning:** Each leaf is subject to randomized micro-rotations (e.g., 0.05deg to 0.25deg) to simulate the subtle imperfections of a physical book.
+    - **Texture:** Each leaf shares the same `#paperDistress` filter and paper grain texture as the main page for cohesive materiality.
+    - **Shading:** Linear gradients and variable opacity applied to lower layers to create depth and separation between sheets.
+    - **Layering:** The primary content page sits at `z-index: 5`, tabs at `z-index: 1`, and stack leaves at `z-index: -11` to `-15`.
   - **Spine Handling:**
     - **Straight Edge:** Inner edges are clipped using `clip-path: polygon(...)` to ensure a clean, bound spine regardless of page-edge distress.
     - **Gutter Shadow:** Deep linear gradient (`rgba(62, 39, 35, 0.4)`) intensifying toward the center binding.
