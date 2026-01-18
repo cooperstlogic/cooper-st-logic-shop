@@ -91,10 +91,25 @@ body {
   flex: 1; /* SYMMETRY: Both pages equal width (50/50) */
   
   /* Paper Texture Base - stacked in child classes */
+  /* Filter moved to pseudo-element to prevent shadow clipping */
+  z-index: 1; /* Establish stacking context */
 }
 
-/* Page Depth / Stack Effect */
+/* Page Background & Texture Layer (The Physical Paper) */
 .guide-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  filter: url(#paperDistress);
+  /* Background properties will be inherited/set by specific left/right classes */
+}
+
+/* Page Depth / Stack Effect (The Edge) */
+.guide-page::after {
   content: "";
   position: absolute;
   top: 2px;
@@ -102,20 +117,13 @@ body {
   width: 4px;
   background: 
     linear-gradient(to right, rgba(0,0,0,0.05), rgba(0,0,0,0.1));
-  z-index: -1;
+  z-index: -2; /* Behind the paper layer */
 }
 
 /* Left Page (Navigation / TOC) */
 .guide-page.left {
   border-right: 1px solid rgba(0,0,0,0.08); /* Spine seam */
-  background-image: 
-    url("../img/paper-grain.svg"),
-    radial-gradient(ellipse at center, transparent 40%, rgba(140, 120, 90, 0.15) 100%),
-    linear-gradient(to right, #E6DCC3 0%, #DBD1B8 85%, #B0A080 100%);
-  background-position: top left, center, center;
-  background-repeat: repeat, no-repeat, no-repeat;
-  background-size: 512px 512px, cover, cover;
-  background-blend-mode: multiply, multiply, normal;
+  transform-origin: right center;
   
   /* Depth on Left Side */
   box-shadow: 
@@ -124,12 +132,31 @@ body {
     -3px 3px 0 #CCC9C2,
     -4px 4px 0 #C2BFB8,
     -5px 5px 10px rgba(0,0,0,0.2);
-    
-  transform-origin: right center;
+}
+
+.guide-page.left::before {
+  background-image: 
+    url("../img/paper-grain.svg"),
+    radial-gradient(ellipse at center, transparent 40%, rgba(140, 120, 90, 0.15) 100%),
+    linear-gradient(to right, #E6DCC3 0%, #DBD1B8 85%, #B0A080 100%);
+  background-position: top left, center, center;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-size: 512px 512px, cover, cover;
+  background-blend-mode: multiply, multiply, normal;
 }
 
 /* Right Page (Content) */
 .guide-page.right {
+  /* Depth on Right Side */
+  box-shadow: 
+    1px 1px 0 #E0DED7,
+    2px 2px 0 #D6D3CC,
+    3px 3px 0 #CCC9C2,
+    4px 4px 0 #C2BFB8,
+    5px 5px 10px rgba(0,0,0,0.2);
+}
+
+.guide-page.right::before {
   background-image: 
     url("../img/paper-grain.svg"),
     radial-gradient(ellipse at center, transparent 40%, rgba(140, 120, 90, 0.15) 100%),
@@ -138,14 +165,6 @@ body {
   background-repeat: repeat, no-repeat, no-repeat;
   background-size: 512px 512px, cover, cover;
   background-blend-mode: multiply, multiply, normal;
-  
-  /* Depth on Right Side */
-  box-shadow: 
-    1px 1px 0 #E0DED7,
-    2px 2px 0 #D6D3CC,
-    3px 3px 0 #CCC9C2,
-    4px 4px 0 #C2BFB8,
-    5px 5px 10px rgba(0,0,0,0.2);
 }
 
 /* -----------------------------------------------------------
