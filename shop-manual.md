@@ -159,17 +159,20 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 ### 5.3 Protocol C: The Field Guide (Paper & Vellum)
 
 - **Cover:** Textured, thick cardstock feel for the home page.
-- **Pages:** Off-white vellum (`#F5F3ED`) with:
-  - **Texture:** `background-image: url("../img/paper-grain.svg")` at `300px 300px`.
-  - **Depth:** Layered box-shadows creating a "page stack" illusion:
-    - Left page: `-1px 1px 0 #E0DED7, -2px 2px 0 #D6D3CC, ...` (5 layers).
-    - Right page: `1px 1px 0 #E0DED7, 2px 2px 0 #D6D3CC, ...` (5 layers).
-  - **Spine Gradient:** Subtle darkening toward the center spine to simulate book binding shadow.
+- **Pages:** Aged Vellum/Bond paper (`#d8cdb0`) with:
+  - **Texture:** `background-image: url("../img/paper-grain.svg")` at `512px 512px` with `multiply` blend.
+  - **Color Grading:** Transitioned from sterile white to late-60s printed catalog tones (Yellowed Bond).
+  - **Depth:** 6-layer procedural box-shadow creating a "thick page stack" illusion with material-matched colors:
+    - Left page: `-1px 1px 0 #c4b695, -2px 2px 0 #bfa880, -3px 3px 0 #ad9670, ...`
+    - Right page: `1px 1px 0 #c4b695, 2px 2px 0 #bfa880, 3px 3px 0 #ad9670, ...`
+  - **Spine Handling:**
+    - **Straight Edge:** Inner edges are clipped using `clip-path: polygon(...)` to ensure a clean, bound spine regardless of page-edge distress.
+    - **Gutter Shadow:** Deep linear gradient (`rgba(62, 39, 35, 0.4)`) intensifying toward the center binding.
 - **Typography:**
   - **Logo:** "Cooper St Logic Shop" behaves as the Book Title on the cover, and a Header on inner pages.
   - **Body:** Serif for readability (Fraunces/Public Sans mix).
   - **Ink Effect:** `mix-blend-mode: multiply` on all text elements (`p, h1, h2, h3, li`) with `color: #1a1a1a`.
-  - **Ink Spread:** `.engraved-text` uses `filter: blur(0.2px)` to simulate ink absorption into paper fibers.
+  - **Ink Spread:** Uses SVG `#inkBleed` filter to simulate physical wicking into paper fibers.
 
 ### 5.4 Protocol D: The Navigation (Tabs & TOC)
 
@@ -185,6 +188,19 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - **Effect:** `@keyframes settleBook` creates a subtle "placement" animation when the book loads.
 - **Motion:** `translateY(10px) rotateX(2deg)` → `translateY(0) rotateX(0)`.
 - **Duration:** `1s cubic-bezier(0.25, 1, 0.5, 1)`.
+
+### 5.6 Protocol F: SVG Filter Synthesis (Materiality Library)
+
+We utilize procedural SVG filters to break the "perfect" digital line and simulate physical manufacturing imperfections.
+
+- **`#paperDistress`**: Applied to the page background (`::before`).
+  - **Macro Noise:** Low-frequency turbulence for rolling creases and structural warping.
+  - **Lighting:** `feDiffuseLighting` with a warm `#fff8e1` tint to create 3D surface undulations.
+  - **Rough Edges:** `feDisplacementMap` (scale 1.5) using mid-frequency noise to "wiggle" the page boundaries, creating a torn/deckle edge effect.
+- **`#inkBleed`**: Applied to typographic elements.
+  - **Warping:** Simulates the slight wicking of liquid ink into cellulose fibers.
+  - **Dilation:** Uses `feMorphology` to slightly thicken letterforms, mimicking the weight of old-school printing presses.
+  - **Thresholding:** `feColorMatrix` ensures the ink remains dark while having slightly fuzzy, organic edges.
 - **Purpose:** Enhances the physical realism by making the book feel like it's being set down on the workbench.
 
 ---
