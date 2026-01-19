@@ -2,9 +2,6 @@
 
 ## Pacific Pragmatism / Santa Cruz, CA
 
-STATUS: ACTIVE
-VERSION: 3.0.0 (Redesign)
-
 ---
 
 ## 1.0 THE CORE ETHOS
@@ -58,7 +55,8 @@ cooper-st-logic-shop/
 ├── .gitignore             # Shop Hygiene
 ├── netlify.toml           # Shipping Label
 ├── package.json           # Inventory
-├── README.md              # Shop Manual (This Document)
+├── README.md              # Public Repository Description
+├── shop-manual.md         # Shop Manual (This Document)
 ├── src/                   # RAW MATERIALS
 │   ├── _data/             # Global Site Data (Single Source of Truth)
 │   │   └── navigation.json  # Navigation manifest (pages, tabs, TOC)
@@ -94,19 +92,34 @@ All navigation data is centralized in `src/_data/navigation.json`. This file is 
 
 - **Bookmark Tabs:** Label, URL, and positioning index for the physical tab markers.
 - **Table of Contents:** Full page names and section numbers displayed on the left page.
-- **Tab Spacing Configuration:** `tabSpacing.startOffset` and `tabSpacing.itemHeight` define the vertical rhythm.
+- **Page Ordering:** ID field determines page side assignment (odd=right, even=left) and spread pairing.
 
 **Rule:** If you change a page slug, add a page, or rename a section—edit **one file**: `navigation.json`. The templates (`base.njk`, `nav.njk`) consume this data automatically via Eleventy's global data system.
+
+**Navigation Item Structure:**
 
 ```json
 {
   "items": [
-    { "url": "/shop/", "tabLabel": "SHOP", "tocLabel": "THE SHOP", "id": 1, "number": "01" },
-    ...
-  ],
-  "tabSpacing": { "startOffset": 100, "itemHeight": 70 }
+    {
+      "url": "/shop/",
+      "tabLabel": "SHOP",
+      "tocLabel": "THE SHOP",
+      "id": 1,
+      "number": "01"
+    }
+  ]
 }
 ```
+
+**Required Fields:**
+- `url`: Page path (e.g., `/shop/`)
+- `tabLabel`: Short label for bookmark tabs (e.g., `"SHOP"`)
+- `tocLabel`: Full name for Table of Contents (e.g., `"THE SHOP"`)
+- `id`: Unique sequential integer (determines page side: odd=right, even=left)
+- `number`: Two-digit section number for TOC display (e.g., `"01"`)
+
+**Note:** Tab positioning (vertical spacing, offsets) is controlled by CSS variables in `variables.css` (`--tab-start`, `--tab-height`), not by navigation data.
 
 ---
 
@@ -131,7 +144,7 @@ The home page behaves as the closed cover of the Technical Manual (modeled after
 - **Content:** Centered title "COOPER ST LOGIC SHOP" with a link to "access the shop" and an "Est 2026" footer positioned absolutely at the bottom-left corner.
 - **State:** `data-state` attribute is NOT set to "open" on the body element.
 - **Texture:** Uses `cover.webp` as the background—a baked cardstock texture with a dark/black base color, distinct from the interior page paper.
-- **Responsive Scaling:** The cover scales fluidly between 600px width (at 900px viewport) and 350px width (at 375px minimum viewport) while maintaining a fixed 3:4 aspect ratio. Stack leaves beneath the cover scale proportionally. See Section 4.5 for complete implementation details.
+- **Responsive Scaling:** The cover scales fluidly between 600px width (at 900px viewport) and 350px width (at 375px minimum viewport) while maintaining a fixed 3:4 aspect ratio. Stack leaves beneath the cover scale proportionally. See Section 4.6 for complete implementation details.
 - **Typography:** All text elements are styled in warm vanilla off-white (`var(--c-cover-text)`, currently `#fdebc5`) controlled by a single CSS variable to provide contrast against the dark cover background. This includes headings, body text, links, and the cover footer.
 - **Header:** The standard `.guide-header` element is completely hidden (`display: none`) on the cover page—no title bar, no C-icon, no CONTENTS navigation. The cover displays only the content area.
 - **Ink Effects:** Headings (`h1`, `h2`) and the cover footer retain the `#inkBleed` SVG filter for texture, but use `mix-blend-mode: screen` instead of `multiply` (screen mode brightens and works better for light text on dark backgrounds).
@@ -522,7 +535,6 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - **Shadow:** Top-left dark recess (`rgba(0,0,0,0.4)`).
 - **Blend Mode:** `mix-blend-mode: multiply` to "burn" into the wood.
 - **Result:** Realistic engraving effect.
-- **Implementation:** `.mobile-clamp` (mobile menu button) appears in the `.guide-header` element, which is only visible on interior pages (the header is hidden entirely on the cover page via `display: none`).
 
 ### 5.3 Protocol C: The Technical Manual (Paper & Vellum)
 
@@ -536,7 +548,7 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
     - **Body Text (`p`, `strong`, `a`):** Color `var(--c-cover-text)` with `opacity: 0.95` for subtle ink density.
     - **Link Borders:** Button borders use `var(--c-cover-text)` for visual consistency.
     - **Cover Footer ("Est 2026"):** Color `var(--c-cover-text)` with `mix-blend-mode: screen` and `filter: url(#inkBleed)`.
-    - **Rationale:** The `screen` blend mode is used instead of `multiply` because it brightens rather than darkens—appropriate for light text on dark backgrounds. This preserves the organic ink aesthetic while ensuring readability on the black cover. All cover text references a single CSS variable for unified theming (see Section 4.5 for implementation details).
+    - **Rationale:** The `screen` blend mode is used instead of `multiply` because it brightens rather than darkens—appropriate for light text on dark backgrounds. This preserves the organic ink aesthetic while ensuring readability on the black cover. All cover text references a single CSS variable for unified theming (see Section 4.6 for implementation details).
 
 - **Pages (Interior Spreads):** Use separate pre-rendered background textures for left and right pages.
   - **Source Images:**
@@ -574,8 +586,8 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
       - **Headings (`h1`, `h2`):** Apply `filter: url(#inkBleed)` and `mix-blend-mode: multiply`. These are high-impact elements where the expensive filter is justified. Dark ink (`#1a1a1a`) on light paper.
       - **Body Text (`p`, `h3`, `li`):** Use `color: #1a1a1a` with `opacity: 0.9` to simulate ink density. **No blend mode or filter.** The carefully selected color and weight create the impression of ink without per-pixel blend calculations on every scroll frame.
     - **Cover Page (Dark Background Override):**
-      - **Headings (`h1`, `h2`):** Apply `filter: url(#inkBleed)` and `mix-blend-mode: screen` with off-white color (`#e0ddd5`). The `screen` blend mode brightens rather than darkens—essential for light text on dark backgrounds.
-      - **Body Text:** Use off-white color (`#d5d2ca`) with `opacity: 0.95` for subtle contrast.
+      - **Headings (`h1`, `h2`):** Apply `filter: url(#inkBleed)` and `mix-blend-mode: screen` with `var(--c-cover-text)` color (`#fdebc5`). The `screen` blend mode brightens rather than darkens—essential for light text on dark backgrounds.
+      - **Body Text:** Use `var(--c-cover-text)` color (`#fdebc5`) with `opacity: 0.95` for subtle contrast.
       - **Implementation:** Cover-specific styles are scoped with `body:not([data-state="open"])` selector to isolate the styling from interior pages.
 
 ### 5.4 Protocol D: The Navigation (Tabs & TOC)
@@ -916,8 +928,8 @@ Tabs switch sides based on the current spread position, simulating a physical bo
 
 **Responsive Behavior:**
 - **Desktop (> 1250px):** All tabs visible
-- **Tablet (900-1250px):** Tabs hidden (single-page view makes tabs awkward)
-- **Mobile (< 900px):** Tabs hidden (mobile menu navigation instead)
+- **Tablet (900-1250px):** Tabs hidden (single-page view)
+- **Mobile (< 900px):** Tabs hidden (single-page view)
 
 ### 5.5 Protocol E: The Entry Animation
 
@@ -969,12 +981,7 @@ npm run lint
 
 # Validate Content Fits Page Bounds
 npm run validate
-
-# Run Unit Tests (Coming Soon)
-# npm test
 ```
-
-We will implement basic regression tests for critical flows (visual regression or snapshot testing) to ensure the "Physicalism" isn't broken by CSS updates.
 
 ### 6.3 Content Validation (Physical Page Constraints)
 
@@ -1089,33 +1096,29 @@ All imagery must pass through the **Dither Protocol**.
 
 ---
 
-## 9.0 CONTENT STRATEGY ("Coming Soon")
+## 9.0 CONTENT STRATEGY
 
-Since the shop is being fitted out, secondary pages must communicate status without breaking the "Industrial" narrative.
+The site currently features placeholder content for pages under development.
 
-### 9.1 Inventory (`/inventory`)
+### 9.1 The Shop (`/shop/`)
 
-- **Status:** Offline.
+Displays the Table of Contents on the left page with dynamic spread pairings.
+
+### 9.2 Inventory (`/inventory/`)
+
+**Status:** Placeholder content indicating the page is offline.
 - **Message:** "STOCKROOM LOCKED. ANNUAL INVENTORY AUDIT IN PROGRESS."
-- **Visual:** A single dashed line and a timestamp of the next expected shipment.
 
-### 9.2 Fabrication (`/fabrication`)
+### 9.3 Fabrication (`/fabrication/`)
 
-- **Status:** Offline.
+**Status:** Placeholder content indicating maintenance status.
 - **Message:** "MACHINERY UNDER MAINTENANCE. CALIBRATING LOGIC GATES."
-- **Visual:** A technical diagram of a placeholder component.
 
-### 9.3 The Shop (`/shop`)
+### 9.4 Personnel (`/personnel/`)
 
-- **Status:** Offline.
-- **Message:** "SHIFT CHANGE. SWEEPING UP SAWDUST."
-
-### 9.4 Personnel (`/personnel`)
-
-- **Title:** "PERSONNEL"
-- **Role:** Nights and Weekends Manager.
-- **Content:** A cheeky bio explaining Dylan Webster is the sole proprietor and this is a side project.
-- **Vibe:** "Employee of the Month" (for 12 months in a row) style humor possible, or just a simple stamped ID card look.
+**Title:** "PERSONNEL"
+- **Role:** Nights and Weekends Manager
+- **Content:** Brief bio of Dylan Webster as sole proprietor
 
 ---
 
