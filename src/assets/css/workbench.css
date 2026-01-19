@@ -126,14 +126,16 @@ body {
    ----------------------------------------------------------- */
 .page-stack {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0; left: 0; right: 0;
+  height: 800px; /* Fixed stack height matching page */
   z-index: -1; /* Behind the main content page */
   pointer-events: none;
 }
 
 .stack-leaf {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0; left: 0; right: 0;
+  height: 800px; /* Fixed leaf height matching page */
   background-color: #d8cdb0;
   border: 1px solid rgba(139, 119, 101, 0.1); /* Very subtle edge */
   
@@ -143,7 +145,8 @@ body {
 .stack-leaf::before {
   content: "";
   position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
+  top: 0; right: 0; left: 0;
+  height: 800px; /* Fixed texture height */
   background-size: cover;
   background-position: center;
   opacity: 0.6; /* Slightly faded for depth illusion */
@@ -199,12 +202,14 @@ body {
    ----------------------------------------------------------- */
 .guide-page {
   min-height: 800px; /* Minimal height of the book */
+  max-height: 800px; /* Fixed height - paper doesn't grow */
   padding: 4rem 3rem;
   position: relative;
   width: 100%; 
   box-sizing: border-box;
   background-color: #d8cdb0;
   z-index: var(--z-page); /* Top of stack */
+  overflow: hidden; /* Clip content that exceeds paper bounds */
   
   /* Subtle shadow for page lift above the stack */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -215,11 +220,16 @@ body {
    SVG filters + gradients. The browser renders a simple image, not a math equation.
    - paper-right.webp contains: aged vellum color, paper grain, spine shading for RIGHT page
    - paper-left.webp contains: aged vellum color, paper grain, spine shading for LEFT page
+   
+   PHYSICALISM: Paper has fixed dimensions. The texture height is locked to 800px
+   to match the physical page size. This prevents texture stretching when content
+   is too long (content gets clipped, not the paper).
 */
 .guide-page::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0; left: 0; right: 0;
+  height: 800px; /* Fixed paper height - doesn't stretch */
   z-index: -1;
   background-position: center;
   background-repeat: no-repeat;

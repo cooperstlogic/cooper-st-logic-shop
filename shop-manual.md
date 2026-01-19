@@ -323,11 +323,60 @@ npm run format
 # Inspect HTML Structure (HTMLHint)
 npm run lint
 
+# Validate Content Fits Page Bounds
+npm run validate
+
 # Run Unit Tests (Coming Soon)
 # npm test
 ```
 
 We will implement basic regression tests for critical flows (visual regression or snapshot testing) to ensure the "Physicalism" isn't broken by CSS updates.
+
+### 6.3 Content Validation (Physical Page Constraints)
+
+**PHYSICALISM PRINCIPLE:** The Field Guide has fixed physical dimensions. Paper doesn't grow to accommodate overflow—content must fit within the page bounds.
+
+#### Page Dimensions
+
+- **Fixed Height:** 800px
+- **Padding:** 4rem (top) + 4rem (bottom) = 128px
+- **Header:** ~100px
+- **Usable Content Area:** ~572px
+
+#### Validation Script
+
+Run `npm run validate` to check if content exceeds the fixed page size:
+
+```bash
+npm run validate
+```
+
+**Output:**
+- ✅ **OK:** Content fits within page bounds
+- ⚠️ **WARNING:** Page is 90% full (approaching limit)
+- ❌ **ERROR:** Content overflows fixed page size
+
+**Build Integration:** The validation script runs automatically before each build via the `prebuild` hook in `package.json`. If content overflows, the build will fail with exit code 1, preventing deployment of broken layouts.
+
+#### Implementation Details
+
+The validation script (`validate-content.js`) estimates rendered height by analyzing Markdown content:
+
+- **Headings:** `h1` = 48px, `h2` = 36px, `h3` = 28px
+- **Paragraphs:** ~24px line height + 16px spacing
+- **Rules:** `<hr>` = 32px
+
+**Note:** These are rough estimates. For precise validation, test in the browser using `npm start`.
+
+#### Content Overflow Handling (CSS)
+
+When content exceeds the fixed page size:
+
+- `.guide-page`: `max-height: 800px` with `overflow: hidden`
+- `.guide-page::before`: Paper texture fixed at `height: 800px`
+- `.page-stack`: Stack leaves fixed at `height: 800px`
+
+**Result:** Content that exceeds 800px is clipped (hidden), not displayed. The paper texture doesn't stretch or create discontinuities.
 
 ---
 
@@ -360,7 +409,10 @@ We use **Netlify** as our shipping container. The deployment is atomic and immut
 2. Open the relevant Markdown file (`index.md`, `shop.md`).
 3. Edit the content using standard Markdown.
    - _Note:_ Do not use HTML tags for structure unless absolutely necessary.
-4. Commit and Push. Netlify handles the rest.
+4. **Validate content fits within page bounds:** Run `npm run validate` to ensure content doesn't exceed the fixed 800px page height (~572px usable area after padding/header).
+   - If validation fails, reduce content length or split across multiple pages.
+   - Remember: Paper has fixed dimensions—content must fit the physical page.
+5. Commit and Push. Netlify handles the rest.
 
 ### SOP-02: Adding or Renaming Pages (Navigation Manifest)
 
