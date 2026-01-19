@@ -3,12 +3,10 @@ layout: base.njk
 title: The Shop
 ---
 
-# 01. THE SHOP
+## THE SHOP
 
-Welcome to COOPER ST.
+Welcome to COOPER ST. We keep an inventory of off the shelf software products [_software products_](/inventory/) and have fabrication capacity for custom crafted [_product strategy_](/fabrication/).
 
-The LOGIC SHOP has an inventory of off the shelf software products and fabrication capacity for custom crafted product strategy.
+We are currently fitting out the shop—sweeping up the sawdust and getting the tools organized.
 
-We are currently fitting out the shop. Sweeping up the sawdust and getting the tools organized.
-
-Leave a note: [hello@cooperstlogicshop.com](mailto:hello@cooperstlogicshop.com)
+Leave a note: [_hello@cooperstlogicshop.com_](mailto:hello@cooperstlogicshop.com)

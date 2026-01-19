@@ -3,10 +3,8 @@ layout: base.njk
 title: Inventory
 ---
 
-# 02. INVENTORY
+## INVENTORY
 
-**STATUS: OFFLINE**
+### STATUS: OFFLINE
 
 STOCKROOM LOCKED. ANNUAL INVENTORY AUDIT IN PROGRESS.
-
-<hr class="draughtsman-line">

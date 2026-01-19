@@ -533,6 +533,21 @@ hr,
   margin-top: 1rem;
 }
 
+/* IN-LINE LINKS: Consistent hover state for body hyperlinks */
+.guide-page article a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(26, 26, 26, 0.2); 
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.guide-page article a:hover {
+  color: var(--c-redwood);
+  text-decoration-color: var(--c-redwood);
+}
+
 /* -----------------------------------------------------------
    COMPONENTS: NAVIGATION (TOC)
    ----------------------------------------------------------- */
