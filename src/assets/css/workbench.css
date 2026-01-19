@@ -280,6 +280,36 @@ body:not([data-state="open"]) .guide-page.right::before {
   /* No spine shadow needed on cover - it's a flat board */
 }
 
+/* COVER TEXT STYLING: White text for dark cover background */
+body:not([data-state="open"]) .guide-page.right h1,
+body:not([data-state="open"]) .guide-page.right h2,
+body:not([data-state="open"]) .guide-page.right .guide-header {
+  color: #f5f5f5; /* Off-white for better ink effect visibility */
+  mix-blend-mode: screen; /* Screen blend mode works better for light text */
+  filter: url(#inkBleed); /* Keep the ink bleed effect */
+}
+
+body:not([data-state="open"]) .guide-page.right p,
+body:not([data-state="open"]) .guide-page.right strong,
+body:not([data-state="open"]) .guide-page.right a,
+body:not([data-state="open"]) .guide-page.right h3,
+body:not([data-state="open"]) .guide-page.right h4,
+body:not([data-state="open"]) .guide-page.right h5,
+body:not([data-state="open"]) .guide-page.right h6 {
+  color: #e8e8e8; /* Slightly lighter gray-white for body text */
+  opacity: 0.95; /* Maintain the ink density effect */
+}
+
+/* Cover page link/button styling */
+body:not([data-state="open"]) .guide-page.right a {
+  border-color: #f5f5f5 !important; /* White border for button */
+  color: #f5f5f5 !important;
+}
+
+body:not([data-state="open"]) .guide-page.right a:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
+}
+
 
 /* Open State: Show the left page & expand container */
 body[data-state="open"] .page-wrapper.left {
