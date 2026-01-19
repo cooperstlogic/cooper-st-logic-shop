@@ -69,7 +69,7 @@ cooper-st-logic-shop/
 │   ├── assets/
 │   │   ├── css/           # The Materiality Engine
 │   │   │   ├── reset.css
-│   │   │   ├── variables.css  # Design tokens: colors, z-index scale, tab spacing
+│   │   │   ├── variables.css  # Design tokens: colors, z-index scale, tab spacing, page dimensions
 │   │   │   └── workbench.css
 │   │   ├── img/           # Textures & Icons
 │   │   │   ├── icon-c.svg
@@ -116,54 +116,122 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
 
 ### 4.1 The Physics of the Book
 
-- **The Cover (Home Page `/`):** The home page behaves as the closed cover of the Field Guide (modeled after the Whole Earth Catalog).
-  - **Content:** Centered title "COOPER ST LOGIC SHOP" with a link to "access the shop" and an "Est 2026" footer positioned absolutely at the bottom-left corner.
-  - **State:** `data-state` attribute is NOT set to "open" on the body element.
-  - **Texture:** Uses `cover.webp` as the background—a baked cardstock texture with a dark/black base color, distinct from the interior page paper.
-  - **Responsive Scaling:** The cover scales fluidly between 600px width (at 900px viewport) and 350px width (at 375px minimum viewport) while maintaining a fixed 3:4 aspect ratio. Stack leaves beneath the cover scale proportionally. See Section 4.5 for complete implementation details.
-  - **Typography:** All text elements are styled in warm vanilla off-white (`var(--c-cover-text)`, currently `#fdebc5`) controlled by a single CSS variable to provide contrast against the dark cover background. This includes headings, body text, links, and the cover footer.
-  - **Header:** The standard `.guide-header` element is completely hidden (`display: none`) on the cover page—no title bar, no C-icon menu. The cover displays only the content area.
-  - **Ink Effects:** Headings (`h1`, `h2`) and the cover footer retain the `#inkBleed` SVG filter for texture, but use `mix-blend-mode: screen` instead of `multiply` (screen mode brightens and works better for light text on dark backgrounds).
-  - **Decorative Elements:** The divider line (`.draughtsman-line`) within the article content is hidden (`display: none`) on the cover.
-- **The Open Book:** When navigating to any page other than `/`, the guide "flips" open to a two-page spread.
-  - **State:** `data-state="open"` is set on the body element via Nunjucks conditional logic.
-  - **Layout:** `.field-guide-book` container uses `display: flex` and expands to ~1100px.
+**PHYSICALISM PRINCIPLE:** The Field Guide maintains consistent dimensions throughout—matching the physical constraints of a real printed guide.
+
+#### Page Dimensions & Book Width
+
+- **Single Page:** 600px width × 800px height (3:4 aspect ratio)
+- **Open Book (Two-Page Spread):** 1200px width (600px × 2)
+- **Design Rationale:** All pages (cover and interior) share identical width for consistent physicalism. The open book is exactly double the width of a single page.
+
+#### The Cover (Home Page `/`)
+
+The home page behaves as the closed cover of the Field Guide (modeled after the Whole Earth Catalog).
+
+- **Content:** Centered title "COOPER ST LOGIC SHOP" with a link to "access the shop" and an "Est 2026" footer positioned absolutely at the bottom-left corner.
+- **State:** `data-state` attribute is NOT set to "open" on the body element.
+- **Texture:** Uses `cover.webp` as the background—a baked cardstock texture with a dark/black base color, distinct from the interior page paper.
+- **Responsive Scaling:** The cover scales fluidly between 600px width (at 900px viewport) and 350px width (at 375px minimum viewport) while maintaining a fixed 3:4 aspect ratio. Stack leaves beneath the cover scale proportionally. See Section 4.5 for complete implementation details.
+- **Typography:** All text elements are styled in warm vanilla off-white (`var(--c-cover-text)`, currently `#fdebc5`) controlled by a single CSS variable to provide contrast against the dark cover background. This includes headings, body text, links, and the cover footer.
+- **Header:** The standard `.guide-header` element is completely hidden (`display: none`) on the cover page—no title bar, no C-icon menu. The cover displays only the content area.
+- **Ink Effects:** Headings (`h1`, `h2`) and the cover footer retain the `#inkBleed` SVG filter for texture, but use `mix-blend-mode: screen` instead of `multiply` (screen mode brightens and works better for light text on dark backgrounds).
+- **Decorative Elements:** The divider line (`.draughtsman-line`) within the article content is hidden (`display: none`) on the cover.
+
+#### The Open Book (Two-Page Spreads)
+
+When navigating to any page other than `/`, the guide "flips" open to a two-page spread.
+
+- **State:** `data-state="open"` is set on the body element via Nunjucks conditional logic.
+- **Layout:** `.field-guide-book` container uses `display: flex` and expands to 1200px (600px × 2 pages).
+
+#### Dynamic Page Positioning System
+
+**PHYSICALISM PRINCIPLE:** Pages are automatically positioned like a real book based on their navigation order. Odd-numbered pages are RIGHT pages (recto), even-numbered pages are LEFT pages (verso).
+
+- **Page Side Assignment (from `navigation.json` ID):**
+  - **Odd IDs (1, 3, 5...):** RIGHT pages (recto)
+  - **Even IDs (2, 4, 6...):** LEFT pages (verso)
+
+- **Automatic Spread Pairing:**
+  - Pages 1-2: TOC (left) + Shop (right)
+  - Pages 2-3: Inventory (left) + Fabrication (right)
+  - Pages 4-5: Personnel (left) + (next page, if added)
+
+- **Content Logic (Dynamic):**
+  - When viewing a RIGHT page → paired LEFT page content appears in left wrapper
+  - When viewing a LEFT page → paired RIGHT page content appears in right wrapper
+  - Special case: `/shop/` (id=1) always shows TOC on the left side
+
+- **Implementation:** Template logic in `base.njk` calculates page side using modulo math (`id % 2 == 0` for left pages) and dynamically fetches paired page content from Eleventy collections.
+
+#### Page-Specific Content
+
 - **Left Page Logic:**
   - **On `/shop/` (The Shop):** Displays the Table of Contents (`nav.njk`) and copyright footer.
-  - **On Other Pages:** Displays contextual "Field Notes" content defined in the page's front matter as `left_page_content`.
-  - **Example:** Inventory page shows "Stockroom Access" rules, Personnel shows an ID card.
-- **Right Page:** Always contains the primary page content (Markdown body).
+  - **On LEFT Pages (even IDs):** Displays the page's primary content.
+  - **On RIGHT Pages (odd IDs):** Displays the paired left page's content from the spread.
+  - **Custom Content:** Pages can define `left_page_content` in front matter for contextual "Field Notes" (e.g., Inventory shows "Stockroom Access" rules, Personnel shows an ID card).
+
+- **Right Page Logic:**
+  - **On RIGHT Pages (odd IDs):** Displays the page's primary content (Markdown body).
+  - **On LEFT Pages (even IDs):** Displays the paired right page's content from the spread.
   - **Spine Shadow:** Baked into `paper-right.webp`—appears on the inner edge to simulate depth in the gutter binding.
 
-- **Bookmark Tabs:** Navigation is handled via realistic bookmark tabs sticking out from the book edges.
-  - **Position Logic:** Tab positions are calculated via CSS: `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))`. Each tab receives a `--tab-index` custom property from the template loop, ensuring positions are derived from variables—not hardcoded magic numbers.
-  - **Stability:** Tabs maintain their vertical position whether they appear on the left or right side, simulating physical tabs attached to specific pages.
-  - **Layering:** Tabs use the `--z-tab` variable (default: 1), positioned between the page stack (`--z-stack`) and the primary page content (`--z-page`). See **Z-Index Scale** below.
-  - **Previous Pages:** Tabs appear on the left side (`.bookmark-tab.left`).
-  - **Next Pages:** Tabs appear on the right side (`.bookmark-tab.right`).
-  - **Implementation:** `base.njk` loops through `navigation.items` (from `_data/navigation.json`) to generate tabs dynamically.
+- **Bookmark Tabs:** Navigation is handled via realistic bookmark tabs sticking out from the book edges. See **Section 5.4 Protocol D** for complete tab navigation documentation.
 
 - **Symmetry:** Both left and right pages use `flex: 1` for equal 50/50 width distribution.
 
 - **Page Depth:** Physical DOM implementation (`.page-stack` containing 5 `.stack-leaf` divs) nested within page wrappers to create a realistic, fanned book edge. Shadow artifacts on the inner spine edges are avoided by clipping the content layer shadows.
   - **Accessibility:** The `.page-stack` element carries `aria-hidden="true"` to prevent screen readers from announcing the decorative empty divs.
 
-### 4.2 Responsive States
+### 4.2 Responsive States & Breakpoints
+
+**PHYSICALISM PRINCIPLE:** When the viewport can't fit a two-page spread, we don't squish the pages together (that breaks the physical metaphor). Instead, we transition to a single-page view—like holding the guide with one page visible, ready to turn.
 
 **Transition Specification:** All layout transitions use `0.6s cubic-bezier(0.25, 1, 0.5, 1)` to mimic the weight of paper and wood.
 
-1. **The Workbench (Desktop > 900px):**
-   - **Home:** Centered Cover at full size (600px × 800px).
-   - **Open State:** Two-page spread layout (Left: TOC or Field Notes | Right: Content).
-   - **Navigation:** Bookmark tabs for page-to-page navigation.
-   - **Book Width:** `1100px` max-width when open.
-2. **The Folded Notebook (Mobile < 900px):**
-   - **Home (Cover):** Fluidly scales from 600px width down to 350px width (at 375px viewport minimum), maintaining 3:4 aspect ratio throughout. No horizontal scrolling required—the cover "recedes" naturally. See Section 4.5 for detailed scaling formulas.
-   - **Layout (Open Pages):** Single column "Folded" view.
-   - **Left Page:** Hidden completely (`display: none !important`).
-   - **Right Page:** Styled with a left border to simulate a folded-back spine.
-   - **Navigation:** Mobile menu via the C-Clamp button.
-   - **Background:** Scaled wooden texture to maintain context.
+#### Breakpoint 1: Full Spread View (Desktop > 1250px)
+
+- **Home:** Centered Cover at full size (600px × 800px).
+- **Open State:** Two-page spread layout showing both pages of the current spread.
+  - Left page displays: TOC (for Shop) or paired content
+  - Right page displays: Primary content or paired content
+- **Navigation:** All bookmark tabs visible on appropriate sides based on spread position.
+- **Book Width:** 1200px (600px × 2 pages).
+
+#### Breakpoint 2: Single Page View (900px - 1250px)
+
+**PHYSICALISM PRINCIPLE:** At this breakpoint, the viewport can't fit a two-page spread, so we show only the primary page (the one you navigated to) at its full physical scale.
+
+- **Home (Cover):** Centered at full size (600px × 800px).
+- **Open State:** Single page view.
+  - Only the primary page wrapper (marked with `.is-primary` class) is displayed
+  - Paper maintains its physical scale (600px width, 800px height)
+  - Left pages show left paper texture (spine shadow on right)
+  - Right pages show right paper texture (spine shadow on left)
+- **Navigation:** Tabs hidden at this breakpoint (would stick out awkwardly from single page).
+- **Container Width:** 600px (single page).
+
+#### Breakpoint 3: Scaled Mobile View (< 900px)
+
+**PHYSICALISM PRINCIPLE:** Below this breakpoint, both cover and inner pages scale fluidly—like moving the guide further from your eye. The aspect ratio is preserved to maintain the illusion of a real physical object.
+
+- **Home (Cover):** Fluidly scales from 600px width down to 350px width (at 375px viewport minimum), maintaining 3:4 aspect ratio throughout. No horizontal scrolling required—the cover "recedes" naturally. See Section 4.5 for detailed scaling formulas.
+- **Layout (Open Pages):** Single page view with fluid scaling.
+  - Only the primary page wrapper is displayed (`.is-primary` class)
+  - Page scales using same formulas as cover (600px → 350px width)
+  - Height scales proportionally to maintain 3:4 aspect ratio
+  - Stack leaves scale with the page dimensions
+- **Navigation:** Mobile menu via the C-Clamp button (tabs hidden).
+- **Background:** Scaled wooden texture to maintain context.
+
+#### Summary of Page Widths Across Breakpoints
+
+| Viewport | Cover Width | Open Book Width | Behavior |
+|----------|-------------|-----------------|----------|
+| > 1250px | 600px | 1200px (2 pages) | Full two-page spread |
+| 900-1250px | 600px | 600px (1 page) | Single page at full scale |
+| < 900px | 600px → 350px | 600px → 350px | Fluid scaling with 3:4 ratio |
 
 ### 4.3 Z-Index Scale (Layering Hierarchy)
 
@@ -180,7 +248,43 @@ To prevent "z-index wars" when adding new layers (modals, tooltips, etc.), we fo
 
 **Rule:** When adding a new layer, select from this scale rather than inventing a new number.
 
-### 4.4 Mobile Breakpoint Handling
+### 4.4 CSS Variables (Design Tokens)
+
+To maintain consistency and enable global adjustments, all critical dimensions are defined as CSS custom properties in `variables.css`:
+
+#### Page Dimensions
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `--page-width` | 600px | Width of a single page (cover and interior) |
+| `--page-height` | 800px | Height of a single page (fixed) |
+| `--book-width` | 1200px | Width of open book (two pages side by side) |
+
+**Design Rationale:** These variables enforce consistent physicalism—the cover and all interior pages share identical dimensions, and the open book is exactly double the single page width.
+
+#### Tab Positioning
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `--tab-start` | 100px | First tab offset from top of book |
+| `--tab-height` | 70px | Vertical spacing between tabs |
+| `--tab-width` | 45px | Tab width (horizontal depth from book edge) |
+| `--tab-depth` | 50px | Tab height (vertical text area) |
+
+**Usage:** Tab positions are calculated as `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))` where `--tab-index` is set inline from the navigation ID.
+
+#### Color Palette
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `--c-cover-text` | #fdebc5 | Warm vanilla off-white for cover typography |
+| `--c-wood-base` | #5D4037 | Base workbench wood color |
+| `--c-wood-highlight` | #8D6E63 | Wood highlight tones |
+| `--c-wood-shadow` | #3E2723 | Wood shadow/carved text color |
+
+**Rule:** When adjusting dimensions or colors, modify these variables rather than hardcoding values throughout the CSS.
+
+### 4.5 Mobile Breakpoint Handling
 
 The mobile state transition uses `window.matchMedia` instead of a `resize` event with `setTimeout` debouncing. This is more performant and only fires when the 900px breakpoint is actually crossed—not on every pixel change during window dragging.
 
@@ -189,22 +293,23 @@ const mobileQuery = window.matchMedia("(max-width: 900px)");
 mobileQuery.addEventListener("change", handleBreakpointChange);
 ```
 
-### 4.5 Responsive Cover Scaling (Fluid Physicalism)
+### 4.6 Responsive Page Scaling (Fluid Physicalism)
 
-**PHYSICALISM PRINCIPLE:** The cover scales proportionally as the viewport shrinks, maintaining its physical aspect ratio. This preserves the illusion of a real object receding into the distance rather than being cropped or distorted.
+**PHYSICALISM PRINCIPLE:** Both cover and inner pages scale proportionally as the viewport shrinks, maintaining their physical aspect ratio (3:4). This preserves the illusion of a real object receding into the distance rather than being cropped or distorted.
 
 #### Design Philosophy
 
 - **Minimum Assumed Viewport:** 375px (smallest common mobile browser width)
 - **Scaling Strategy:** Fluid responsive sizing (linear interpolation) between 900px and 375px breakpoints
 - **Aspect Ratio:** Fixed 3:4 ratio (600px width : 800px height) maintained across all viewport sizes
-- **Background Visibility:** At minimum viewport (375px), cover reaches ~350px width, leaving ~12.5px margin on each side to reveal the workbench surface
+- **Consistency:** Cover and inner pages use IDENTICAL scaling formulas for uniform physicalism
+- **Background Visibility:** At minimum viewport (375px), pages reach ~350px width, leaving ~12.5px margin on each side to reveal the workbench surface
 
-#### Implementation: Fluid Scaling Formulas
+#### Implementation: Fluid Scaling Formulas (Universal)
 
-The cover uses CSS `clamp()` with calculated viewport-based formulas to scale smoothly between breakpoints:
+Both cover and inner pages use CSS `clamp()` with calculated viewport-based formulas to scale smoothly between breakpoints:
 
-**Width Scaling:**
+**Width Scaling (Cover & Inner Pages):**
 ```css
 width: clamp(350px, calc(171.43px + 47.62vw), 600px);
 ```
@@ -212,7 +317,7 @@ width: clamp(350px, calc(171.43px + 47.62vw), 600px);
 - At 375px viewport → 350px width (minimum)
 - Linear interpolation: Slope = (600-350)/(900-375) = 250/525 ≈ 0.476
 
-**Height Scaling (Proportional):**
+**Height Scaling (Proportional - Cover & Inner Pages):**
 ```css
 height: clamp(467px, calc(228.57px + 63.49vw), 800px);
 ```
@@ -231,22 +336,36 @@ height: clamp(467px, calc(228.57px + 63.49vw), 800px);
 #### Implementation: Supporting Elements
 
 **Stack Leaves (Underlying Pages):**
-The page stack behind the cover must scale identically to maintain physical realism:
+The page stack must scale identically to maintain physical realism. Both cover and inner page stacks use the same formula:
 
 ```css
+/* Cover state */
 body:not([data-state="open"]) .page-stack,
 body:not([data-state="open"]) .stack-leaf,
 body:not([data-state="open"]) .stack-leaf::before {
   height: clamp(467px, calc(228.57px + 63.49vw), 800px);
 }
+
+/* Open state (inner pages) */
+body[data-state="open"] .page-stack,
+body[data-state="open"] .stack-leaf,
+body[data-state="open"] .stack-leaf::before {
+  height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+}
 ```
 
-**Cover Texture:**
-The cover background image fills the scaled dimensions:
+**Page Textures:**
+The background images fill the scaled dimensions:
 
 ```css
+/* Cover texture */
 body:not([data-state="open"]) .guide-page.right::before {
   height: 100%; /* Fills the dynamically scaled cover height */
+}
+
+/* Inner page textures */
+body[data-state="open"] .guide-page::before {
+  height: 100%; /* Fills the dynamically scaled page height */
 }
 ```
 
@@ -390,13 +509,102 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 
 ### 5.4 Protocol D: The Navigation (Tabs & TOC)
 
-- **Table of Contents:** Only visible on the left page when viewing `/shop/`.
-  - **Implementation:** Conditional logic in `base.njk`: `{% if page.url == '/shop/' %}{% include "nav.njk" %}{% endif %}`.
-  - **Data Source:** `nav.njk` loops over `navigation.items` from `_data/navigation.json` to generate the TOC list.
-- **Tabs:** Hand-written style labels protruding from the page edges.
-  - **Visuals:** Slightly lighter than page color (`#FDFBF6`) with subtle shadow.
-  - **Interaction:** Hover effects that pull the tab out slightly (`transform: translateX(3px)`).
-  - **Stability:** CSS-variable-driven `top` positions (via `--tab-index`) ensure tabs don't jump when switching sides and can be adjusted globally from `variables.css`.
+#### Table of Contents
+
+- **Visibility:** Only visible on the left page when viewing `/shop/`.
+- **Implementation:** Conditional logic in `base.njk`: `{% if page.url == '/shop/' %}{% include "nav.njk" %}{% endif %}`.
+- **Data Source:** `nav.njk` loops over `navigation.items` from `_data/navigation.json` to generate the TOC list.
+
+#### Physical Bookmark Tabs (Realistic Page Markers)
+
+**PHYSICALISM PRINCIPLE:** Tabs are physically attached to pages in the guide. Each tab has a fixed vertical position based on its page number, and the tab's side (left or right edge) depends on whether that page has been turned past the current spread.
+
+##### Tab Positioning System
+
+**Fixed Vertical Positions:**
+- Each tab has a FIXED vertical position calculated from its navigation ID
+- Position formula: `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))`
+- `--tab-index` = navigation ID - 1 (for 0-based positioning)
+- Example: Page 2 (INV) → `--tab-index: 1` → top: 100px + (70px × 1) = 170px
+
+**Dynamic Side Assignment (Spread-Based):**
+
+Tabs switch sides based on the current spread position, simulating a physical book where turned pages stack on the left and unread pages stack on the right.
+
+- **Pages Already Turned (ID <= spreadLeftId):**
+  - Tabs appear on the **LEFT** edge of the book
+  - These pages are in the "read" stack
+  
+- **Current Right Page & Beyond (ID >= spreadRightId):**
+  - Tabs appear on the **RIGHT** edge of the book
+  - These pages are in the "unread" stack
+
+**Example: Pages 2-3 Spread (Inventory/Fabrication):**
+- SHOP tab (id=1) → LEFT side (already turned)
+- INV tab (id=2) → LEFT side (left page of current spread)
+- FAB tab (id=3) → RIGHT side (right page of current spread)
+- PERS tab (id=4) → RIGHT side (ahead, not yet reached)
+
+##### Tab Interactivity
+
+**Active Tabs (Clickable):**
+- Rendered as `<a>` elements with `href` to navigate
+- Hover effect: slightly extends outward (`transform: translateX(±3px)`)
+- Lighter background on hover (`#e0d5bb`)
+
+**Inactive Tabs (Current Spread):**
+- Tabs for pages currently visible in the spread are non-clickable
+- Rendered as `<span>` elements instead of `<a>` links
+- Styled with `pointer-events: none` and `cursor: default`
+- No hover effects (you're already viewing this page)
+
+**Example on Pages 2-3:** INV and FAB tabs are inactive (both pages visible), while SHOP and PERS tabs remain clickable.
+
+##### Visual Design
+
+- **Color:** All tabs use paper color (`#d8cdb0`) to match the physical pages
+- **Border:** Subtle border (`rgba(139, 119, 101, 0.3)`) for definition
+- **Shadow:** `1px 1px 3px rgba(0,0,0,0.15)` for depth
+- **Typography:** Vertical text (`writing-mode: vertical-rl`) in handwriting font
+- **Size:** `45px` wide × `50px` tall (controlled by `--tab-width` and `--tab-depth`)
+
+##### Implementation Details
+
+**Template Logic (base.njk):**
+```nunjucks
+{% for item in navigation.items %}
+  {% set isInCurrentSpread = (item.id == spreadLeftId or item.id == spreadRightId) %}
+  
+  {% if item.id <= spreadLeftId %}
+    {# Tab goes on LEFT side #}
+    {% if isInCurrentSpread %}
+      <span class="bookmark-tab left is-current" style="--tab-index: {{ item.id - 1 }}">
+        {{ item.tabLabel }}
+      </span>
+    {% else %}
+      <a href="{{ item.url }}" class="bookmark-tab left" style="--tab-index: {{ item.id - 1 }}">
+        {{ item.tabLabel }}
+      </a>
+    {% endif %}
+  {% else %}
+    {# Tab goes on RIGHT side #}
+    {# ... similar logic ... #}
+  {% endif %}
+{% endfor %}
+```
+
+**CSS Variables (variables.css):**
+```css
+--tab-start: 100px;   /* First tab offset from top */
+--tab-height: 70px;   /* Vertical spacing between tabs */
+--tab-width: 45px;    /* Tab width */
+--tab-depth: 50px;    /* Tab height (vertical text area) */
+```
+
+**Responsive Behavior:**
+- **Desktop (> 1250px):** All tabs visible
+- **Tablet (900-1250px):** Tabs hidden (single-page view makes tabs awkward)
+- **Mobile (< 900px):** Tabs hidden (mobile menu navigation instead)
 
 ### 5.5 Protocol E: The Entry Animation
 
@@ -544,10 +752,19 @@ We use **Netlify** as our shipping container. The deployment is atomic and immut
    - `url`: The page path (e.g., `/new-page/`).
    - `tabLabel`: Short label for bookmark tabs (e.g., `"NEW"`).
    - `tocLabel`: Full name for Table of Contents (e.g., `"NEW PAGE"`).
-   - `id`: Unique integer for ordering (determines which tabs appear left vs. right).
+   - `id`: Unique sequential integer for ordering.
+     - **IMPORTANT:** The ID determines page side assignment:
+       - **Odd IDs (1, 3, 5...)**: RIGHT pages (recto)
+       - **Even IDs (2, 4, 6...)**: LEFT pages (verso)
+     - Pages automatically pair in spreads based on sequential IDs
+     - Example: ID 4 (Personnel, left) pairs with ID 5 (next page, right)
    - `number`: Two-digit section number (e.g., `"05"`).
 3. Create the corresponding Markdown file in `src/` with the correct front matter.
-4. The TOC and bookmark tabs will auto-generate from this manifest.
+   - Add `layout: base.njk` to front matter
+   - Add `title: Page Title` for the page heading
+   - Optionally add `left_page_content: |` for custom left-side field notes
+4. The TOC, bookmark tabs, and spread pairings will auto-generate from this manifest.
+5. Pages will automatically position as left or right based on their ID (odd=right, even=left).
 
 ### SOP-03: Image Processing
 
