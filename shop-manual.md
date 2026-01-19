@@ -78,8 +78,8 @@ cooper-st-logic-shop/
 │   │   │   ├── paper-right.webp # Baked page texture for right pages
 │   │   │   ├── desktop.webp
 │   │   │   └── desktop.jpg
-│   │   └── js/            # Client Logic (Contents Navigation & Flip State)
-│   │       └── clamp.js
+│   │   └── js/            # Client Logic (Contents Navigation & TOC Toggle)
+│   │       └── clamp.js   # Handles C-icon clicks, TOC toggle, breakpoint detection
 │   ├── index.md           # [COVER]
 │   ├── shop.md            # [01 // THE SHOP]
 │   ├── inventory.md       # [02 // INVENTORY]
@@ -209,20 +209,26 @@ When navigating to any page other than `/`, the guide "flips" open to a two-page
   - Paper maintains its physical scale (600px width, 800px height)
   - Left pages show left paper texture (spine shadow on right)
   - Right pages show right paper texture (spine shadow on left)
-- **Navigation:** Tabs hidden at this breakpoint (would stick out awkwardly from single page).
+- **Navigation:** 
+  - Tabs hidden at this breakpoint (would stick out awkwardly from single page)
+  - C-icon/CONTENTS link toggles TOC overlay on current page (no navigation)
+  - TOC overlay appears with 0.2s fade transition
 - **Container Width:** 600px (single page).
 
 #### Breakpoint 3: Scaled Mobile View (< 900px)
 
 **PHYSICALISM PRINCIPLE:** Below this breakpoint, both cover and inner pages scale fluidly—like moving the guide further from your eye. The aspect ratio is preserved to maintain the illusion of a real physical object.
 
-- **Home (Cover):** Fluidly scales from 600px width down to 350px width (at 375px viewport minimum), maintaining 3:4 aspect ratio throughout. No horizontal scrolling required—the cover "recedes" naturally. See Section 4.5 for detailed scaling formulas.
+- **Home (Cover):** Fluidly scales from 600px width down to 350px width (at 375px viewport minimum), maintaining 3:4 aspect ratio throughout. No horizontal scrolling required—the cover "recedes" naturally. See Section 4.6 for detailed scaling formulas.
 - **Layout (Open Pages):** Single page view with fluid scaling.
   - Only the primary page wrapper is displayed (`.is-primary` class)
   - Page scales using same formulas as cover (600px → 350px width)
   - Height scales proportionally to maintain 3:4 aspect ratio
   - Stack leaves scale with the page dimensions
-- **Navigation:** Mobile menu via the C-Clamp button (tabs hidden).
+- **Navigation:** 
+  - Tabs hidden (single page view)
+  - C-icon/CONTENTS link toggles TOC overlay on current page (same as Breakpoint 2)
+  - TOC overlay scales fluidly with page dimensions
 - **Background:** Scaled wooden texture to maintain context.
 
 #### Summary of Page Widths Across Breakpoints
@@ -289,18 +295,48 @@ To maintain consistency and enable global adjustments, all critical dimensions a
 The `clamp.js` file handles all client-side navigation interactivity, using `window.matchMedia` for performant breakpoint detection instead of `resize` events with `setTimeout` debouncing. This only fires when breakpoints are actually crossed—not on every pixel change during window dragging.
 
 **Contents Navigation:**
-- Manages clicks on `[data-contents-nav]` elements (C-icon + CONTENTS label)
-- Detects viewport state via media queries (single page vs full width)
-- Toggles `data-flip="toc"` attribute on body element for TOC display
-- Handles URL parameter (`?toc`) for deep linking to TOC view
-- Resets flip state when crossing back to full width view
+- Intercepts clicks on all `[data-contents-nav]` elements (C-icon + CONTENTS label)
+- Detects viewport state via media queries to determine behavior:
+  - **Full Width (>= 1250px):** Standard navigation to `/shop/` page
+  - **Single Page (< 1250px):** Toggle TOC overlay on current page
+- Toggles `data-flip="toc"` attribute on body element to show/hide TOC overlay
+- Automatically resets flip state when viewport expands back to full width
+
+**Behavior by Viewport:**
+```javascript
+// Full width: navigate to /shop/
+if (!isSinglePageView()) {
+  window.location.href = "/shop/";
+}
+
+// Single page: toggle TOC overlay
+else {
+  const currentFlip = document.body.getAttribute("data-flip");
+  if (currentFlip === "toc") {
+    document.body.removeAttribute("data-flip");
+  } else {
+    document.body.setAttribute("data-flip", "toc");
+  }
+}
+```
 
 **Breakpoint Monitoring:**
 ```javascript
 const singlePageQuery = window.matchMedia("(max-width: 1250px)");
 const mobileQuery = window.matchMedia("(max-width: 900px)");
+
+// Combined check for either breakpoint
+const isSinglePageView = () => singlePageQuery.matches || mobileQuery.matches;
+
+// Reset state when returning to full width
 singlePageQuery.addEventListener("change", handleBreakpointChange);
 ```
+
+**Performance Notes:**
+- No URL parameters or query strings needed (toggle is purely client-side)
+- No `resize` event listeners (only breakpoint change events)
+- Minimal DOM manipulation (single attribute toggle on body element)
+- CSS handles all visual transitions via `data-flip` attribute selector
 
 ### 4.6 Responsive Page Scaling (Fluid Physicalism)
 
@@ -557,74 +593,200 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 
 ##### Interaction Behavior
 
-**Full Width View (Viewport > 1250px):**
+**Full Width View (Viewport >= 1250px):**
 - Clicking navigates directly to `/shop/` page
 - Shows both TOC (left page) and main content (right page) in spread view
+- Standard navigation behavior - no toggle functionality
 
-**Single Page View (Viewport ≤ 1250px or ≤ 900px):**
-- If currently on THE SHOP page: Toggles flip between main content and TOC
-  - `data-flip="toc"` attribute on body shows left page (TOC)
-  - Removing attribute shows right page (main content)
-- If on any other page: Navigates to `/shop/?toc`
-  - URL parameter triggers automatic flip to show TOC on arrival
-  - Parameter is cleaned from URL via `history.replaceState()` after flip
+**Single Page View (Viewport < 1250px):**
+- Clicking toggles between page content and TOC overlay on the **current page**
+- **No navigation occurs** - user stays on the current page
+- Toggle behavior:
+  - First click: `data-flip="toc"` attribute set on body → TOC overlay fades in
+  - Second click: `data-flip` attribute removed → TOC overlay fades out, content returns
+- Works on all pages (not just THE SHOP)
+
+**TOC Overlay Structure:**
+- Complete left page replica including:
+  - Full page styling (`.guide-page.left`) with paper texture
+  - Header with "COOPER ST" title
+  - Functional C-icon and "CONTENTS" label (clicking toggles back to content)
+  - Table of contents generated from `navigation.json`
+  - Footer with copyright
+- Positioned absolutely over page content (`position: absolute`, `z-index: calc(var(--z-page) + 1)`)
+- Hidden by default (`opacity: 0`, `pointer-events: none`)
+
+**Transition Effect:**
+- Simple fade transition: `0.2s ease`
+- When toggling TO TOC:
+  - Page content: `opacity: 0`, `pointer-events: none`
+  - TOC overlay: `opacity: 1`, `pointer-events: auto`
+- When toggling back TO content:
+  - Reverse transition automatically applied
 
 **Breakpoint Detection:**
 - Uses `window.matchMedia("(max-width: 1250px)")` for performant breakpoint detection
-- Flip state automatically resets when returning to full width view
+- Flip state automatically resets when returning to full width view (>= 1250px)
 - No resize event listeners - only fires on actual breakpoint crossing
 
 ##### Implementation Details
 
 **Template Structure (base.njk):**
+
+Each page wrapper contains two sections: a TOC overlay and the regular page content.
+
 ```html
-<!-- Left Page Header -->
-<div class="header-contents-group">
-  <a href="/shop/" class="contents-link" data-contents-nav>
-    <svg class="contents-icon" width="28" height="28" viewBox="0 0 64 64">
-      <rect stroke="currentColor" ... />
-      <path stroke="currentColor" ... />
-    </svg>
-    <span class="contents-label">CONTENTS</span>
-  </a>
+<!-- Left Page Wrapper -->
+<div class="page-wrapper left">
+  <!-- TOC Overlay (hidden by default) -->
+  <section class="guide-page left toc-overlay">
+    <header class="guide-header">
+      <div class="header-contents-group">
+        <a href="#" class="contents-link" data-contents-nav>
+          <svg class="contents-icon">...</svg>
+          <span class="contents-label">CONTENTS</span>
+        </a>
+      </div>
+      <a href="/" class="guide-title">COOPER ST</a>
+    </header>
+    {% include "nav.njk" %}
+    <div class="guide-footer">© 2026 Cooper St Logic Shop</div>
+  </section>
+
+  <!-- Regular Page Content (visible by default) -->
+  <section class="guide-page left page-content">
+    <header class="guide-header">
+      <div class="header-contents-group">
+        <a href="#" class="contents-link" data-contents-nav>
+          <svg class="contents-icon">...</svg>
+          <span class="contents-label">CONTENTS</span>
+        </a>
+      </div>
+      <a href="/" class="guide-title">COOPER ST</a>
+    </header>
+    <!-- Page content here -->
+  </section>
 </div>
 
-<!-- Right Page Header (reversed order) -->
-<div class="header-contents-group">
-  <a href="/shop/" class="contents-link" data-contents-nav>
-    <span class="contents-label">CONTENTS</span>
-    <svg class="contents-icon" ...>...</svg>
-  </a>
-</div>
+<!-- Right Page Wrapper (same structure, reversed header order) -->
 ```
 
-**CSS Order Control (workbench.css):**
-```css
-/* Left page: icon group on left, title on right */
-.guide-page.left .header-contents-group { order: -1; }
-.guide-page.left .guide-title { order: 1; }
+**Key Points:**
+- TOC overlay uses `href="#"` instead of `href="/shop/"` to prevent navigation
+- Both overlay and content sections have full page structure with headers
+- C-icon is functional in both states (clicking toggles between them)
 
-/* Right page: title on left, icon group on right */
-.guide-page.right .header-contents-group { order: 1; }
-.guide-page.right .guide-title { order: -1; }
-```
-
-**Flip State CSS:**
+**CSS Toggle Behavior (workbench.css):**
 ```css
-body[data-state="open"][data-flip="toc"] .page-wrapper.left {
-  display: flex !important;
+/* Default state: TOC hidden, content visible */
+.toc-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: calc(var(--z-page) + 1);
+  display: none;      /* Hidden above 1250px */
+  opacity: 0;
+  pointer-events: none;
 }
-body[data-state="open"][data-flip="toc"] .page-wrapper.right {
-  display: none !important;
+
+.page-content {
+  position: relative;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Enable TOC in single-page view */
+@media (max-width: 1250px) {
+  .toc-overlay { display: block; }
+  
+  /* Simple fade transition */
+  .page-content,
+  .toc-overlay {
+    transition: opacity 0.2s ease;
+  }
+  
+  /* When data-flip="toc": show TOC, hide content */
+  body[data-state="open"][data-flip="toc"] .page-content {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  body[data-state="open"][data-flip="toc"] .toc-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Above 1250px: always hide TOC (navigation goes to /shop/) */
+@media (min-width: 1251px) {
+  .toc-overlay { display: none !important; }
 }
 ```
 
 **JavaScript Logic (clamp.js):**
-- Listens for clicks on `[data-contents-nav]` elements
-- Detects viewport state via media queries
-- Manages `data-flip` attribute on body element
-- Handles URL parameter (`?toc`) for deep linking to TOC view
-- Resets flip state on breakpoint changes
+```javascript
+document.addEventListener("DOMContentLoaded", () => {
+  const contentsLinks = document.querySelectorAll("[data-contents-nav]");
+  
+  // Media queries for breakpoint detection
+  const singlePageQuery = window.matchMedia("(max-width: 1250px)");
+  const mobileQuery = window.matchMedia("(max-width: 900px)");
+  
+  // Check if in single-page view
+  const isSinglePageView = () => singlePageQuery.matches || mobileQuery.matches;
+  
+  contentsLinks.forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      
+      if (isSinglePageView()) {
+        // SINGLE PAGE VIEW: Toggle TOC on current page
+        const currentFlip = document.body.getAttribute("data-flip");
+        if (currentFlip === "toc") {
+          document.body.removeAttribute("data-flip");
+        } else {
+          document.body.setAttribute("data-flip", "toc");
+        }
+      } else {
+        // FULL WIDTH VIEW: Navigate to THE SHOP
+        window.location.href = "/shop/";
+      }
+    });
+  });
+  
+  // Reset flip state when returning to full width
+  const handleBreakpointChange = (e) => {
+    if (!e.matches) {
+      document.body.removeAttribute("data-flip");
+    }
+  };
+  
+  singlePageQuery.addEventListener("change", handleBreakpointChange);
+});
+```
+
+**Key Implementation Notes:**
+- All `[data-contents-nav]` links are intercepted by JavaScript
+- In single-page view, clicking toggles `data-flip` attribute instead of navigating
+- TOC overlay includes complete page structure (header, nav, footer)
+- Simple fade transition (0.2s) replaces complex flip animation
+- Breakpoint change listener automatically resets state when resizing to full width
+
+##### Design Rationale
+
+**Why toggle instead of navigate in single-page view?**
+- **User Experience:** In single-page view (tablets/mobile), navigating away from the current page just to see the TOC is disruptive. Users lose their place and must navigate back.
+- **Efficiency:** Toggle behavior allows quick TOC reference without leaving the current page—similar to flipping to an index in a physical book and then returning.
+- **Consistency:** Both the TOC overlay and regular content have functional C-icons, so clicking either one toggles between views seamlessly.
+
+**Why simple fade instead of flip animation?**
+- **Performance:** Complex 3D transforms and rotations can cause jank on mid-range mobile devices.
+- **Clarity:** A simple fade is more predictable and doesn't distract from the content transition.
+- **Speed:** 0.2s fade feels instant while still being smooth—flip animations often feel sluggish.
+
+**Why absolute positioning for TOC overlay?**
+- **No Layout Shift:** Absolute positioning keeps the overlay out of document flow, preventing any reflow or shift in page dimensions.
+- **Z-Index Control:** Overlay sits at `calc(var(--z-page) + 1)`, ensuring it appears above content without affecting other elements.
+- **Clean Toggle:** Simple opacity/pointer-events toggle is more reliable than DOM insertion/removal.
 
 ##### Why Inline SVG?
 
