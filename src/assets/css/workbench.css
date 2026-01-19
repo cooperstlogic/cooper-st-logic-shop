@@ -17,6 +17,9 @@
   /* Layout Dimensions */
   --book-width: 1100px; /* Standardizing on the open width */
   --book-height: 80vh;
+  
+  /* Cover Typography */
+  --c-cover-text: #fdebc5; /* Warm vanilla off-white for dark cover background */
 }
 
 body {
@@ -296,6 +299,7 @@ body {
 body:not([data-state="open"]) .guide-page.right {
   overflow: visible; /* Allow cover content to extend beyond paper bounds */
   max-height: none; /* Remove height constraint for cover */
+  position: relative; /* Explicit positioning context for cover-footer */
 }
 
 body:not([data-state="open"]) .guide-page.right::before {
@@ -311,10 +315,11 @@ body:not([data-state="open"]) .guide-page.right .guide-header {
   display: none;
 }
 
-/* COVER TEXT STYLING: Off-white text for dark cover background */
+/* COVER TEXT STYLING: Warm vanilla off-white text for dark cover background
+   All cover text uses --c-cover-text variable for consistent theming */
 body:not([data-state="open"]) .guide-page.right h1,
 body:not([data-state="open"]) .guide-page.right h2 {
-  color: #e0ddd5; /* Warm off-white for better ink effect visibility */
+  color: var(--c-cover-text);
   mix-blend-mode: screen; /* Screen blend mode works better for light text */
   filter: url(#inkBleed); /* Keep the ink bleed effect */
 }
@@ -326,14 +331,14 @@ body:not([data-state="open"]) .guide-page.right h3,
 body:not([data-state="open"]) .guide-page.right h4,
 body:not([data-state="open"]) .guide-page.right h5,
 body:not([data-state="open"]) .guide-page.right h6 {
-  color: #d5d2ca; /* Softer off-white for body text */
+  color: var(--c-cover-text);
   opacity: 0.95; /* Maintain the ink density effect */
 }
 
 /* Cover page link/button styling */
 body:not([data-state="open"]) .guide-page.right a {
-  border-color: #e0ddd5 !important; /* Off-white border for button */
-  color: #e0ddd5 !important;
+  border-color: var(--c-cover-text) !important;
+  color: var(--c-cover-text) !important;
 }
 
 body:not([data-state="open"]) .guide-page.right a:hover {
@@ -351,13 +356,13 @@ body:not([data-state="open"]) .guide-page.right hr {
    to maintain fixed distance from bottom regardless of cover scale */
 .cover-footer {
   position: absolute;
-  bottom: 3rem;
-  left: 3rem;
+  bottom: 4rem;
+  left: 4rem;
   font-family: var(--font-signage);
   font-weight: 800;
   font-optical-sizing: auto;
   font-variation-settings: 'WONK' 1, 'SOFT' 100;
-  color: #e0ddd5;
+  color: var(--c-cover-text);
   mix-blend-mode: screen;
   filter: url(#inkBleed);
 }
@@ -628,8 +633,8 @@ hr,
 
   /* Cover footer scales position proportionally */
   body:not([data-state="open"]) .cover-footer {
-    bottom: 1.5rem;
-    left: 1.5rem;
+    bottom: 4rem;
+    left: 4rem;
     font-size: 0.9rem;
   }
 

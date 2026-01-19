@@ -117,14 +117,14 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
 ### 4.1 The Physics of the Book
 
 - **The Cover (Home Page `/`):** The home page behaves as the closed cover of the Field Guide (modeled after the Whole Earth Catalog).
-  - **Content:** Centered title "COOPER ST LOGIC SHOP" with "FIELD GUIDE VERSION 3.0" and a link to "OPEN FIELD GUIDE".
+  - **Content:** Centered title "COOPER ST LOGIC SHOP" with a link to "access the shop" and an "Est 2026" footer positioned absolutely at the bottom-left corner.
   - **State:** `data-state` attribute is NOT set to "open" on the body element.
   - **Texture:** Uses `cover.webp` as the background—a baked cardstock texture with a dark/black base color, distinct from the interior page paper.
-  - **Visuals:** Width restricted to single page (~600px) with the inner gutter shadow removed to simulate a flat cover board.
-  - **Typography:** All text elements are styled in warm off-white tones (`#e0ddd5` for headings, `#d5d2ca` for body text) to provide contrast against the dark cover background.
+  - **Responsive Scaling:** The cover scales fluidly between 600px width (at 900px viewport) and 350px width (at 375px minimum viewport) while maintaining a fixed 3:4 aspect ratio. Stack leaves beneath the cover scale proportionally. See Section 4.5 for complete implementation details.
+  - **Typography:** All text elements are styled in warm vanilla off-white (`var(--c-cover-text)`, currently `#fdebc5`) controlled by a single CSS variable to provide contrast against the dark cover background. This includes headings, body text, links, and the cover footer.
   - **Header:** The standard `.guide-header` element is completely hidden (`display: none`) on the cover page—no title bar, no C-icon menu. The cover displays only the content area.
-  - **Ink Effects:** Headings (`h1`, `h2`) retain the `#inkBleed` SVG filter for texture, but use `mix-blend-mode: screen` instead of `multiply` (screen mode brightens and works better for light text on dark backgrounds).
-  - **Decorative Elements:** The divider line (`.draughtsman-line`) within the article content is styled in off-white (`#f5f5f5`) with reduced opacity (0.8) for subtle contrast on the dark cover.
+  - **Ink Effects:** Headings (`h1`, `h2`) and the cover footer retain the `#inkBleed` SVG filter for texture, but use `mix-blend-mode: screen` instead of `multiply` (screen mode brightens and works better for light text on dark backgrounds).
+  - **Decorative Elements:** The divider line (`.draughtsman-line`) within the article content is hidden (`display: none`) on the cover.
 - **The Open Book:** When navigating to any page other than `/`, the guide "flips" open to a two-page spread.
   - **State:** `data-state="open"` is set on the body element via Nunjucks conditional logic.
   - **Layout:** `.field-guide-book` container uses `display: flex` and expands to ~1100px.
@@ -153,12 +153,13 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
 **Transition Specification:** All layout transitions use `0.6s cubic-bezier(0.25, 1, 0.5, 1)` to mimic the weight of paper and wood.
 
 1. **The Workbench (Desktop > 900px):**
-   - **Home:** Centered Cover.
+   - **Home:** Centered Cover at full size (600px × 800px).
    - **Open State:** Two-page spread layout (Left: TOC or Field Notes | Right: Content).
    - **Navigation:** Bookmark tabs for page-to-page navigation.
    - **Book Width:** `1100px` max-width when open.
 2. **The Folded Notebook (Mobile < 900px):**
-   - **Layout:** Single column "Folded" view.
+   - **Home (Cover):** Fluidly scales from 600px width down to 350px width (at 375px viewport minimum), maintaining 3:4 aspect ratio throughout. No horizontal scrolling required—the cover "recedes" naturally. See Section 4.5 for detailed scaling formulas.
+   - **Layout (Open Pages):** Single column "Folded" view.
    - **Left Page:** Hidden completely (`display: none !important`).
    - **Right Page:** Styled with a left border to simulate a folded-back spine.
    - **Navigation:** Mobile menu via the C-Clamp button.
@@ -187,6 +188,127 @@ The mobile state transition uses `window.matchMedia` instead of a `resize` event
 const mobileQuery = window.matchMedia("(max-width: 900px)");
 mobileQuery.addEventListener("change", handleBreakpointChange);
 ```
+
+### 4.5 Responsive Cover Scaling (Fluid Physicalism)
+
+**PHYSICALISM PRINCIPLE:** The cover scales proportionally as the viewport shrinks, maintaining its physical aspect ratio. This preserves the illusion of a real object receding into the distance rather than being cropped or distorted.
+
+#### Design Philosophy
+
+- **Minimum Assumed Viewport:** 375px (smallest common mobile browser width)
+- **Scaling Strategy:** Fluid responsive sizing (linear interpolation) between 900px and 375px breakpoints
+- **Aspect Ratio:** Fixed 3:4 ratio (600px width : 800px height) maintained across all viewport sizes
+- **Background Visibility:** At minimum viewport (375px), cover reaches ~350px width, leaving ~12.5px margin on each side to reveal the workbench surface
+
+#### Implementation: Fluid Scaling Formulas
+
+The cover uses CSS `clamp()` with calculated viewport-based formulas to scale smoothly between breakpoints:
+
+**Width Scaling:**
+```css
+width: clamp(350px, calc(171.43px + 47.62vw), 600px);
+```
+- At 900px viewport → 600px width (full size)
+- At 375px viewport → 350px width (minimum)
+- Linear interpolation: Slope = (600-350)/(900-375) = 250/525 ≈ 0.476
+
+**Height Scaling (Proportional):**
+```css
+height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+```
+- At 900px viewport → 800px height (full size)
+- At 375px viewport → ~467px height (maintains 3:4 ratio)
+- Formula: width × (800/600) = width × 1.333
+
+**Math Reference:**
+- Width formula derivation: `width = 171.43px + 47.62vw`
+  - At 900px: 171.43 + (900 × 0.4762) = 600px ✓
+  - At 375px: 171.43 + (375 × 0.4762) = 350px ✓
+- Height formula derivation: `height = 228.57px + 63.49vw`
+  - At 900px: 228.57 + (900 × 0.6349) = 800px ✓
+  - At 375px: 228.57 + (375 × 0.6349) = 467px ✓
+
+#### Implementation: Supporting Elements
+
+**Stack Leaves (Underlying Pages):**
+The page stack behind the cover must scale identically to maintain physical realism:
+
+```css
+body:not([data-state="open"]) .page-stack,
+body:not([data-state="open"]) .stack-leaf,
+body:not([data-state="open"]) .stack-leaf::before {
+  height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+}
+```
+
+**Cover Texture:**
+The cover background image fills the scaled dimensions:
+
+```css
+body:not([data-state="open"]) .guide-page.right::before {
+  height: 100%; /* Fills the dynamically scaled cover height */
+}
+```
+
+**Cover Footer ("Est 2026"):**
+Positioned absolutely from the bottom-left corner to maintain consistent spatial relationship regardless of cover scale:
+
+```css
+.cover-footer {
+  position: absolute;
+  bottom: 4rem;
+  left: 4rem;
+  /* Desktop positioning */
+}
+
+/* Mobile scaling */
+@media (max-width: 900px) {
+  body:not([data-state="open"]) .cover-footer {
+    bottom: 4rem;
+    left: 4rem;
+    font-size: 0.9rem;
+  }
+}
+```
+
+**Positioning Context:**
+The cover page explicitly establishes positioning context:
+
+```css
+body:not([data-state="open"]) .guide-page.right {
+  position: relative; /* Explicit positioning context for cover-footer */
+  overflow: visible;
+  max-height: none;
+}
+```
+
+#### Implementation: Cover Text Color System
+
+**DESIGN PRINCIPLE:** All cover text shares a unified warm vanilla off-white color to contrast against the dark cover background. A single CSS variable controls the color palette for consistent theming.
+
+**Variable Definition:**
+```css
+:root {
+  --c-cover-text: #fdebc5; /* Warm vanilla off-white for dark cover background */
+}
+```
+
+**Application Scope:**
+- **Headings (h1, h2):** `color: var(--c-cover-text)` with `mix-blend-mode: screen` and `filter: url(#inkBleed)`
+- **Body text (p, h3-h6, strong, a):** `color: var(--c-cover-text)` with `opacity: 0.95`
+- **Link borders:** `border-color: var(--c-cover-text)`
+- **Cover footer:** `color: var(--c-cover-text)`
+
+**Rationale:**
+- Single source of truth: Change `--c-cover-text` to adjust all cover typography at once
+- Warm vanilla tone (#fdebc5) provides optimal contrast and readability against dark cover texture
+- Screen blend mode (not multiply) used for light text on dark backgrounds
+
+#### Browser Compatibility
+
+- **CSS `clamp()`:** Supported in all modern browsers (Chrome 79+, Firefox 75+, Safari 13.1+)
+- **CSS Custom Properties:** Widely supported
+- **Fallback:** Not required for target browsers (2024+ baseline)
 
 ---
 
@@ -219,11 +341,12 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - **Cover (Home Page `/`):** Uses `cover.webp` as the background texture.
   - **Feel:** Textured, thick cardstock with a dark/black base mimicking the cover boards of the Whole Earth Catalog.
   - **Application:** Applied via `background-image` on the page element when `data-state` is NOT "open".
-  - **Text Styling (Cover-Specific):** Because the cover background is dark, all text elements are inverted to off-white tones:
-    - **Headings (`h1`, `h2`):** Color `#e0ddd5` (warm off-white) with `mix-blend-mode: screen` and `filter: url(#inkBleed)` for realistic ink texture.
-    - **Body Text (`p`, `strong`, `a`):** Color `#d5d2ca` (softer off-white) with `opacity: 0.95` for subtle ink density.
-    - **Link Borders:** Button borders use `#e0ddd5` to match heading color.
-    - **Rationale:** The `screen` blend mode is used instead of `multiply` because it brightens rather than darkens—appropriate for light text on dark backgrounds. This preserves the organic ink aesthetic while ensuring readability on the black cover.
+  - **Text Styling (Cover-Specific):** Because the cover background is dark, all text elements are inverted to warm vanilla off-white tones using the `--c-cover-text` CSS variable (currently `#fdebc5`):
+    - **Headings (`h1`, `h2`):** Color `var(--c-cover-text)` with `mix-blend-mode: screen` and `filter: url(#inkBleed)` for realistic ink texture.
+    - **Body Text (`p`, `strong`, `a`):** Color `var(--c-cover-text)` with `opacity: 0.95` for subtle ink density.
+    - **Link Borders:** Button borders use `var(--c-cover-text)` for visual consistency.
+    - **Cover Footer ("Est 2026"):** Color `var(--c-cover-text)` with `mix-blend-mode: screen` and `filter: url(#inkBleed)`.
+    - **Rationale:** The `screen` blend mode is used instead of `multiply` because it brightens rather than darkens—appropriate for light text on dark backgrounds. This preserves the organic ink aesthetic while ensuring readability on the black cover. All cover text references a single CSS variable for unified theming (see Section 4.5 for implementation details).
 
 - **Pages (Interior Spreads):** Use separate pre-rendered background textures for left and right pages.
   - **Source Images:**

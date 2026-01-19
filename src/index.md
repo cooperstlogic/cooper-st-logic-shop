@@ -11,4 +11,7 @@ title: Field Guide
 
 ### [_access the shop_](/shop/)
 
+</div>
+</div>
+
 <div class="cover-footer">Est 2026</div>
