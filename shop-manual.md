@@ -74,7 +74,8 @@ cooper-st-logic-shop/
 │   │   ├── img/           # Textures & Icons
 │   │   │   ├── icon-c.svg
 │   │   │   ├── cover.webp       # Baked cover texture (home page)
-│   │   │   ├── paper.webp       # Baked page texture (right page, mirror for left)
+│   │   │   ├── paper-left.webp  # Baked page texture for left pages (mirrored)
+│   │   │   ├── paper-right.webp # Baked page texture for right pages
 │   │   │   ├── desktop.webp
 │   │   │   └── desktop.jpg
 │   │   └── js/            # Client Logic (Mobile Drawer)
@@ -132,7 +133,7 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
   - **On Other Pages:** Displays contextual "Field Notes" content defined in the page's front matter as `left_page_content`.
   - **Example:** Inventory page shows "Stockroom Access" rules, Personnel shows an ID card.
 - **Right Page:** Always contains the primary page content (Markdown body).
-  - **Spine Shadow:** Baked into `paper.webp`—appears on the inner edge to simulate depth in the gutter binding.
+  - **Spine Shadow:** Baked into `paper-right.webp`—appears on the inner edge to simulate depth in the gutter binding.
 
 - **Bookmark Tabs:** Navigation is handled via realistic bookmark tabs sticking out from the book edges.
   - **Position Logic:** Tab positions are calculated via CSS: `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))`. Each tab receives a `--tab-index` custom property from the template loop, ensuring positions are derived from variables—not hardcoded magic numbers.
@@ -224,24 +225,26 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
     - **Link Borders:** Button borders use `#e0ddd5` to match heading color.
     - **Rationale:** The `screen` blend mode is used instead of `multiply` because it brightens rather than darkens—appropriate for light text on dark backgrounds. This preserves the organic ink aesthetic while ensuring readability on the black cover.
 
-- **Pages (Interior Spreads):** Use `paper.webp` as the pre-rendered background texture.
-  - **Source Image:** `src/assets/img/paper.webp` — a baked texture containing:
-    - Aged Vellum/Bond paper base color (late-60s printed catalog tones)
-    - Paper grain and fiber structure
-    - **Spine shading:** Subtle shadow gradient simulating paper curving into the binding gutter
-  - **Orientation:** The source image is rendered for the **right page** (shadow falls toward the left/spine edge).
-  - **Left Page Mirroring:** Apply `transform: scaleX(-1)` to the background or use a mirrored CSS background-position to flip the texture, so the spine shading correctly falls toward the center binding on both pages.
-  - **Application:** Applied via `background-image` on `.guide-page` elements, replacing the previous runtime-composited approach (paper-grain.svg + gradients + filters).
+- **Pages (Interior Spreads):** Use separate pre-rendered background textures for left and right pages.
+  - **Source Images:**
+    - `src/assets/img/paper-right.webp` — Baked texture for right pages containing:
+      - Aged Vellum/Bond paper base color (late-60s printed catalog tones)
+      - Paper grain and fiber structure
+      - **Spine shading:** Subtle shadow gradient simulating paper curving into the binding gutter (shadow falls toward the left/spine edge)
+    - `src/assets/img/paper-left.webp` — Baked texture for left pages with the same characteristics but oriented for the left side.
+  - **Left Page Implementation:** `paper-left.webp` is applied with `transform: scaleX(-1)` to mirror the texture, ensuring the spine shading correctly falls toward the center binding.
+  - **Right Page Implementation:** `paper-right.webp` is applied directly without transformation, with spine shading falling naturally toward the binding.
+  - **Application:** Applied via `background-image` on `.guide-page::before` pseudo-elements, replacing the previous runtime-composited approach (paper-grain.svg + gradients + filters).
 
 - **Page Stack Depth:** Physical DOM implementation (`.page-stack` containing 5 `.stack-leaf` divs) behind each page to create a realistic, fanned book edge.
   - **Fanning:** Each leaf is subject to randomized micro-rotations (e.g., 0.05deg to 0.25deg) to simulate the subtle imperfections of a physical book.
-  - **Texture:** Stack leaves use the same `paper.webp` texture (appropriately mirrored per side) for cohesive materiality.
+  - **Texture:** Stack leaves use the same page textures (`paper-left.webp` for left side, `paper-right.webp` for right side, with left side mirrored) for cohesive materiality.
   - **Shading:** Variable opacity applied to lower layers to create depth and separation between sheets.
   - **Layering:** The primary content page sits at `var(--z-page)`, tabs at `var(--z-tab)`, and stack leaves at `calc(var(--z-stack) - n)` where n = 1–5. See Section 4.3 for the full z-index scale.
 
 - **Spine Handling:**
   - **Straight Edge:** Inner edges are clipped using `clip-path: polygon(...)` to ensure a clean, bound spine.
-  - **Gutter Shadow:** Baked into `paper.webp` rather than applied via CSS gradients.
+  - **Gutter Shadow:** Baked into `paper-left.webp` and `paper-right.webp` rather than applied via CSS gradients, providing authentic depth without runtime performance cost.
 
 - **Typography:**
   - **Logo:** "Cooper St Logic Shop" behaves as the Book Title on the cover, and a Header on inner pages.
@@ -277,7 +280,7 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 
 #### Deprecated: `#paperDistress`
 
-The previous `#paperDistress` filter (macro noise, diffuse lighting, displacement mapping) has been **removed**. Paper texture, grain, and spine shading are now "baked" into static WebP images (`paper.webp`, `cover.webp`). This eliminates per-frame rendering calculations for the page background.
+The previous `#paperDistress` filter (macro noise, diffuse lighting, displacement mapping) has been **removed**. Paper texture, grain, and spine shading are now "baked" into static WebP images (`paper-left.webp`, `paper-right.webp`, `cover.webp`). This eliminates per-frame rendering calculations for the page background.
 
 #### Active: `#inkBleed` (Headings Only)
 

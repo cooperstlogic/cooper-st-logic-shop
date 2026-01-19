@@ -127,14 +127,13 @@ body {
   background-color: #d8cdb0;
   border: 1px solid rgba(139, 119, 101, 0.1); /* Very subtle edge */
   
-  /* Texture: Uses baked paper.webp via pseudo-element */
+  /* Texture: Uses baked paper textures via pseudo-element */
 }
 
 .stack-leaf::before {
   content: "";
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
-  background-image: url("../img/paper.webp");
   background-size: cover;
   background-position: center;
   opacity: 0.6; /* Slightly faded for depth illusion */
@@ -149,8 +148,9 @@ body {
   clip-path: polygon(0% -2%, 100% -2%, 100% 102%, 0% 102%);
 }
 
-/* Mirror the paper texture for left stack leaves (spine shadow falls right) */
+/* Left stack leaves use paper-left.webp (mirrored) */
 .page-wrapper.left .stack-leaf::before {
+  background-image: url("../img/paper-left.webp");
   transform: scaleX(-1);
 }
 
@@ -168,7 +168,12 @@ body {
   border-left: none; /* Spine connection */
   /* Spine Clip */
   clip-path: polygon(0% -2%, 100% -2%, 100% 102%, 0% 102%);
-  /* Spine shading baked into paper.webp - no gradient needed */
+  /* Spine shading baked into paper-right.webp - no gradient needed */
+}
+
+/* Right stack leaves use paper-right.webp */
+.page-wrapper.right .stack-leaf::before {
+  background-image: url("../img/paper-right.webp");
 }
 
 /* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
@@ -198,15 +203,17 @@ body {
 /* Page Background & Texture Layer (The Physical Paper)
    PERFORMANCE: We use baked WebP textures instead of runtime-composited 
    SVG filters + gradients. The browser renders a simple image, not a math equation.
-   - paper.webp contains: aged vellum color, paper grain, spine shading
-   - The source image is oriented for the RIGHT page (shadow falls toward left/spine)
-   - Left page mirrors the texture with scaleX(-1)
+   - paper-right.webp contains: aged vellum color, paper grain, spine shading for RIGHT page
+   - paper-left.webp contains: aged vellum color, paper grain, spine shading for LEFT page
 */
 .guide-page::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: -1;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   /* No filter here - texture is baked into the image */
 }
 
@@ -222,11 +229,8 @@ body {
   /* Spine Handling: Clip the RIGHT edge (inner) to be straight */
   clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%); 
   
-  /* Baked texture: paper.webp mirrored for left page (spine shadow falls right) */
-  background-image: url("../img/paper.webp");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  /* Baked texture: paper-left.webp mirrored for left page (spine shadow falls right) */
+  background-image: url("../img/paper-left.webp");
   transform: scaleX(-1); /* Mirror the texture so spine shading falls toward center */
   
   right: -2px; 
@@ -243,11 +247,8 @@ body {
   /* Spine Handling: Clip the LEFT edge (inner) to be straight */
   clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%);
   
-  /* Baked texture: paper.webp (native orientation - spine shadow falls left) */
-  background-image: url("../img/paper.webp");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  /* Baked texture: paper-right.webp (spine shadow falls left toward binding) */
+  background-image: url("../img/paper-right.webp");
   
   left: -2px;
 }
@@ -331,7 +332,7 @@ body[data-state="open"] .field-guide-container {
   max-width: 1100px; /* Wider when open */
 }
 
-/* Open State: Right page uses paper.webp with baked-in spine shadow (no override needed) */
+/* Open State: Right page uses paper-right.webp with baked-in spine shadow (no override needed) */
 
 
 /* -----------------------------------------------------------
