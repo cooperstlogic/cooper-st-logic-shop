@@ -67,7 +67,7 @@ body {
   margin-top: 6rem; /* More space at top */
   margin-bottom: 8rem;
   position: relative;
-  z-index: 10;
+  z-index: var(--z-container);
   perspective: 2500px;
 }
 
@@ -154,11 +154,11 @@ body {
 }
 
 /* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
-.page-wrapper.left .layer-1 { transform: rotate(-0.05deg) translateY(0px); z-index: -11; }
-.page-wrapper.left .layer-2 { transform: rotate(-0.15deg) translateY(0.5px); z-index: -12; opacity: 0.98; }
-.page-wrapper.left .layer-3 { transform: rotate(-0.08deg) translateY(1.0px); z-index: -13; opacity: 0.95; }
-.page-wrapper.left .layer-4 { transform: rotate(-0.22deg) translateY(1.5px); z-index: -14; opacity: 0.90; }
-.page-wrapper.left .layer-5 { transform: rotate(-0.12deg) translateY(2.0px); z-index: -15; opacity: 0.85; }
+.page-wrapper.left .layer-1 { transform: rotate(-0.05deg) translateY(0px); z-index: calc(var(--z-stack) - 1); }
+.page-wrapper.left .layer-2 { transform: rotate(-0.15deg) translateY(0.5px); z-index: calc(var(--z-stack) - 2); opacity: 0.98; }
+.page-wrapper.left .layer-3 { transform: rotate(-0.08deg) translateY(1.0px); z-index: calc(var(--z-stack) - 3); opacity: 0.95; }
+.page-wrapper.left .layer-4 { transform: rotate(-0.22deg) translateY(1.5px); z-index: calc(var(--z-stack) - 4); opacity: 0.90; }
+.page-wrapper.left .layer-5 { transform: rotate(-0.12deg) translateY(2.0px); z-index: calc(var(--z-stack) - 5); opacity: 0.85; }
 
 
 /* RIGHT STACK DYNAMICS */
@@ -173,11 +173,11 @@ body {
 }
 
 /* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
-.page-wrapper.right .layer-1 { transform: rotate(0.08deg) translateY(0px); z-index: -11; }
-.page-wrapper.right .layer-2 { transform: rotate(0.18deg) translateY(0.5px); z-index: -12; opacity: 0.98; }
-.page-wrapper.right .layer-3 { transform: rotate(0.04deg) translateY(1.0px); z-index: -13; opacity: 0.95; }
-.page-wrapper.right .layer-4 { transform: rotate(0.25deg) translateY(1.5px); z-index: -14; opacity: 0.90; }
-.page-wrapper.right .layer-5 { transform: rotate(0.12deg) translateY(2.0px); z-index: -15; opacity: 0.85; }
+.page-wrapper.right .layer-1 { transform: rotate(0.08deg) translateY(0px); z-index: calc(var(--z-stack) - 1); }
+.page-wrapper.right .layer-2 { transform: rotate(0.18deg) translateY(0.5px); z-index: calc(var(--z-stack) - 2); opacity: 0.98; }
+.page-wrapper.right .layer-3 { transform: rotate(0.04deg) translateY(1.0px); z-index: calc(var(--z-stack) - 3); opacity: 0.95; }
+.page-wrapper.right .layer-4 { transform: rotate(0.25deg) translateY(1.5px); z-index: calc(var(--z-stack) - 4); opacity: 0.90; }
+.page-wrapper.right .layer-5 { transform: rotate(0.12deg) translateY(2.0px); z-index: calc(var(--z-stack) - 5); opacity: 0.85; }
 
 
 /* -----------------------------------------------------------
@@ -190,7 +190,7 @@ body {
   width: 100%; 
   box-sizing: border-box;
   background-color: #d8cdb0;
-  z-index: 5; /* Top of stack */
+  z-index: var(--z-page); /* Top of stack */
   
   /* Main shadow casting onto the stack */
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
@@ -396,9 +396,10 @@ hr,
    ----------------------------------------------------------- */
 .bookmark-tab {
   position: absolute;
-  /* Top is now handled inline by NJK loop for stability */
-  width: 45px;
-  height: 50px;
+  /* Position calculated from CSS custom property --tab-index (set inline by template) */
+  top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index, 0)));
+  width: var(--tab-width);
+  height: var(--tab-depth);
   background-color: #FDFBF6; /* Slightly lighter than page for contrast */
   border: 1px solid #D4D2CB;
   box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
@@ -411,12 +412,12 @@ hr,
   font-size: 0.75rem;
   color: var(--c-wood-shadow);
   cursor: pointer;
-  /* Z-Index Hierarchy:
-     Guide Page: 5 (Standard)
-     Tabs: 1 (Between stack and content page)
-     Stack Leaves: -11 to -15 (Behind everything)
+  /* Z-Index Hierarchy (see variables.css for full scale):
+     --z-page: Primary content page
+     --z-tab: Tabs sit between stack and page
+     --z-stack: Stack leaves behind everything
   */
-  z-index: 1; 
+  z-index: var(--z-tab); 
   transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
   text-decoration: none;
   font-weight: 600;

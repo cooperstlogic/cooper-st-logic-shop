@@ -23,4 +23,23 @@
   --sidebar-width: 280px;
   --header-height: 80px;
   --vellum-width: 65ch;
+
+  /* Z-Index Scale (Explicit Layering Hierarchy)
+     Formalized to prevent z-index wars when adding new layers (modals, tooltips, etc.)
+  */
+  --z-stack: -10;       /* Page stack leaves: -11 to -15 offset from this */
+  --z-tab: 1;           /* Bookmark tabs: between stack and page */
+  --z-page: 5;          /* Primary content page */
+  --z-container: 10;    /* Field guide container */
+  --z-overlay: 100;     /* Future: modals, tooltips */
+  --z-mobile-menu: 200; /* Future: mobile drawer overlay */
+
+  /* Bookmark Tab Positioning
+     Uses CSS calc() to compute vertical position from index.
+     tab-top = var(--tab-start) + (var(--tab-height) * index)
+  */
+  --tab-start: 100px;   /* First tab offset from top */
+  --tab-height: 70px;   /* Vertical spacing between tabs */
+  --tab-width: 45px;    /* Tab width */
+  --tab-depth: 50px;    /* Tab height (vertical text area) */
 }

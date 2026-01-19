@@ -21,19 +21,12 @@
   <!-- Global Filter Definitions -->
   {% include "filters.svg" %}
   
-  {# Define Navigation Order and Fixed Positions #}
-  {% set navItems = [
-    { url: "/shop/", label: "SHOP", id: 1, top: 100 },
-    { url: "/inventory/", label: "INV", id: 2, top: 170 },
-    { url: "/fabrication/", label: "FAB", id: 3, top: 240 },
-    { url: "/personnel/", label: "PERS", id: 4, top: 310 }
-  ] %}
-
-  {# Determine Current ID #}
-  {% set currentId = 1 %}
-  {% if page.url == '/inventory/' %} {% set currentId = 2 %} {% endif %}
-  {% if page.url == '/fabrication/' %} {% set currentId = 3 %} {% endif %}
-  {% if page.url == '/personnel/' %} {% set currentId = 4 %} {% endif %}
+  {# Navigation data sourced from _data/navigation.json (Single Source of Truth) #}
+  {# Determine Current ID based on page URL #}
+  {% set currentId = 0 %}
+  {% for item in navigation.items %}
+    {% if page.url == item.url %}{% set currentId = item.id %}{% endif %}
+  {% endfor %}
   
 
   <main class="field-guide-container">
@@ -41,7 +34,7 @@
       
       <!-- LEFT PAGE WRAPPER & STACK -->
       <div class="page-wrapper left">
-        <div class="page-stack">
+        <div class="page-stack" aria-hidden="true">
           <div class="stack-leaf layer-1"></div>
           <div class="stack-leaf layer-2"></div>
           <div class="stack-leaf layer-3"></div>
@@ -51,10 +44,10 @@
         
         <!-- Left Tabs (Previous) -->
         {% if page.url != '/' %}
-          {% for item in navItems %}
+          {% for item in navigation.items %}
             {% if item.id < currentId %}
-              <a href="{{ item.url }}" class="bookmark-tab left" style="top: {{ item.top }}px">
-                {{ item.label }}
+              <a href="{{ item.url }}" class="bookmark-tab left" style="--tab-index: {{ loop.index0 }}">
+                {{ item.tabLabel }}
               </a>
             {% endif %}
           {% endfor %}
@@ -91,7 +84,7 @@
 
       <!-- RIGHT PAGE WRAPPER & STACK -->
       <div class="page-wrapper right">
-        <div class="page-stack">
+        <div class="page-stack" aria-hidden="true">
           <div class="stack-leaf layer-1"></div>
           <div class="stack-leaf layer-2"></div>
           <div class="stack-leaf layer-3"></div>
@@ -101,10 +94,10 @@
 
         <!-- Right Tabs (Next) -->
         {% if page.url != '/' %}
-          {% for item in navItems %}
+          {% for item in navigation.items %}
             {% if item.id > currentId %}
-              <a href="{{ item.url }}" class="bookmark-tab right" style="top: {{ item.top }}px">
-                {{ item.label }}
+              <a href="{{ item.url }}" class="bookmark-tab right" style="--tab-index: {{ loop.index0 }}">
+                {{ item.tabLabel }}
               </a>
             {% endif %}
           {% endfor %}

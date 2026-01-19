@@ -1,18 +1,9 @@
+{# Table of Contents - Generated from _data/navigation.json #}
 <ul class="toc-list">
+  {% for item in navigation.items %}
   <li class="toc-item">
-    <a href="/shop/" class="toc-link">THE SHOP</a>
-    <span class="toc-number">01</span>
+    <a href="{{ item.url }}" class="toc-link">{{ item.tocLabel }}</a>
+    <span class="toc-number">{{ item.number }}</span>
   </li>
-  <li class="toc-item">
-    <a href="/inventory/" class="toc-link">INVENTORY</a>
-    <span class="toc-number">02</span>
-  </li>
-  <li class="toc-item">
-    <a href="/fabrication/" class="toc-link">FABRICATION</a>
-    <span class="toc-number">03</span>
-  </li>
-  <li class="toc-item">
-    <a href="/personnel/" class="toc-link">PERSONNEL</a>
-    <span class="toc-number">04</span>
-  </li>
+  {% endfor %}
 </ul>

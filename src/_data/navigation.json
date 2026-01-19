@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "url": "/shop/",
+      "label": "SHOP",
+      "tabLabel": "SHOP",
+      "tocLabel": "THE SHOP",
+      "id": 1,
+      "number": "01"
+    },
+    {
+      "url": "/inventory/",
+      "label": "INV",
+      "tabLabel": "INV",
+      "tocLabel": "INVENTORY",
+      "id": 2,
+      "number": "02"
+    },
+    {
+      "url": "/fabrication/",
+      "label": "FAB",
+      "tabLabel": "FAB",
+      "tocLabel": "FABRICATION",
+      "id": 3,
+      "number": "03"
+    },
+    {
+      "url": "/personnel/",
+      "label": "PERS",
+      "tabLabel": "PERS",
+      "tocLabel": "PERSONNEL",
+      "id": 4,
+      "number": "04"
+    }
+  ],
+  "tabSpacing": {
+    "startOffset": 100,
+    "itemHeight": 70
+  }
+}

@@ -60,15 +60,16 @@ cooper-st-logic-shop/
 ├── package.json           # Inventory
 ├── README.md              # Shop Manual (This Document)
 ├── src/                   # RAW MATERIALS
-│   ├── _data/             # Global Site Data
+│   ├── _data/             # Global Site Data (Single Source of Truth)
+│   │   └── navigation.json  # Navigation manifest (pages, tabs, TOC)
 │   ├── _includes/         # Layouts & Partials
 │   │   ├── base.njk       # The Field Guide Frame (HTML5 Shell)
-│   │   ├── nav.njk        # Table of Contents (Left Page)
-│   │   └── bookmarks.njk  # Navigation Tabs (Page Markers)
+│   │   ├── nav.njk        # Table of Contents (Generated from navigation.json)
+│   │   └── filters.svg    # SVG Filter Definitions
 │   ├── assets/
 │   │   ├── css/           # The Materiality Engine
 │   │   │   ├── reset.css
-│   │   │   ├── variables.css
+│   │   │   ├── variables.css  # Design tokens: colors, z-index scale, tab spacing
 │   │   │   └── workbench.css
 │   │   ├── img/           # SVGs & Textures
 │   │   │   ├── icon-c.svg
@@ -83,6 +84,26 @@ cooper-st-logic-shop/
 │   ├── fabrication.md     # [03 // FABRICATION]
 │   └── personnel.md       # [04 // PERSONNEL]
 └── _site/                 # FINISHED GOODS (Gitignored)
+```
+
+### 3.1 Data Architecture (The Single Manifest)
+
+All navigation data is centralized in `src/_data/navigation.json`. This file is the **single source of truth** for:
+
+- **Bookmark Tabs:** Label, URL, and positioning index for the physical tab markers.
+- **Table of Contents:** Full page names and section numbers displayed on the left page.
+- **Tab Spacing Configuration:** `tabSpacing.startOffset` and `tabSpacing.itemHeight` define the vertical rhythm.
+
+**Rule:** If you change a page slug, add a page, or rename a section—edit **one file**: `navigation.json`. The templates (`base.njk`, `nav.njk`) consume this data automatically via Eleventy's global data system.
+
+```json
+{
+  "items": [
+    { "url": "/shop/", "tabLabel": "SHOP", "tocLabel": "THE SHOP", "id": 1, "number": "01" },
+    ...
+  ],
+  "tabSpacing": { "startOffset": 100, "itemHeight": 70 }
+}
 ```
 
 ---
@@ -108,16 +129,17 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
   - **Spine Shadow:** When open, a deep linear gradient shadow appears on the inner left edge to simulate depth in the gutter.
 
 - **Bookmark Tabs:** Navigation is handled via realistic bookmark tabs sticking out from the book edges.
-  - **Position Logic:** Each tab has a fixed vertical position (e.g., Shop=100px, Inventory=170px, Fabrication=240px, Personnel=310px).
+  - **Position Logic:** Tab positions are calculated via CSS: `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))`. Each tab receives a `--tab-index` custom property from the template loop, ensuring positions are derived from variables—not hardcoded magic numbers.
   - **Stability:** Tabs maintain their vertical position whether they appear on the left or right side, simulating physical tabs attached to specific pages.
-  - **Layering:** Tabs are positioned between the page stack and the primary page content (`z-index: 1`) to feel materially bound to the book block.
+  - **Layering:** Tabs use the `--z-tab` variable (default: 1), positioned between the page stack (`--z-stack`) and the primary page content (`--z-page`). See **Z-Index Scale** below.
   - **Previous Pages:** Tabs appear on the left side (`.bookmark-tab.left`).
   - **Next Pages:** Tabs appear on the right side (`.bookmark-tab.right`).
-  - **Implementation:** Inlined logic in `base.njk` loops through `navItems` within each page wrapper.
+  - **Implementation:** `base.njk` loops through `navigation.items` (from `_data/navigation.json`) to generate tabs dynamically.
 
 - **Symmetry:** Both left and right pages use `flex: 1` for equal 50/50 width distribution.
 
 - **Page Depth:** Physical DOM implementation (`.page-stack` containing 5 `.stack-leaf` divs) nested within page wrappers to create a realistic, fanned book edge. Shadow artifacts on the inner spine edges are avoided by clipping the content layer shadows.
+  - **Accessibility:** The `.page-stack` element carries `aria-hidden="true"` to prevent screen readers from announcing the decorative empty divs.
 
 ### 4.2 Responsive States
 
@@ -134,6 +156,30 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
    - **Right Page:** Styled with a left border to simulate a folded-back spine.
    - **Navigation:** Mobile menu via the C-Clamp button.
    - **Background:** Scaled wooden texture to maintain context.
+
+### 4.3 Z-Index Scale (Layering Hierarchy)
+
+To prevent "z-index wars" when adding new layers (modals, tooltips, etc.), we formalize the stacking order in `variables.css`:
+
+| Variable          | Value | Purpose                                |
+|-------------------|-------|----------------------------------------|
+| `--z-stack`       | -10   | Base for page stack leaves (-11 to -15)|
+| `--z-tab`         | 1     | Bookmark tabs (between stack and page) |
+| `--z-page`        | 5     | Primary content page                   |
+| `--z-container`   | 10    | Field guide container                  |
+| `--z-overlay`     | 100   | Future: modals, tooltips               |
+| `--z-mobile-menu` | 200   | Future: mobile drawer overlay          |
+
+**Rule:** When adding a new layer, select from this scale rather than inventing a new number.
+
+### 4.4 Mobile Breakpoint Handling
+
+The mobile state transition uses `window.matchMedia` instead of a `resize` event with `setTimeout` debouncing. This is more performant and only fires when the 900px breakpoint is actually crossed—not on every pixel change during window dragging.
+
+```javascript
+const mobileQuery = window.matchMedia("(max-width: 900px)");
+mobileQuery.addEventListener("change", handleBreakpointChange);
+```
 
 ---
 
@@ -169,7 +215,7 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
     - **Fanning:** Each leaf is subject to randomized micro-rotations (e.g., 0.05deg to 0.25deg) to simulate the subtle imperfections of a physical book.
     - **Texture:** Each leaf shares the same `#paperDistress` filter and paper grain texture as the main page for cohesive materiality.
     - **Shading:** Linear gradients and variable opacity applied to lower layers to create depth and separation between sheets.
-    - **Layering:** The primary content page sits at `z-index: 5`, tabs at `z-index: 1`, and stack leaves at `z-index: -11` to `-15`.
+    - **Layering:** The primary content page sits at `var(--z-page)`, tabs at `var(--z-tab)`, and stack leaves at `calc(var(--z-stack) - n)` where n = 1–5. See Section 4.3 for the full z-index scale.
   - **Spine Handling:**
     - **Straight Edge:** Inner edges are clipped using `clip-path: polygon(...)` to ensure a clean, bound spine regardless of page-edge distress.
     - **Gutter Shadow:** Deep linear gradient (`rgba(62, 39, 35, 0.4)`) intensifying toward the center binding.
@@ -183,10 +229,11 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 
 - **Table of Contents:** Only visible on the left page when viewing `/shop/`.
   - **Implementation:** Conditional logic in `base.njk`: `{% if page.url == '/shop/' %}{% include "nav.njk" %}{% endif %}`.
+  - **Data Source:** `nav.njk` loops over `navigation.items` from `_data/navigation.json` to generate the TOC list.
 - **Tabs:** Hand-written style labels protruding from the page edges.
   - **Visuals:** Slightly lighter than page color (`#FDFBF6`) with subtle shadow.
   - **Interaction:** Hover effects that pull the tab out slightly (`transform: translateX(3px)`).
-  - **Stability:** Fixed `top` positions ensure tabs don't jump when switching sides.
+  - **Stability:** CSS-variable-driven `top` positions (via `--tab-index`) ensure tabs don't jump when switching sides and can be adjusted globally from `variables.css`.
 
 ### 5.5 Protocol E: The Entry Animation
 
@@ -273,7 +320,19 @@ We use **Netlify** as our shipping container. The deployment is atomic and immut
    - _Note:_ Do not use HTML tags for structure unless absolutely necessary.
 4. Commit and Push. Netlify handles the rest.
 
-### SOP-02: Image Processing
+### SOP-02: Adding or Renaming Pages (Navigation Manifest)
+
+1. Open `src/_data/navigation.json`.
+2. Add a new item to the `items` array or modify an existing entry.
+   - `url`: The page path (e.g., `/new-page/`).
+   - `tabLabel`: Short label for bookmark tabs (e.g., `"NEW"`).
+   - `tocLabel`: Full name for Table of Contents (e.g., `"NEW PAGE"`).
+   - `id`: Unique integer for ordering (determines which tabs appear left vs. right).
+   - `number`: Two-digit section number (e.g., `"05"`).
+3. Create the corresponding Markdown file in `src/` with the correct front matter.
+4. The TOC and bookmark tabs will auto-generate from this manifest.
+
+### SOP-03: Image Processing
 
 All imagery must pass through the **Dither Protocol**.
 
