@@ -1,59 +1,75 @@
+/**
+ * CONTENTS NAVIGATION
+ * 
+ * PHYSICALISM: The C-icon and CONTENTS label provide navigation to the 
+ * table of contents, with behavior that respects the physical book metaphor.
+ * 
+ * Full Width View (both pages visible):
+ *   - Clicking navigates directly to THE SHOP page
+ * 
+ * Single Page View (one page visible):
+ *   - If on THE SHOP page: "flips" to show the TOC (left page)
+ *   - If on any other page: navigates to THE SHOP with TOC visible
+ */
 document.addEventListener("DOMContentLoaded", () => {
-  const clamp = document.querySelector(".mobile-clamp");
-  const sidebar = document.querySelector(".bench-sidebar");
-
-  // Media Query for breakpoint detection (more performant than resize + setTimeout)
+  const contentsLinks = document.querySelectorAll("[data-contents-nav]");
+  
+  // Media queries for breakpoint detection
+  const singlePageQuery = window.matchMedia("(max-width: 1250px)");
   const mobileQuery = window.matchMedia("(max-width: 900px)");
-
-  if (clamp && sidebar) {
-    clamp.addEventListener("click", (e) => {
-      e.stopPropagation(); // Prevent immediate close
+  
+  // Check if we're in single-page view (either breakpoint)
+  const isSinglePageView = () => singlePageQuery.matches || mobileQuery.matches;
+  
+  // Check if we're currently on THE SHOP page
+  const isShopPage = () => window.location.pathname === "/shop/" || window.location.pathname === "/shop";
+  
+  // Check if we arrived with the TOC flip param
+  const checkFlipParam = () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("toc")) {
+      document.body.setAttribute("data-flip", "toc");
+      // Clean up the URL without reloading
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, "", cleanUrl);
+    }
+  };
+  
+  // Initialize: check for flip param on page load
+  checkFlipParam();
+  
+  contentsLinks.forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
       
-      if (mobileQuery.matches) {
-        sidebar.classList.toggle("active");
-        // Toggle body scroll lock when hamburger menu opens/closes
-        document.body.classList.toggle("sidebar-open", sidebar.classList.contains("active"));
-      } else {
-        sidebar.classList.toggle("collapsed");
-        document.body.classList.toggle("sidebar-collapsed");
-      }
-    });
-
-    // Click outside to close (Mobile only)
-    document.addEventListener("click", (e) => {
-      if (mobileQuery.matches && sidebar.classList.contains("active")) {
-        if (!sidebar.contains(e.target) && !clamp.contains(e.target)) {
-          sidebar.classList.remove("active");
-          document.body.classList.remove("sidebar-open");
+      if (isSinglePageView()) {
+        // SINGLE PAGE VIEW: Flip behavior
+        if (isShopPage()) {
+          // Already on THE SHOP - toggle the flip to show/hide TOC
+          const currentFlip = document.body.getAttribute("data-flip");
+          if (currentFlip === "toc") {
+            document.body.removeAttribute("data-flip");
+          } else {
+            document.body.setAttribute("data-flip", "toc");
+          }
+        } else {
+          // Navigate to THE SHOP with TOC visible
+          window.location.href = "/shop/?toc";
         }
+      } else {
+        // FULL WIDTH VIEW: Navigate directly to THE SHOP
+        window.location.href = "/shop/";
       }
     });
-
-    // Breakpoint Change Handler using matchMedia (replaces resize + setTimeout debounce)
-    // This is more performant and only fires when the breakpoint is actually crossed
-    const handleBreakpointChange = (e) => {
-      // Briefly disable transitions during breakpoint change
-      document.body.classList.add("resizing");
-      
-      if (e.matches) {
-        // Crossed INTO mobile: reset desktop state
-        document.body.classList.remove("sidebar-collapsed");
-        sidebar.classList.remove("collapsed");
-        // Also ensure sidebar-open is removed
-        document.body.classList.remove("sidebar-open");
-        // Ensure sidebar is hidden (not active) when crossing to mobile
-        sidebar.classList.remove("active");
-      }
-      
-      // Re-enable transitions after a brief delay
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          document.body.classList.remove("resizing");
-        });
-      });
-    };
-
-    // Modern API: addEventListener on MediaQueryList
-    mobileQuery.addEventListener("change", handleBreakpointChange);
-  }
+  });
+  
+  // Handle breakpoint changes: reset flip state when returning to full width
+  const handleBreakpointChange = (e) => {
+    if (!e.matches) {
+      // Crossed OUT of single-page view: remove flip state
+      document.body.removeAttribute("data-flip");
+    }
+  };
+  
+  singlePageQuery.addEventListener("change", handleBreakpointChange);
 });

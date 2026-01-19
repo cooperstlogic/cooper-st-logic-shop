@@ -320,6 +320,21 @@ body:not([data-state="open"]) .guide-page.right .guide-header {
   display: none;
 }
 
+/* -----------------------------------------------------------
+   FLIP STATE: Table of Contents View (Single Page Mode)
+   
+   PHYSICALISM: In single-page view, clicking the C-icon/CONTENTS
+   "flips" the book to show the table of contents (left page of THE SHOP).
+   This simulates physically turning to the TOC page.
+   ----------------------------------------------------------- */
+body[data-state="open"][data-flip="toc"] .page-wrapper.left {
+  display: flex !important;
+}
+
+body[data-state="open"][data-flip="toc"] .page-wrapper.right {
+  display: none !important;
+}
+
 /* COVER TEXT STYLING: Warm vanilla off-white text for dark cover background
    All cover text uses --c-cover-text variable for consistent theming */
 body:not([data-state="open"]) .guide-page.right h1,
@@ -593,6 +608,65 @@ hr,
   text-transform: uppercase;
   font-optical-sizing: auto;
   font-variation-settings: 'WONK' 1, 'SOFT' 100;
+}
+
+/* -----------------------------------------------------------
+   HEADER CONTENTS GROUP (C-Icon + CONTENTS Label)
+   
+   PHYSICALISM: The contents link is always visible in the header.
+   - Left pages: C-icon on far left, CONTENTS label to its right
+   - Right pages: CONTENTS label on left, C-icon to its right
+   ----------------------------------------------------------- */
+.header-contents-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contents-link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.contents-link:hover {
+  opacity: 0.7;
+}
+
+.contents-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+.contents-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+/* Left page header: icon first, then label */
+.guide-page.left .header-contents-group {
+  order: -1; /* Contents group on far left */
+}
+
+.guide-page.left .guide-title {
+  order: 1; /* Title on far right */
+}
+
+/* Right page header: label first, then icon (already set in HTML order) */
+.guide-page.right .header-contents-group {
+  order: 1; /* Contents group on far right */
+}
+
+.guide-page.right .guide-title {
+  order: -1; /* Title on far left */
 }
 
 .guide-footer {

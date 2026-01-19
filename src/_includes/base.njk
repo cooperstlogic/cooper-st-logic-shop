@@ -153,9 +153,15 @@
 
         <section class="guide-page left{% if isLeftPage %} single-page-left{% endif %}">
           <header class="guide-header">
-             <a href="/" class="guide-title">
-               COOPER ST
-             </a>
+            <div class="header-contents-group">
+              <a href="/shop/" class="contents-link" data-contents-nav>
+                <img src="/assets/img/icon-c.svg" width="28" height="28" alt="Contents" class="contents-icon">
+                <span class="contents-label">CONTENTS</span>
+              </a>
+            </div>
+            <a href="/" class="guide-title">
+              COOPER ST
+            </a>
           </header>
   
           {% if page.url == '/shop/' %}
@@ -207,10 +213,12 @@
             <a href="/" class="guide-title">
               LOGIC SHOP
             </a>
-            <!-- Mobile Menu Trigger (C-Clamp) - Only visible on mobile CSS -->
-            <button class="mobile-clamp" aria-label="Open Navigation">
-               <img src="/assets/img/icon-c.svg" width="32" height="32" alt="Menu">
-            </button>
+            <div class="header-contents-group">
+              <a href="/shop/" class="contents-link" data-contents-nav>
+                <span class="contents-label">CONTENTS</span>
+                <img src="/assets/img/icon-c.svg" width="28" height="28" alt="Contents" class="contents-icon">
+              </a>
+            </div>
           </header>
   
           {% if isRightPage or page.url == '/' %}
