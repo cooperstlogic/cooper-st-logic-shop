@@ -3,15 +3,14 @@ layout: base.njk
 title: Field Guide
 ---
 
-# COOPER ST LOGIC SHOP
-
 <div style="margin-top: 4rem; text-align: center;">
 
-**FIELD GUIDE**  
-**VERSION 3.0**
+# COOPER ST <br> LOGIC SHOP
 
-<br><br>
+<div style="margin-top: 2rem; text-align: center;">
 
-<a href="/shop/" style="font-size: 1.5rem; border: 2px solid var(--c-carbon); padding: 1rem 2rem; display: inline-block; text-decoration: none;">OPEN FIELD GUIDE</a>
+### [_access the shop_](/shop/)
 
-</div>
+<div style="margin-top: 26rem; text-align: left; text-indent: 2rem;">
+
+<span style="font-family: var(--font-signage); font-weight: 800; font-optical-sizing: auto; font-variation-settings: 'WONK' 1, 'SOFT' 100;">Est 2026</span>

@@ -27,11 +27,12 @@ body {
   background-position: center top;
   /* 
      SCROLL PHYSICS: 
-     Set width to cover viewport, height auto to maintain aspect ratio.
+     Fixed at full resolution (1920px) to maintain physicalism - 
+     the workbench doesn't change size when you move your head.
      'scroll' attachment means it stays with the element (body), so as you scroll down, 
      you see lower parts of the image (scanning down the bench).
   */
-  background-size: 100% auto; 
+  background-size: 1920px auto; 
   background-attachment: scroll; 
   
   color: var(--c-carbon);
@@ -327,8 +328,7 @@ body:not([data-state="open"]) .guide-page.right a:hover {
 /* Cover page divider line styling */
 body:not([data-state="open"]) .guide-page.right .draughtsman-line,
 body:not([data-state="open"]) .guide-page.right hr {
-  border-top-color: #f5f5f5; /* White divider line */
-  opacity: 0.8;
+  display: none;
 }
 
 
@@ -363,6 +363,10 @@ body[data-state="open"] .field-guide-container {
 .guide-page h1, 
 .guide-page h2,
 .guide-header {
+  font-family: var(--font-signage);
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-variation-settings: 'WONK' 1, 'SOFT' 100;
   mix-blend-mode: multiply;
   color: #1a1a1a; 
   filter: url(#inkBleed); 
@@ -511,8 +515,10 @@ hr,
 .guide-title {
   font-family: var(--font-signage);
   font-size: 1.5rem;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: uppercase;
+  font-optical-sizing: auto;
+  font-variation-settings: 'WONK' 1, 'SOFT' 100;
 }
 
 .guide-footer {
