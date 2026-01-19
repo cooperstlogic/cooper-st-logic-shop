@@ -280,6 +280,11 @@ body:not([data-state="open"]) .guide-page.right::before {
   /* No spine shadow needed on cover - it's a flat board */
 }
 
+/* COVER PAGE: Hide header (no title bar or C-icon on cover) */
+body:not([data-state="open"]) .guide-page.right .guide-header {
+  display: none;
+}
+
 /* COVER TEXT STYLING: White text for dark cover background */
 body:not([data-state="open"]) .guide-page.right h1,
 body:not([data-state="open"]) .guide-page.right h2,
@@ -308,6 +313,18 @@ body:not([data-state="open"]) .guide-page.right a {
 
 body:not([data-state="open"]) .guide-page.right a:hover {
   background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
+}
+
+/* Cover page C-icon (mobile menu) styling */
+body:not([data-state="open"]) .guide-page.right .mobile-clamp img {
+  filter: brightness(0) invert(1); /* Convert icon to white */
+}
+
+/* Cover page divider line styling */
+body:not([data-state="open"]) .guide-page.right .draughtsman-line,
+body:not([data-state="open"]) .guide-page.right hr {
+  border-top-color: #f5f5f5; /* White divider line */
+  opacity: 0.8;
 }
 
 
