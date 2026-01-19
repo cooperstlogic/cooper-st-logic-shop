@@ -242,6 +242,13 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
   - **Shading:** Variable opacity applied to lower layers to create depth and separation between sheets.
   - **Layering:** The primary content page sits at `var(--z-page)`, tabs at `var(--z-tab)`, and stack leaves at `calc(var(--z-stack) - n)` where n = 1–5. See Section 4.3 for the full z-index scale.
 
+- **Physical Depth (Shadows):** The book casts realistic shadows onto the workbench surface to convey physical presence.
+  - **Book Shadow:** `.field-guide-book` uses a three-layer `box-shadow`:
+    1. Contact shadow (0 2px 4px) - tight shadow directly under the book
+    2. Ambient shadow (0 8px 24px) - soft, diffused depth shadow
+    3. Distance shadow (0 16px 48px) - subtle far-reaching shadow for weight
+  - **Page Shadow:** Individual pages have subtle shadows to separate them from the stack beneath.
+
 - **Spine Handling:**
   - **Straight Edge:** Inner edges are clipped using `clip-path: polygon(...)` to ensure a clean, bound spine.
   - **Gutter Shadow:** Baked into `paper-left.webp` and `paper-right.webp` rather than applied via CSS gradients, providing authentic depth without runtime performance cost.

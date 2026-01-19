@@ -79,6 +79,15 @@ body {
   transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   /* Simple entry animation */
   animation: settleBook 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  
+  /* Physical depth: Book sitting on the workbench surface
+     - First shadow: Soft contact shadow directly under the book
+     - Second shadow: Larger diffused shadow for ambient depth
+     - Third shadow: Subtle edge definition */
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 16px 48px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes settleBook {
@@ -196,8 +205,8 @@ body {
   background-color: #d8cdb0;
   z-index: var(--z-page); /* Top of stack */
   
-  /* Main shadow casting onto the stack */
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  /* Subtle shadow for page lift above the stack */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 /* Page Background & Texture Layer (The Physical Paper)

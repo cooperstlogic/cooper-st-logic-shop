@@ -3,7 +3,7 @@
     <!-- 
       #paperDistress DEPRECATED
       Paper texture, grain, and spine shading are now "baked" into static WebP images 
-      (paper.webp, cover.webp). This eliminates per-frame rendering calculations.
+      (paper-left.webp, paper-right.webp, cover.webp). This eliminates per-frame rendering calculations.
       See shop-manual.md Section 5.6 for rationale.
     -->
 
