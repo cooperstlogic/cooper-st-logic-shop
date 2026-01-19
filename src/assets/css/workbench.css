@@ -486,6 +486,19 @@ body[data-state="open"] .field-guide-container {
   filter: url(#inkBleed); 
 }
 
+/* Default heading sizes (desktop) */
+.guide-page h1 {
+  font-size: 3rem;
+}
+
+.guide-page h2 {
+  font-size: 2rem;
+}
+
+.guide-page h3 {
+  font-size: 1.5rem;
+}
+
 /* Prevent Double-Filtering on heading children */
 .guide-header *,
 .guide-page h1 *,
@@ -838,7 +851,8 @@ hr,
   body:not([data-state="open"]) .cover-footer {
     bottom: 4rem;
     left: 4rem;
-    font-size: 0.9rem;
+    /* Fluid font size: scales from 1rem at 900px to 0.75rem at 375px */
+    font-size: clamp(0.75rem, 0.286rem + 1.14vw, 1rem);
   }
 
   /* INNER PAGES: Fluid responsive scaling (same as cover)
@@ -891,6 +905,66 @@ hr,
   /* In mobile, only show the primary page wrapper */
   .page-wrapper:not(.is-primary) {
     display: none !important;
+  }
+
+  /* -----------------------------------------------------------
+     FLUID TYPOGRAPHY: Smooth scaling from 900px down to 375px
+     Using clamp() for seamless responsive text sizing
+     ----------------------------------------------------------- */
+  
+  /* Main headings: h1 scales from 3rem (48px) to 2rem (32px) */
+  .guide-page h1 {
+    font-size: clamp(2rem, 0.857rem + 2.86vw, 3rem);
+  }
+  
+  /* Secondary headings: h2 scales from 2rem (32px) to 1.5rem (24px) */
+  .guide-page h2 {
+    font-size: clamp(1.5rem, 1.071rem + 1.07vw, 2rem);
+  }
+  
+  /* Tertiary headings: h3 scales from 1.5rem (24px) to 1.125rem (18px) */
+  .guide-page h3 {
+    font-size: clamp(1.125rem, 0.804rem + 0.80vw, 1.5rem);
+  }
+  
+  /* Smaller headings: h4, h5, h6 scale from 1.25rem to 1rem */
+  .guide-page h4,
+  .guide-page h5,
+  .guide-page h6 {
+    font-size: clamp(1rem, 0.714rem + 0.71vw, 1.25rem);
+  }
+  
+  /* Header title: scales from 1.5rem to 1.125rem */
+  .guide-title {
+    font-size: clamp(1.125rem, 0.804rem + 0.80vw, 1.5rem);
+  }
+  
+  /* Body text: scales from 1rem to 0.9rem */
+  .guide-page p,
+  .guide-page li,
+  .guide-page blockquote {
+    font-size: clamp(0.9rem, 0.771rem + 0.32vw, 1rem);
+  }
+  
+  /* TOC links: scales from 1.1rem to 0.95rem */
+  .toc-link {
+    font-size: clamp(0.95rem, 0.821rem + 0.32vw, 1.1rem);
+  }
+  
+  /* TOC numbers: scales from 0.9rem to 0.8rem */
+  .toc-number {
+    font-size: clamp(0.8rem, 0.729rem + 0.18vw, 0.9rem);
+  }
+  
+  /* Contents label: scales from 0.65rem to 0.55rem */
+  .contents-label {
+    font-size: clamp(0.55rem, 0.479rem + 0.18vw, 0.65rem);
+  }
+  
+  /* Contents icon: scales from 28px to 22px */
+  .contents-icon {
+    width: clamp(22px, 17.714px + 1.07vw, 28px);
+    height: clamp(22px, 17.714px + 1.07vw, 28px);
   }
 
   /* Mobile Menu Drawer Logic (if needed) or simple vertical stack */
