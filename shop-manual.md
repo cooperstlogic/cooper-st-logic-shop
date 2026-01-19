@@ -78,7 +78,7 @@ cooper-st-logic-shop/
 │   │   │   ├── paper-right.webp # Baked page texture for right pages
 │   │   │   ├── desktop.webp
 │   │   │   └── desktop.jpg
-│   │   └── js/            # Client Logic (Mobile Drawer)
+│   │   └── js/            # Client Logic (Contents Navigation & Flip State)
 │   │       └── clamp.js
 │   ├── index.md           # [COVER]
 │   ├── shop.md            # [01 // THE SHOP]
@@ -133,7 +133,7 @@ The home page behaves as the closed cover of the Field Guide (modeled after the 
 - **Texture:** Uses `cover.webp` as the background—a baked cardstock texture with a dark/black base color, distinct from the interior page paper.
 - **Responsive Scaling:** The cover scales fluidly between 600px width (at 900px viewport) and 350px width (at 375px minimum viewport) while maintaining a fixed 3:4 aspect ratio. Stack leaves beneath the cover scale proportionally. See Section 4.5 for complete implementation details.
 - **Typography:** All text elements are styled in warm vanilla off-white (`var(--c-cover-text)`, currently `#fdebc5`) controlled by a single CSS variable to provide contrast against the dark cover background. This includes headings, body text, links, and the cover footer.
-- **Header:** The standard `.guide-header` element is completely hidden (`display: none`) on the cover page—no title bar, no C-icon menu. The cover displays only the content area.
+- **Header:** The standard `.guide-header` element is completely hidden (`display: none`) on the cover page—no title bar, no C-icon, no CONTENTS navigation. The cover displays only the content area.
 - **Ink Effects:** Headings (`h1`, `h2`) and the cover footer retain the `#inkBleed` SVG filter for texture, but use `mix-blend-mode: screen` instead of `multiply` (screen mode brightens and works better for light text on dark backgrounds).
 - **Decorative Elements:** The divider line (`.draughtsman-line`) within the article content is hidden (`display: none`) on the cover.
 
@@ -284,13 +284,22 @@ To maintain consistency and enable global adjustments, all critical dimensions a
 
 **Rule:** When adjusting dimensions or colors, modify these variables rather than hardcoding values throughout the CSS.
 
-### 4.5 Mobile Breakpoint Handling
+### 4.5 Interactive JavaScript (clamp.js)
 
-The mobile state transition uses `window.matchMedia` instead of a `resize` event with `setTimeout` debouncing. This is more performant and only fires when the 900px breakpoint is actually crossed—not on every pixel change during window dragging.
+The `clamp.js` file handles all client-side navigation interactivity, using `window.matchMedia` for performant breakpoint detection instead of `resize` events with `setTimeout` debouncing. This only fires when breakpoints are actually crossed—not on every pixel change during window dragging.
 
+**Contents Navigation:**
+- Manages clicks on `[data-contents-nav]` elements (C-icon + CONTENTS label)
+- Detects viewport state via media queries (single page vs full width)
+- Toggles `data-flip="toc"` attribute on body element for TOC display
+- Handles URL parameter (`?toc`) for deep linking to TOC view
+- Resets flip state when crossing back to full width view
+
+**Breakpoint Monitoring:**
 ```javascript
+const singlePageQuery = window.matchMedia("(max-width: 1250px)");
 const mobileQuery = window.matchMedia("(max-width: 900px)");
-mobileQuery.addEventListener("change", handleBreakpointChange);
+singlePageQuery.addEventListener("change", handleBreakpointChange);
 ```
 
 ### 4.6 Responsive Page Scaling (Fluid Physicalism)
@@ -508,6 +517,122 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
       - **Implementation:** Cover-specific styles are scoped with `body:not([data-state="open"])` selector to isolate the styling from interior pages.
 
 ### 5.4 Protocol D: The Navigation (Tabs & TOC)
+
+#### Contents Navigation (C-Icon + Label)
+
+**PHYSICALISM PRINCIPLE:** The C-icon and CONTENTS label provide persistent navigation to the table of contents, integrated into the page headers with behavior that respects the physical book metaphor.
+
+##### Visual Layout
+
+**Left Pages:**
+- C-icon positioned on far left
+- CONTENTS label to the right of icon
+- "COOPER ST" title on far right
+
+**Right Pages:**
+- "LOGIC SHOP" title on far left
+- CONTENTS label to the left of icon
+- C-icon positioned on far right
+
+##### Styling Details
+
+**C-Icon Implementation:**
+- Inlined SVG (not `<img src>`) with `stroke="currentColor"` to inherit text color
+- Dimensions: 28px × 28px
+- Applies `filter: url(#inkBleed)` for organic ink texture
+- Changes color on hover via CSS `color` inheritance
+
+**CONTENTS Label:**
+- Font: `var(--font-engraving)` (IBM Plex Mono)
+- Size: 0.65rem
+- Letter spacing: 0.5px
+- Text transform: uppercase
+- **No ink bleed filter** - clean, crisp text (explicitly `filter: none !important`)
+- Opacity: 0.9
+
+**Hover State:**
+- Entire link changes to `var(--c-redwood)` color
+- Both icon and label transition together (0.2s ease)
+- Matches the hover behavior of TOC links for visual consistency
+
+##### Interaction Behavior
+
+**Full Width View (Viewport > 1250px):**
+- Clicking navigates directly to `/shop/` page
+- Shows both TOC (left page) and main content (right page) in spread view
+
+**Single Page View (Viewport ≤ 1250px or ≤ 900px):**
+- If currently on THE SHOP page: Toggles flip between main content and TOC
+  - `data-flip="toc"` attribute on body shows left page (TOC)
+  - Removing attribute shows right page (main content)
+- If on any other page: Navigates to `/shop/?toc`
+  - URL parameter triggers automatic flip to show TOC on arrival
+  - Parameter is cleaned from URL via `history.replaceState()` after flip
+
+**Breakpoint Detection:**
+- Uses `window.matchMedia("(max-width: 1250px)")` for performant breakpoint detection
+- Flip state automatically resets when returning to full width view
+- No resize event listeners - only fires on actual breakpoint crossing
+
+##### Implementation Details
+
+**Template Structure (base.njk):**
+```html
+<!-- Left Page Header -->
+<div class="header-contents-group">
+  <a href="/shop/" class="contents-link" data-contents-nav>
+    <svg class="contents-icon" width="28" height="28" viewBox="0 0 64 64">
+      <rect stroke="currentColor" ... />
+      <path stroke="currentColor" ... />
+    </svg>
+    <span class="contents-label">CONTENTS</span>
+  </a>
+</div>
+
+<!-- Right Page Header (reversed order) -->
+<div class="header-contents-group">
+  <a href="/shop/" class="contents-link" data-contents-nav>
+    <span class="contents-label">CONTENTS</span>
+    <svg class="contents-icon" ...>...</svg>
+  </a>
+</div>
+```
+
+**CSS Order Control (workbench.css):**
+```css
+/* Left page: icon group on left, title on right */
+.guide-page.left .header-contents-group { order: -1; }
+.guide-page.left .guide-title { order: 1; }
+
+/* Right page: title on left, icon group on right */
+.guide-page.right .header-contents-group { order: 1; }
+.guide-page.right .guide-title { order: -1; }
+```
+
+**Flip State CSS:**
+```css
+body[data-state="open"][data-flip="toc"] .page-wrapper.left {
+  display: flex !important;
+}
+body[data-state="open"][data-flip="toc"] .page-wrapper.right {
+  display: none !important;
+}
+```
+
+**JavaScript Logic (clamp.js):**
+- Listens for clicks on `[data-contents-nav]` elements
+- Detects viewport state via media queries
+- Manages `data-flip` attribute on body element
+- Handles URL parameter (`?toc`) for deep linking to TOC view
+- Resets flip state on breakpoint changes
+
+##### Why Inline SVG?
+
+The C-icon is inlined (not loaded via `<img src>`) because:
+- `currentColor` allows the icon to inherit text color from parent link
+- Enables seamless color transitions on hover without complex CSS filters
+- `filter: url(#inkBleed)` can be applied directly to the SVG element
+- External `<img>` tags cannot have their internal fill/stroke colors changed via CSS
 
 #### Table of Contents
 
