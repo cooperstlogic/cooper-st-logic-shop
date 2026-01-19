@@ -11,6 +11,4 @@ title: Field Guide
 
 ### [_access the shop_](/shop/)
 
-<div style="margin-top: 26rem; text-align: left; text-indent: 2rem;">
-
-<span style="font-family: var(--font-signage); font-weight: 800; font-optical-sizing: auto; font-variation-settings: 'WONK' 1, 'SOFT' 100;">Est 2026</span>
+<div class="cover-footer">Est 2026</div>

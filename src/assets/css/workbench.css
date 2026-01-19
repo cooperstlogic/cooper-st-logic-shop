@@ -346,6 +346,22 @@ body:not([data-state="open"]) .guide-page.right hr {
   display: none;
 }
 
+/* COVER FOOTER: "Est 2026" anchored to bottom of cover
+   Uses absolute positioning relative to the guide-page container
+   to maintain fixed distance from bottom regardless of cover scale */
+.cover-footer {
+  position: absolute;
+  bottom: 3rem;
+  left: 3rem;
+  font-family: var(--font-signage);
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-variation-settings: 'WONK' 1, 'SOFT' 100;
+  color: #e0ddd5;
+  mix-blend-mode: screen;
+  filter: url(#inkBleed);
+}
+
 
 /* Open State: Show the left page & expand container */
 body[data-state="open"] .page-wrapper.left {
@@ -565,15 +581,56 @@ hr,
     background-size: 1920px auto; /* Scaled down for mobile */
   }
 
-  /* HOME PAGE (Cover): Allow horizontal scroll, maintain size */
+  /* HOME PAGE (Cover): Fluid responsive scaling
+     PHYSICALISM: The cover scales proportionally to maintain its physical
+     aspect ratio (3:4) as the viewport shrinks. This preserves the illusion
+     of a real object getting further away rather than being cropped.
+     
+     FLUID MATH (linear interpolation between breakpoints):
+     - At 900px viewport → 600px width (full size)
+     - At 375px viewport → 350px width (~12.5px margin each side for background)
+     Slope: (600-350)/(900-375) = 250/525 ≈ 0.476
+     Formula: width = 171.43px + 47.62vw
+  */
   body:not([data-state="open"]) {
-    overflow-x: auto !important; /* Enable horizontal scrolling for cover */
+    overflow-x: hidden; /* No horizontal scroll needed - cover scales to fit */
   }
 
   body:not([data-state="open"]) .field-guide-container {
-    min-width: 600px; /* Maintain cover width */
-    width: 600px; /* Fixed width for cover */
+    /* Fluid width: subtle scaling from 600px down to 350px */
+    width: clamp(350px, calc(171.43px + 47.62vw), 600px);
+    min-width: auto;
     margin: 1rem auto;
+  }
+
+  /* Cover page height scales proportionally (maintains 3:4 aspect ratio)
+     Height formula: width × (800/600) = width × 1.333
+     At 900px: 800px height | At 375px: ~467px height
+     Formula: height = 228.57px + 63.49vw
+  */
+  body:not([data-state="open"]) .guide-page.right {
+    min-height: auto;
+    max-height: none;
+    height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+  }
+
+  /* Cover texture fills the scaled page dimensions */
+  body:not([data-state="open"]) .guide-page.right::before {
+    height: 100%;
+  }
+
+  /* Stack leaves scale with cover (same height formula as cover page) */
+  body:not([data-state="open"]) .page-stack,
+  body:not([data-state="open"]) .stack-leaf,
+  body:not([data-state="open"]) .stack-leaf::before {
+    height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+  }
+
+  /* Cover footer scales position proportionally */
+  body:not([data-state="open"]) .cover-footer {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    font-size: 0.9rem;
   }
 
   /* INNER PAGES: Shrink to fit mobile */
