@@ -118,8 +118,12 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
 - **The Cover (Home Page `/`):** The home page behaves as the closed cover of the Field Guide (modeled after the Whole Earth Catalog).
   - **Content:** Centered title "COOPER ST LOGIC SHOP" with "FIELD GUIDE VERSION 3.0" and a link to "OPEN FIELD GUIDE".
   - **State:** `data-state` attribute is NOT set to "open" on the body element.
-  - **Texture:** Uses `cover.webp` as the background—a baked cardstock texture distinct from the interior page paper.
+  - **Texture:** Uses `cover.webp` as the background—a baked cardstock texture with a dark/black base color, distinct from the interior page paper.
   - **Visuals:** Width restricted to single page (~600px) with the inner gutter shadow removed to simulate a flat cover board.
+  - **Typography:** All text elements are styled in warm off-white tones (`#e0ddd5` for headings, `#d5d2ca` for body text) to provide contrast against the dark cover background.
+  - **Header:** The standard `.guide-header` element is completely hidden (`display: none`) on the cover page—no title bar, no C-icon menu. The cover displays only the content area.
+  - **Ink Effects:** Headings (`h1`, `h2`) retain the `#inkBleed` SVG filter for texture, but use `mix-blend-mode: screen` instead of `multiply` (screen mode brightens and works better for light text on dark backgrounds).
+  - **Decorative Elements:** The divider line (`.draughtsman-line`) within the article content is styled in off-white (`#f5f5f5`) with reduced opacity (0.8) for subtle contrast on the dark cover.
 - **The Open Book:** When navigating to any page other than `/`, the guide "flips" open to a two-page spread.
   - **State:** `data-state="open"` is set on the body element via Nunjucks conditional logic.
   - **Layout:** `.field-guide-book` container uses `display: flex` and expands to ~1100px.
@@ -205,15 +209,20 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - **Shadow:** Top-left dark recess (`rgba(0,0,0,0.4)`).
 - **Blend Mode:** `mix-blend-mode: multiply` to "burn" into the wood.
 - **Result:** Realistic engraving effect.
-- **Implementation:** `.workbench-icon` positioned at `top: 3rem; right: 3rem` with `position: absolute`.
+- **Implementation:** `.mobile-clamp` (mobile menu button) appears in the `.guide-header` element, which is only visible on interior pages (the header is hidden entirely on the cover page via `display: none`).
 
 ### 5.3 Protocol C: The Field Guide (Paper & Vellum)
 
 **Performance Principle:** We "bake" expensive texture compositing into static WebP images rather than solving rendering equations at runtime. The browser should display a simple image—not calculate multi-layer blend modes on every scroll frame.
 
 - **Cover (Home Page `/`):** Uses `cover.webp` as the background texture.
-  - **Feel:** Textured, thick cardstock mimicking the cover boards of the Whole Earth Catalog.
+  - **Feel:** Textured, thick cardstock with a dark/black base mimicking the cover boards of the Whole Earth Catalog.
   - **Application:** Applied via `background-image` on the page element when `data-state` is NOT "open".
+  - **Text Styling (Cover-Specific):** Because the cover background is dark, all text elements are inverted to off-white tones:
+    - **Headings (`h1`, `h2`):** Color `#e0ddd5` (warm off-white) with `mix-blend-mode: screen` and `filter: url(#inkBleed)` for realistic ink texture.
+    - **Body Text (`p`, `strong`, `a`):** Color `#d5d2ca` (softer off-white) with `opacity: 0.95` for subtle ink density.
+    - **Link Borders:** Button borders use `#e0ddd5` to match heading color.
+    - **Rationale:** The `screen` blend mode is used instead of `multiply` because it brightens rather than darkens—appropriate for light text on dark backgrounds. This preserves the organic ink aesthetic while ensuring readability on the black cover.
 
 - **Pages (Interior Spreads):** Use `paper.webp` as the pre-rendered background texture.
   - **Source Image:** `src/assets/img/paper.webp` — a baked texture containing:
@@ -238,8 +247,13 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
   - **Logo:** "Cooper St Logic Shop" behaves as the Book Title on the cover, and a Header on inner pages.
   - **Body:** Serif for readability (Fraunces/Public Sans mix).
   - **Ink Simulation (Performance-Optimized):**
-    - **Headings (`h1`, `h2`):** Apply `filter: url(#inkBleed)` and `mix-blend-mode: multiply`. These are high-impact elements where the expensive filter is justified.
-    - **Body Text (`p`, `h3`, `li`):** Use `color: #1a1a1a` with `opacity: 0.9` to simulate ink density. **No blend mode or filter.** The carefully selected color and weight create the impression of ink without per-pixel blend calculations on every scroll frame.
+    - **Interior Pages (Default):**
+      - **Headings (`h1`, `h2`):** Apply `filter: url(#inkBleed)` and `mix-blend-mode: multiply`. These are high-impact elements where the expensive filter is justified. Dark ink (`#1a1a1a`) on light paper.
+      - **Body Text (`p`, `h3`, `li`):** Use `color: #1a1a1a` with `opacity: 0.9` to simulate ink density. **No blend mode or filter.** The carefully selected color and weight create the impression of ink without per-pixel blend calculations on every scroll frame.
+    - **Cover Page (Dark Background Override):**
+      - **Headings (`h1`, `h2`):** Apply `filter: url(#inkBleed)` and `mix-blend-mode: screen` with off-white color (`#e0ddd5`). The `screen` blend mode brightens rather than darkens—essential for light text on dark backgrounds.
+      - **Body Text:** Use off-white color (`#d5d2ca`) with `opacity: 0.95` for subtle contrast.
+      - **Implementation:** Cover-specific styles are scoped with `body:not([data-state="open"])` selector to isolate the styling from interior pages.
 
 ### 5.4 Protocol D: The Navigation (Tabs & TOC)
 

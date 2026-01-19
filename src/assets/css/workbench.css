@@ -285,11 +285,10 @@ body:not([data-state="open"]) .guide-page.right .guide-header {
   display: none;
 }
 
-/* COVER TEXT STYLING: White text for dark cover background */
+/* COVER TEXT STYLING: Off-white text for dark cover background */
 body:not([data-state="open"]) .guide-page.right h1,
-body:not([data-state="open"]) .guide-page.right h2,
-body:not([data-state="open"]) .guide-page.right .guide-header {
-  color: #f5f5f5; /* Off-white for better ink effect visibility */
+body:not([data-state="open"]) .guide-page.right h2 {
+  color: #e0ddd5; /* Warm off-white for better ink effect visibility */
   mix-blend-mode: screen; /* Screen blend mode works better for light text */
   filter: url(#inkBleed); /* Keep the ink bleed effect */
 }
@@ -301,23 +300,18 @@ body:not([data-state="open"]) .guide-page.right h3,
 body:not([data-state="open"]) .guide-page.right h4,
 body:not([data-state="open"]) .guide-page.right h5,
 body:not([data-state="open"]) .guide-page.right h6 {
-  color: #e8e8e8; /* Slightly lighter gray-white for body text */
+  color: #d5d2ca; /* Softer off-white for body text */
   opacity: 0.95; /* Maintain the ink density effect */
 }
 
 /* Cover page link/button styling */
 body:not([data-state="open"]) .guide-page.right a {
-  border-color: #f5f5f5 !important; /* White border for button */
-  color: #f5f5f5 !important;
+  border-color: #e0ddd5 !important; /* Off-white border for button */
+  color: #e0ddd5 !important;
 }
 
 body:not([data-state="open"]) .guide-page.right a:hover {
   background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
-}
-
-/* Cover page C-icon (mobile menu) styling */
-body:not([data-state="open"]) .guide-page.right .mobile-clamp img {
-  filter: brightness(0) invert(1); /* Convert icon to white */
 }
 
 /* Cover page divider line styling */
