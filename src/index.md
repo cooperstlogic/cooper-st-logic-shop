@@ -1,6 +1,6 @@
 ---
 layout: base.njk
-title: Technical Manual
+title: Index
 ---
 
 <div style="margin-top: 4rem; text-align: center;">

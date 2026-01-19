@@ -170,7 +170,6 @@ When navigating to any page other than `/`, the guide "flips" open to a two-page
   - **On `/shop/` (The Shop):** Displays the Table of Contents (`nav.njk`) and copyright footer.
   - **On LEFT Pages (even IDs):** Displays the page's primary content.
   - **On RIGHT Pages (odd IDs):** Displays the paired left page's content from the spread.
-  - **Custom Content:** Pages can define `left_page_content` in front matter for contextual "Field Notes" (e.g., Inventory shows "Stockroom Access" rules, Personnel shows an ID card).
 
 - **Right Page Logic:**
   - **On RIGHT Pages (odd IDs):** Displays the page's primary content (Markdown body).
@@ -1076,7 +1075,6 @@ We use **Netlify** as our shipping container. The deployment is atomic and immut
 3. Create the corresponding Markdown file in `src/` with the correct front matter.
    - Add `layout: base.njk` to front matter
    - Add `title: Page Title` for the page heading
-   - Optionally add `left_page_content: |` for custom left-side field notes
 4. The TOC, bookmark tabs, and spread pairings will auto-generate from this manifest.
 5. Pages will automatically position as left or right based on their ID (odd=right, even=left).
 

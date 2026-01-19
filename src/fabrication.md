@@ -1,11 +1,6 @@
 ---
 layout: base.njk
 title: Fabrication
-left_page_content: |
-  <h3>Workshop Rules</h3>
-  <p>1. Measure twice, cut once.</p>
-  <p>2. Put tools back where you found them.</p>
-  <p>3. Do not distract the operator.</p>
 ---
 
 # 03. FABRICATION
