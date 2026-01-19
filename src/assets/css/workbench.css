@@ -127,19 +127,18 @@ body {
   background-color: #d8cdb0;
   border: 1px solid rgba(139, 119, 101, 0.1); /* Very subtle edge */
   
-  /* Texture for realism */
-  /* We use the pseudo element for texture to allow mixing */
+  /* Texture: Uses baked paper.webp via pseudo-element */
 }
 
 .stack-leaf::before {
   content: "";
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
-  background-image: url("../img/paper-grain.svg");
-  background-size: 512px 512px;
-  opacity: 0.4;
-  mix-blend-mode: multiply;
-  filter: url(#paperDistress);
+  background-image: url("../img/paper.webp");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6; /* Slightly faded for depth illusion */
+  /* No filter - texture is baked into the image */
 }
 
 /* LEFT STACK DYNAMICS */
@@ -148,9 +147,11 @@ body {
   border-right: none; /* Spine connection */
   /* Spine Clip */
   clip-path: polygon(0% -2%, 100% -2%, 100% 102%, 0% 102%);
-  
-  /* Shadow Gradient for depth */
-  background-image: linear-gradient(to left, rgba(62, 39, 35, 0.1), transparent 20%);
+}
+
+/* Mirror the paper texture for left stack leaves (spine shadow falls right) */
+.page-wrapper.left .stack-leaf::before {
+  transform: scaleX(-1);
 }
 
 /* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
@@ -167,9 +168,7 @@ body {
   border-left: none; /* Spine connection */
   /* Spine Clip */
   clip-path: polygon(0% -2%, 100% -2%, 100% 102%, 0% 102%);
-  
-  /* Shadow Gradient for depth */
-  background-image: linear-gradient(to right, rgba(62, 39, 35, 0.1), transparent 20%);
+  /* Spine shading baked into paper.webp - no gradient needed */
 }
 
 /* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
@@ -196,14 +195,19 @@ body {
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
-/* Page Background & Texture Layer (The Physical Paper) */
+/* Page Background & Texture Layer (The Physical Paper)
+   PERFORMANCE: We use baked WebP textures instead of runtime-composited 
+   SVG filters + gradients. The browser renders a simple image, not a math equation.
+   - paper.webp contains: aged vellum color, paper grain, spine shading
+   - The source image is oriented for the RIGHT page (shadow falls toward left/spine)
+   - Left page mirrors the texture with scaleX(-1)
+*/
 .guide-page::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: -1;
-  filter: url(#paperDistress);
-  /* Background properties handled by specific left/right classes */
+  /* No filter here - texture is baked into the image */
 }
 
 
@@ -218,16 +222,12 @@ body {
   /* Spine Handling: Clip the RIGHT edge (inner) to be straight */
   clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%); 
   
-  background-image: 
-    url("../img/paper-grain.svg"),
-    /* Deep gutter shadow on the right side */
-    linear-gradient(to right, transparent 80%, rgba(62, 39, 35, 0.4) 100%), 
-    radial-gradient(ellipse at center, transparent 30%, rgba(100, 80, 50, 0.25) 100%),
-    linear-gradient(to right, #d4c8a8 0%, #c4b695 85%, #ad9670 100%);
-  background-position: top left, center, center, center;
-  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
-  background-size: 512px 512px, cover, cover, cover;
-  background-blend-mode: multiply, multiply, multiply, normal;
+  /* Baked texture: paper.webp mirrored for left page (spine shadow falls right) */
+  background-image: url("../img/paper.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transform: scaleX(-1); /* Mirror the texture so spine shading falls toward center */
   
   right: -2px; 
 }
@@ -243,16 +243,11 @@ body {
   /* Spine Handling: Clip the LEFT edge (inner) to be straight */
   clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%);
   
-  background-image: 
-    url("../img/paper-grain.svg"),
-    /* Deep gutter shadow on the left side */
-    linear-gradient(to left, transparent 80%, rgba(62, 39, 35, 0.4) 100%),
-    radial-gradient(ellipse at center, transparent 30%, rgba(100, 80, 50, 0.25) 100%),
-    linear-gradient(to left, #d4c8a8 0%, #c4b695 85%, #ad9670 100%);
-  background-position: top left, center, center, center;
-  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
-  background-size: 512px 512px, cover, cover, cover;
-  background-blend-mode: multiply, multiply, multiply, normal;
+  /* Baked texture: paper.webp (native orientation - spine shadow falls left) */
+  background-image: url("../img/paper.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   
   left: -2px;
 }
@@ -275,16 +270,14 @@ body {
   max-width: 600px; 
 }
 
-/* On the Cover (Home), we want a cleaner "single board" look without the inner gutter shadow */
+/* COVER STATE (Home Page): Use cover.webp for the closed book cover
+   Modeled after the Whole Earth Catalog - thick cardstock texture */
 body:not([data-state="open"]) .guide-page.right::before {
-  background-image: 
-    url("../img/paper-grain.svg"),
-    /* No gutter shadow on the left edge */
-    radial-gradient(ellipse at center, transparent 30%, rgba(100, 80, 50, 0.25) 100%),
-    linear-gradient(to left, #d4c8a8 0%, #c4b695 85%, #ad9670 100%);
-  /* Remove the spine clip so it looks like a full cover with natural edges all around? 
-     Actually, a cover usually has a straight spine edge too. keeping clip. 
-  */
+  background-image: url("../img/cover.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* No spine shadow needed on cover - it's a flat board */
 }
 
 
@@ -297,24 +290,43 @@ body[data-state="open"] .field-guide-container {
   max-width: 1100px; /* Wider when open */
 }
 
-/* Restore Gutter Shadow for Open Right Page */
-body[data-state="open"] .guide-page.right::before {
-  background-image: 
-    url("../img/paper-grain.svg"),
-    /* Deep gutter shadow on the left side */
-    linear-gradient(to left, transparent 80%, rgba(62, 39, 35, 0.4) 100%),
-    radial-gradient(ellipse at center, transparent 30%, rgba(100, 80, 50, 0.25) 100%),
-    linear-gradient(to left, #d4c8a8 0%, #c4b695 85%, #ad9670 100%);
+/* Open State: Right page uses paper.webp with baked-in spine shadow (no override needed) */
+
+
+/* -----------------------------------------------------------
+   INK SIMULATION (Performance-Optimized)
+   
+   PERFORMANCE PRINCIPLE: Complex SVG filters trigger repaint/composite 
+   on every scroll frame. On a high-end MacBook this looks like ink; 
+   on a mid-range phone it looks like lag.
+   
+   STRATEGY:
+   - Headings (h1, h2): Apply expensive #inkBleed filter + blend mode.
+     These are sparse, high-visual-impact elements where the cost is justified.
+   - Body text: Use color #1a1a1a with opacity 0.9 to simulate ink density.
+     No filter, no blend mode. The carefully selected color creates the 
+     impression of ink without per-pixel blend calculations.
+   ----------------------------------------------------------- */
+
+/* HEADINGS: Full ink treatment (filter + blend mode) */
+.guide-page h1, 
+.guide-page h2,
+.guide-header {
+  mix-blend-mode: multiply;
+  color: #1a1a1a; 
+  filter: url(#inkBleed); 
 }
 
+/* Prevent Double-Filtering on heading children */
+.guide-header *,
+.guide-page h1 *,
+.guide-page h2 * {
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
 
-/* Standard text ink bleed
-   Applied to block-level containers of "ink" to simulate physical printing.
-   We avoid double-filtering by stripping the filter from children of already-filtered parents.
-*/
+/* BODY TEXT: Simulated ink via color/opacity (no filter, no blend mode) */
 .guide-page p, 
-.guide-page h1, 
-.guide-page h2, 
 .guide-page h3, 
 .guide-page h4, 
 .guide-page h5, 
@@ -324,28 +336,13 @@ body[data-state="open"] .guide-page.right::before {
 .guide-page pre,
 .guide-page code,
 .guide-page table,
-.guide-header, 
 .guide-footer, 
 .pending-content,
 hr,
 .draughtsman-line {
-  mix-blend-mode: multiply;
-  color: #1a1a1a; 
-  filter: url(#inkBleed); 
-}
-
-/* Prevent Double-Filtering Layer:
-   If a parent is already filtered, the entire group is warped. 
-   Applying filter to children again causes excessive blur.
-*/
-.guide-header *, 
-.guide-footer *,
-.guide-page p *,
-.guide-page li *,
-.guide-page blockquote *,
-.guide-page table * {
-  filter: none !important;
-  mix-blend-mode: normal !important;
+  color: #1a1a1a;
+  opacity: 0.9;
+  /* No filter, no blend mode - simulates ink through color selection */
 }
 
 .pending-content {

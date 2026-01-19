@@ -1,51 +1,20 @@
 <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
   <defs>
     <!-- 
-      PAPER DISTRESS FILTER 
-      Purpose: Adds subtle physical creases, bumps, and surface imperfections suitable for 1960s vellum/technical paper.
+      #paperDistress DEPRECATED
+      Paper texture, grain, and spine shading are now "baked" into static WebP images 
+      (paper.webp, cover.webp). This eliminates per-frame rendering calculations.
+      See shop-manual.md Section 5.6 for rationale.
     -->
-    <filter id="paperDistress" x="0%" y="0%" width="100%" height="100%">
-      
-      <!-- 1. MACRO TEXTURE: Large, low-frequency waves to simulate gentle warping/creases -->
-      <!-- Lower frequency Y to create horizontal-ish page bending lines -->
-      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.002" numOctaves="4" seed="15" result="macro_noise" />
-      
-      <!-- 2. LIGHTING: Give volume to the macro noise (creases) -->
-      <!-- Increased surfaceScale significantly to make typical paper undulations visible -->
-      <feDiffuseLighting in="macro_noise" lighting-color="#fff8e1" surfaceScale="12" diffuseConstant="1.2" result="macro_light">
-        <feDistantLight azimuth="135" elevation="45" />
-      </feDiffuseLighting>
-      
-      <!-- 3. CONTRAST: Enhance the lighting effect to make creases visible but subtle -->
-      <!-- Using a table to create a more custom "curve" for the shadows -->
-      <feComponentTransfer in="macro_light" result="macro_contrast">
-        <!-- Map the light to a slightly darker range to simulate dirtiness -->
-        <feFuncR type="linear" slope="1.2" intercept="-0.1"/> 
-        <feFuncG type="linear" slope="1.2" intercept="-0.1"/>
-        <feFuncB type="linear" slope="1.2" intercept="-0.1"/>
-      </feComponentTransfer>
-
-      <!-- 4. MICRO TEXTURE: High-frequency grain (Salt & Pepper) for fibrous feel -->
-      <!-- Increased frequency for finer grain -->
-      <feTurbulence type="turbulence" baseFrequency="0.8" numOctaves="5" seed="50" result="micro_noise" />
-      
-      <!-- 5. COMPOSITE: Blend Macro creases onto the background first -->
-      <feComposite operator="arithmetic" in="SourceGraphic" in2="macro_contrast" k1="0.6" k2="0.5" k3="0.3" k4="0" result="creased_paper" />
-      
-      <!-- 6. BLEND MICRO: Add the micro texture on top subtley -->
-      <!-- Increased visibility of the grain slightly (k3) -->
-      <feComposite operator="arithmetic" in="creased_paper" in2="micro_noise" k1="0" k2="1" k3="0.12" k4="0" result="final_paper_texture" />
-      
-      <!-- 7. ROUGH EDGES: Displace the entire pixel field to wiggle the edges -->
-      <!-- Reduced scale to 1.5 to make edges less jagged and more subtle -->
-      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="99" result="edge_noise" />
-      <feDisplacementMap in="final_paper_texture" in2="edge_noise" scale="1.5" xChannelSelector="R" yChannelSelector="G" result="final_paper" />
-
-    </filter>
 
     <!-- 
-      INK BLEED FILTER
+      INK BLEED FILTER (Headings Only)
       Purpose: Simulates ink absorption, wicking, and paper grain interaction for text.
+      
+      SCOPE: Applied ONLY to h1, h2 elements. Body text uses color/opacity simulation.
+      RATIONALE: Headings are sparse, high-visual-impact elements where the per-pixel 
+      cost of the filter is acceptable. Body text dominates the DOM and would cause 
+      scroll performance issues on mid-range devices.
     -->
     <filter id="inkBleed" x="-20%" y="-20%" width="140%" height="140%">
       <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" result="paper_grain" />

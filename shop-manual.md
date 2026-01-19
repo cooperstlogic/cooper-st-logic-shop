@@ -65,15 +65,16 @@ cooper-st-logic-shop/
 │   ├── _includes/         # Layouts & Partials
 │   │   ├── base.njk       # The Field Guide Frame (HTML5 Shell)
 │   │   ├── nav.njk        # Table of Contents (Generated from navigation.json)
-│   │   └── filters.svg    # SVG Filter Definitions
+│   │   └── filters.svg    # SVG Filter Definitions (inkBleed for headings only)
 │   ├── assets/
 │   │   ├── css/           # The Materiality Engine
 │   │   │   ├── reset.css
 │   │   │   ├── variables.css  # Design tokens: colors, z-index scale, tab spacing
 │   │   │   └── workbench.css
-│   │   ├── img/           # SVGs & Textures
+│   │   ├── img/           # Textures & Icons
 │   │   │   ├── icon-c.svg
-│   │   │   ├── paper-grain.svg
+│   │   │   ├── cover.webp       # Baked cover texture (home page)
+│   │   │   ├── paper.webp       # Baked page texture (right page, mirror for left)
 │   │   │   ├── desktop.webp
 │   │   │   └── desktop.jpg
 │   │   └── js/            # Client Logic (Mobile Drawer)
@@ -114,9 +115,10 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
 
 ### 4.1 The Physics of the Book
 
-- **The Cover (Home Page `/`):** The home page behaves as the closed cover of the Field Guide.
+- **The Cover (Home Page `/`):** The home page behaves as the closed cover of the Field Guide (modeled after the Whole Earth Catalog).
   - **Content:** Centered title "COOPER ST LOGIC SHOP" with "FIELD GUIDE VERSION 3.0" and a link to "OPEN FIELD GUIDE".
   - **State:** `data-state` attribute is NOT set to "open" on the body element.
+  - **Texture:** Uses `cover.webp` as the background—a baked cardstock texture distinct from the interior page paper.
   - **Visuals:** Width restricted to single page (~600px) with the inner gutter shadow removed to simulate a flat cover board.
 - **The Open Book:** When navigating to any page other than `/`, the guide "flips" open to a two-page spread.
   - **State:** `data-state="open"` is set on the body element via Nunjucks conditional logic.
@@ -126,7 +128,7 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
   - **On Other Pages:** Displays contextual "Field Notes" content defined in the page's front matter as `left_page_content`.
   - **Example:** Inventory page shows "Stockroom Access" rules, Personnel shows an ID card.
 - **Right Page:** Always contains the primary page content (Markdown body).
-  - **Spine Shadow:** When open, a deep linear gradient shadow appears on the inner left edge to simulate depth in the gutter.
+  - **Spine Shadow:** Baked into `paper.webp`—appears on the inner edge to simulate depth in the gutter binding.
 
 - **Bookmark Tabs:** Navigation is handled via realistic bookmark tabs sticking out from the book edges.
   - **Position Logic:** Tab positions are calculated via CSS: `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))`. Each tab receives a `--tab-index` custom property from the template loop, ensuring positions are derived from variables—not hardcoded magic numbers.
@@ -207,23 +209,37 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 
 ### 5.3 Protocol C: The Field Guide (Paper & Vellum)
 
-- **Cover:** Textured, thick cardstock feel for the home page.
-- **Pages:** Aged Vellum/Bond paper (`#d8cdb0`) with:
-  - **Texture:** `background-image: url("../img/paper-grain.svg")` at `512px 512px` with `multiply` blend.
-  - **Color Grading:** Transitioned from sterile white to late-60s printed catalog tones (Yellowed Bond).
-  - **Depth:** Physical DOM implementation (`.page-stack` containing 5 `.stack-leaf` divs) behind each page to create a realistic, fanned book edge.
-    - **Fanning:** Each leaf is subject to randomized micro-rotations (e.g., 0.05deg to 0.25deg) to simulate the subtle imperfections of a physical book.
-    - **Texture:** Each leaf shares the same `#paperDistress` filter and paper grain texture as the main page for cohesive materiality.
-    - **Shading:** Linear gradients and variable opacity applied to lower layers to create depth and separation between sheets.
-    - **Layering:** The primary content page sits at `var(--z-page)`, tabs at `var(--z-tab)`, and stack leaves at `calc(var(--z-stack) - n)` where n = 1–5. See Section 4.3 for the full z-index scale.
-  - **Spine Handling:**
-    - **Straight Edge:** Inner edges are clipped using `clip-path: polygon(...)` to ensure a clean, bound spine regardless of page-edge distress.
-    - **Gutter Shadow:** Deep linear gradient (`rgba(62, 39, 35, 0.4)`) intensifying toward the center binding.
+**Performance Principle:** We "bake" expensive texture compositing into static WebP images rather than solving rendering equations at runtime. The browser should display a simple image—not calculate multi-layer blend modes on every scroll frame.
+
+- **Cover (Home Page `/`):** Uses `cover.webp` as the background texture.
+  - **Feel:** Textured, thick cardstock mimicking the cover boards of the Whole Earth Catalog.
+  - **Application:** Applied via `background-image` on the page element when `data-state` is NOT "open".
+
+- **Pages (Interior Spreads):** Use `paper.webp` as the pre-rendered background texture.
+  - **Source Image:** `src/assets/img/paper.webp` — a baked texture containing:
+    - Aged Vellum/Bond paper base color (late-60s printed catalog tones)
+    - Paper grain and fiber structure
+    - **Spine shading:** Subtle shadow gradient simulating paper curving into the binding gutter
+  - **Orientation:** The source image is rendered for the **right page** (shadow falls toward the left/spine edge).
+  - **Left Page Mirroring:** Apply `transform: scaleX(-1)` to the background or use a mirrored CSS background-position to flip the texture, so the spine shading correctly falls toward the center binding on both pages.
+  - **Application:** Applied via `background-image` on `.guide-page` elements, replacing the previous runtime-composited approach (paper-grain.svg + gradients + filters).
+
+- **Page Stack Depth:** Physical DOM implementation (`.page-stack` containing 5 `.stack-leaf` divs) behind each page to create a realistic, fanned book edge.
+  - **Fanning:** Each leaf is subject to randomized micro-rotations (e.g., 0.05deg to 0.25deg) to simulate the subtle imperfections of a physical book.
+  - **Texture:** Stack leaves use the same `paper.webp` texture (appropriately mirrored per side) for cohesive materiality.
+  - **Shading:** Variable opacity applied to lower layers to create depth and separation between sheets.
+  - **Layering:** The primary content page sits at `var(--z-page)`, tabs at `var(--z-tab)`, and stack leaves at `calc(var(--z-stack) - n)` where n = 1–5. See Section 4.3 for the full z-index scale.
+
+- **Spine Handling:**
+  - **Straight Edge:** Inner edges are clipped using `clip-path: polygon(...)` to ensure a clean, bound spine.
+  - **Gutter Shadow:** Baked into `paper.webp` rather than applied via CSS gradients.
+
 - **Typography:**
   - **Logo:** "Cooper St Logic Shop" behaves as the Book Title on the cover, and a Header on inner pages.
   - **Body:** Serif for readability (Fraunces/Public Sans mix).
-  - **Ink Effect:** `mix-blend-mode: multiply` on all text elements (`p, h1, h2, h3, li`) with `color: #1a1a1a`.
-  - **Ink Spread:** Uses SVG `#inkBleed` filter to simulate physical wicking into paper fibers.
+  - **Ink Simulation (Performance-Optimized):**
+    - **Headings (`h1`, `h2`):** Apply `filter: url(#inkBleed)` and `mix-blend-mode: multiply`. These are high-impact elements where the expensive filter is justified.
+    - **Body Text (`p`, `h3`, `li`):** Use `color: #1a1a1a` with `opacity: 0.9` to simulate ink density. **No blend mode or filter.** The carefully selected color and weight create the impression of ink without per-pixel blend calculations on every scroll frame.
 
 ### 5.4 Protocol D: The Navigation (Tabs & TOC)
 
@@ -243,17 +259,19 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 
 ### 5.6 Protocol F: SVG Filter Synthesis (Materiality Library)
 
-We utilize procedural SVG filters to break the "perfect" digital line and simulate physical manufacturing imperfections.
+**Performance Principle:** Complex SVG filters like `feTurbulence` and `feDisplacementMap` trigger repaint and composite operations on every scroll frame. On a high-end MacBook, this looks like ink; on a mid-range phone, it looks like lag. We limit filter use to high-impact, low-frequency elements.
 
-- **`#paperDistress`**: Applied to the page background (`::before`).
-  - **Macro Noise:** Low-frequency turbulence for rolling creases and structural warping.
-  - **Lighting:** `feDiffuseLighting` with a warm `#fff8e1` tint to create 3D surface undulations.
-  - **Rough Edges:** `feDisplacementMap` (scale 1.5) using mid-frequency noise to "wiggle" the page boundaries, creating a torn/deckle edge effect.
-- **`#inkBleed`**: Applied to typographic elements.
-  - **Warping:** Simulates the slight wicking of liquid ink into cellulose fibers.
-  - **Dilation:** Uses `feMorphology` to slightly thicken letterforms, mimicking the weight of old-school printing presses.
-  - **Thresholding:** `feColorMatrix` ensures the ink remains dark while having slightly fuzzy, organic edges.
-- **Purpose:** Enhances the physical realism by making the book feel like it's being set down on the workbench.
+#### Deprecated: `#paperDistress`
+
+The previous `#paperDistress` filter (macro noise, diffuse lighting, displacement mapping) has been **removed**. Paper texture, grain, and spine shading are now "baked" into static WebP images (`paper.webp`, `cover.webp`). This eliminates per-frame rendering calculations for the page background.
+
+#### Active: `#inkBleed` (Headings Only)
+
+- **Scope:** Applied **only** to `h1` and `h2` elements. Body text (`p`, `h3`, `li`) does NOT receive this filter.
+- **Warping:** Simulates the slight wicking of liquid ink into cellulose fibers.
+- **Dilation:** Uses `feMorphology` to slightly thicken letterforms, mimicking the weight of old-school printing presses.
+- **Thresholding:** `feColorMatrix` ensures the ink remains dark while having slightly fuzzy, organic edges.
+- **Rationale:** Headings are sparse, high-visual-impact elements. The per-pixel cost of the filter is acceptable because there are few of them on any given page. Body text, which dominates the DOM, uses color/opacity simulation instead (see Section 5.3).
 
 ---
 
