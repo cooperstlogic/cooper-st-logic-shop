@@ -200,13 +200,11 @@
             {# CURRENT PAGE IS LEFT: Show main content here #}
             <article>
               {{ content | safe }}
-              <hr class="draughtsman-line">
             </article>
           {% elif pairedItem and pairedPageContent %}
             {# CURRENT PAGE IS RIGHT: Show paired left page content #}
             <article>
               {{ pairedPageContent | safe }}
-              <hr class="draughtsman-line">
             </article>
           {% else %}
             {# FALLBACK: No paired content available #}
@@ -277,13 +275,11 @@
             {# CURRENT PAGE IS RIGHT (or home): Show main content here #}
             <article>
               {{ content | safe }}
-              <hr class="draughtsman-line">
             </article>
           {% elif pairedItem and pairedPageContent %}
             {# CURRENT PAGE IS LEFT: Show paired right page content #}
             <article>
               {{ pairedPageContent | safe }}
-              <hr class="draughtsman-line">
             </article>
           {% else %}
             {# FALLBACK: No paired content available #}
