@@ -749,13 +749,57 @@ hr,
 }
 
 .guide-footer {
-  margin-top: 4rem;
+  position: absolute;
+  bottom: 1rem; 
+  left: 3rem;
+  right: 3rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   font-size: 0.8rem;
   color: var(--c-zinc);
   font-family: var(--font-mono);
+  /* Ensure it sits above potential overlaps */
+  z-index: 2;
+}
+
+.footer-copyright {
+  grid-column: 2;
+  text-align: center;
+}
+
+.footer-page-num {
+  font-weight: 400; /* Regular weight (was 600) */
+  color: var(--c-carbon);
+  opacity: 0.6;
+}
+
+.footer-nav-arrow {
+  text-decoration: none;
+  color: inherit;
+  opacity: 0.7; /* Increased from 0.4 */
+  transition: opacity 0.2s ease, color 0.2s ease;
+  padding: 0 0.25rem;
+  display: inline-block;
+}
+
+.footer-nav-arrow:hover {
+  opacity: 1;
+  color: var(--c-redwood);
+}
+
+/* Slot 1: Always Left */
+.guide-footer > .footer-page-num:first-child {
+  grid-column: 1;
+  text-align: left;
+}
+
+/* Slot 3: Always Right */
+.guide-footer > .footer-page-num:last-child {
+  grid-column: 3;
+  text-align: right;
 }
 
 .draughtsman-line {

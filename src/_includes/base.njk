@@ -169,7 +169,9 @@
           </header>
           {% include "nav.njk" %}
           <div class="guide-footer">
-             © 2026 Cooper St Logic Shop
+             <span class="footer-page-num"></span>
+             <span class="footer-copyright">© 2026 Dylan Webster</span>
+             <span class="footer-page-num"></span>
           </div>
         </section>
 
@@ -193,9 +195,7 @@
           {% if page.url == '/shop/' %}
             {# SHOP PAGE: Show Table of Contents on left #}
             {% include "nav.njk" %}
-            <div class="guide-footer">
-               © 2026 Cooper St Logic Shop
-            </div>
+            <div class="guide-footer" style="display:none;"></div>
           {% elif isLeftPage %}
             {# CURRENT PAGE IS LEFT: Show main content here #}
             <article>
@@ -212,6 +212,25 @@
                (Field notes for this section are pending...)
             </div>
           {% endif %}
+
+          <div class="guide-footer">
+            <span class="footer-page-num">
+              {% set num = currentId if isLeftPage else (currentId - 1) %}
+              {% if num > 1 %}
+                {% set prevUrl = "" %}
+                {% for item in navigation.items %}{% if item.id == num - 1 %}{% set prevUrl = item.url %}{% endif %}{% endfor %}
+                {% if prevUrl %}<a href="{{ prevUrl }}" class="footer-nav-arrow" aria-label="Previous Page">←</a> {% endif %}
+              {% endif %}
+              {% if num > 0 %}{{ num }}{% endif %}
+            </span>
+            <span class="footer-copyright">© 2026 Dylan Webster</span>
+            <span class="footer-page-num">
+              {% set num = currentId if isLeftPage else (currentId - 1) %}
+              {% set nextUrl = "" %}
+              {% for item in navigation.items %}{% if item.id == num + 1 %}{% set nextUrl = item.url %}{% endif %}{% endfor %}
+              {% if nextUrl %}<a href="{{ nextUrl }}" class="footer-nav-arrow" aria-label="Next Page">→</a>{% endif %}
+            </span>
+          </div>
         </section>
       </div>
 
@@ -249,7 +268,9 @@
           </header>
           {% include "nav.njk" %}
           <div class="guide-footer">
-             © 2026 Cooper St Logic Shop
+             <span class="footer-page-num"></span>
+             <span class="footer-copyright">© 2026 Dylan Webster</span>
+             <span class="footer-page-num"></span>
           </div>
         </section>
 
@@ -287,6 +308,23 @@
                (Next section coming soon...)
             </div>
           {% endif %}
+
+          <div class="guide-footer">
+            <span class="footer-page-num">
+              {% set num = currentId if isRightPage else (currentId + 1) %}
+              {% set prevUrl = "" %}
+              {% for item in navigation.items %}{% if item.id == num - 1 %}{% set prevUrl = item.url %}{% endif %}{% endfor %}
+              {% if prevUrl %}<a href="{{ prevUrl }}" class="footer-nav-arrow" aria-label="Previous Page">←</a> {% endif %}
+            </span>
+            <span class="footer-copyright">© 2026 Dylan Webster</span>
+            <span class="footer-page-num">
+              {% set num = currentId if isRightPage else (currentId + 1) %}
+              {% if num > 0 %}{{ num }}{% endif %}
+              {% set nextUrl = "" %}
+              {% for item in navigation.items %}{% if item.id == num + 1 %}{% set nextUrl = item.url %}{% endif %}{% endfor %}
+              {% if nextUrl %} <a href="{{ nextUrl }}" class="footer-nav-arrow" aria-label="Next Page">→</a>{% endif %}
+            </span>
+          </div>
         </section>
       </div>
       
