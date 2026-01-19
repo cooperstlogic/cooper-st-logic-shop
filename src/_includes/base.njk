@@ -56,9 +56,9 @@
         <section class="guide-page left">
           <header class="guide-header">
              <!-- Title varies based on page type -->
-             <span class="guide-title">
-               {% if page.url == '/shop/' %}Table of Contents{% else %}Field Notes{% endif %}
-             </span>
+             <a href="/" class="guide-title">
+               COOPER ST
+             </a>
           </header>
   
           {% if page.url == '/shop/' %}
@@ -106,9 +106,9 @@
         <section class="guide-page right">
           <!-- Inner page Header (Title) -->
           <header class="guide-header">
-            <span class="guide-title">
-              {% if title %}{{ title }}{% else %}COOPER ST LOGIC SHOP{% endif %}
-            </span>
+            <a href="/" class="guide-title">
+              LOGIC SHOP
+            </a>
             <!-- Mobile Menu Trigger (C-Clamp) - Only visible on mobile CSS -->
             <button class="mobile-clamp" aria-label="Open Navigation">
                <img src="/assets/img/icon-c.svg" width="32" height="32" alt="Menu">
