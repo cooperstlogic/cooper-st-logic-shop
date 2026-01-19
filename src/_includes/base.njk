@@ -51,6 +51,13 @@
   {% set isLeftPage = (currentId % 2 == 0) %}
   {% set isRightPage = (currentId % 2 == 1) %}
   
+  {# Calculate the current spread's left and right page IDs
+     This determines which tabs go on which side:
+     - Tabs for pages <= spreadLeftId go on the LEFT (already turned)
+     - Tabs for pages >= spreadRightId go on the RIGHT (current or ahead) #}
+  {% set spreadLeftId = currentId if isLeftPage else currentId - 1 %}
+  {% set spreadRightId = currentId if isRightPage else currentId + 1 %}
+  
   {# Find the paired page for the spread #}
   {% set pairedItem = null %}
   {% set pairedId = currentId + 1 if isLeftPage else currentId - 1 %}
@@ -75,6 +82,56 @@
     <div class="field-guide-book">
       
       {# ============================================================
+         PHYSICAL TAB NAVIGATION
+         
+         PHYSICALISM: Tabs are physically attached to pages in the guide.
+         - Each tab has a FIXED vertical position based on navigation order
+         - Tab SIDE depends on the current spread position:
+           • Pages already turned (ID <= spreadLeftId) → tabs on LEFT
+           • Current right page and ahead (ID >= spreadRightId) → tabs on RIGHT
+         - Tabs for pages in the CURRENT SPREAD are not clickable
+           (you're already viewing that page)
+         - Tab position uses ID-1 for 0-based indexing
+         ============================================================ #}
+      {% if page.url != '/' %}
+        {% for item in navigation.items %}
+          {# Check if this page is currently visible in the spread #}
+          {% set isInCurrentSpread = (item.id == spreadLeftId or item.id == spreadRightId) %}
+          
+          {# Determine which side this tab should be on based on current spread #}
+          {% if item.id <= spreadLeftId %}
+            {# This page has been turned - tab is in the left stack #}
+            {% if isInCurrentSpread %}
+              <span class="bookmark-tab left is-current" 
+                    style="--tab-index: {{ item.id - 1 }}">
+                {{ item.tabLabel }}
+              </span>
+            {% else %}
+              <a href="{{ item.url }}" 
+                 class="bookmark-tab left" 
+                 style="--tab-index: {{ item.id - 1 }}">
+                {{ item.tabLabel }}
+              </a>
+            {% endif %}
+          {% else %}
+            {# This page is current right side or ahead - tab is in the right stack #}
+            {% if isInCurrentSpread %}
+              <span class="bookmark-tab right is-current" 
+                    style="--tab-index: {{ item.id - 1 }}">
+                {{ item.tabLabel }}
+              </span>
+            {% else %}
+              <a href="{{ item.url }}" 
+                 class="bookmark-tab right" 
+                 style="--tab-index: {{ item.id - 1 }}">
+                {{ item.tabLabel }}
+              </a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      {# ============================================================
          LEFT PAGE WRAPPER
          
          Content Logic:
@@ -93,20 +150,6 @@
           <div class="stack-leaf layer-4"></div>
           <div class="stack-leaf layer-5"></div>
         </div>
-        
-        <!-- Left Tabs (Previous pages) -->
-        {% if page.url != '/' %}
-          {% set leftTabIndex = 0 %}
-          {% for item in navigation.items %}
-            {# Show tabs for pages that would be in the left stack (earlier spreads) #}
-            {% if item.id < currentId - 1 or (item.id < currentId and isRightPage) %}
-              <a href="{{ item.url }}" class="bookmark-tab left" style="--tab-index: {{ leftTabIndex }}">
-                {{ item.tabLabel }}
-              </a>
-              {% set leftTabIndex = leftTabIndex + 1 %}
-            {% endif %}
-          {% endfor %}
-        {% endif %}
 
         <section class="guide-page left{% if isLeftPage %} single-page-left{% endif %}">
           <header class="guide-header">
@@ -157,20 +200,6 @@
           <div class="stack-leaf layer-4"></div>
           <div class="stack-leaf layer-5"></div>
         </div>
-
-        <!-- Right Tabs (Next pages) -->
-        {% if page.url != '/' %}
-          {% set rightTabIndex = 0 %}
-          {% for item in navigation.items %}
-            {# Show tabs for pages that would be in the right stack (later spreads) #}
-            {% if item.id > currentId + 1 or (item.id > currentId and isLeftPage) %}
-              <a href="{{ item.url }}" class="bookmark-tab right" style="--tab-index: {{ rightTabIndex }}">
-                {{ item.tabLabel }}
-              </a>
-              {% set rightTabIndex = rightTabIndex + 1 %}
-            {% endif %}
-          {% endfor %}
-        {% endif %}
 
         <section class="guide-page right">
           <!-- Inner page Header (Title) -->

@@ -501,15 +501,24 @@ hr,
 
 /* -----------------------------------------------------------
    COMPONENTS: BOOKMARKS (Tabs)
+   
+   PHYSICALISM: Tabs are physically attached to pages in the guide.
+   - Each tab has a FIXED vertical position based on --tab-index
+   - --tab-index corresponds to (navigation ID - 1) for 0-based positioning
+   - Tab SIDE depends on current spread position:
+     • Pages already turned → tabs on LEFT (in the turned stack)
+     • Current right page and beyond → tabs on RIGHT (in the unread stack)
+   - Tabs are children of .field-guide-book (positioned relative to book)
    ----------------------------------------------------------- */
 .bookmark-tab {
   position: absolute;
-  /* Position calculated from CSS custom property --tab-index (set inline by template) */
+  /* Position calculated from CSS custom property --tab-index (set inline by template)
+     Uses navigation ID - 1 for consistent spacing across all pages */
   top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index, 0)));
   width: var(--tab-width);
   height: var(--tab-depth);
-  background-color: #FDFBF6; /* Slightly lighter than page for contrast */
-  border: 1px solid #D4D2CB;
+  background-color: #d8cdb0; /* Match page color - tabs are part of the paper */
+  border: 1px solid rgba(139, 119, 101, 0.3);
   box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
   display: flex;
   align-items: center;
@@ -534,13 +543,18 @@ hr,
 }
 
 .bookmark-tab:hover {
-  transform: translateX(3px);
-  background-color: #FFF;
+  background-color: #e0d5bb; /* Slightly lighter on hover */
+}
+
+/* Current spread tabs - not clickable (you're already viewing this page) */
+.bookmark-tab.is-current {
+  cursor: default;
+  pointer-events: none;
 }
 
 /* Fixed Tabs - Left tabs attach to the LEFT of the BOOK (relative to field-guide-book) */
 .bookmark-tab.left {
-  left: -40px; /* Aligned to left stack */
+  left: -40px; /* Aligned to left edge of book */
   border-right: none;
   border-radius: 4px 0 0 4px;
 }
@@ -551,9 +565,13 @@ hr,
 
 /* Fixed Tabs - Right tabs attach to the RIGHT of the BOOK */
 .bookmark-tab.right {
-  right: -40px; /* Aligned to right stack */
+  right: -40px; /* Aligned to right edge of book */
   border-left: none;
   border-radius: 0 4px 4px 0;
+}
+
+.bookmark-tab.right:hover {
+  transform: translateX(3px);
 }
 
 /* -----------------------------------------------------------
