@@ -21,19 +21,71 @@
   <!-- Global Filter Definitions -->
   {% include "filters.svg" %}
   
-  {# Navigation data sourced from _data/navigation.json (Single Source of Truth) #}
-  {# Determine Current ID based on page URL #}
+  {# ============================================================
+     NAVIGATION & PAGE POSITIONING LOGIC
+     
+     PHYSICAL BOOK METAPHOR:
+     - Odd page IDs (1, 3, 5...): RIGHT pages (recto)
+     - Even page IDs (2, 4, 6...): LEFT pages (verso)
+     
+     When viewing a spread:
+     - If current page is RIGHT: show previous (LEFT) page beside it
+     - If current page is LEFT: show next (RIGHT) page beside it
+     
+     This creates natural spread pairings:
+     - Pages 2-3 form a spread (inventory + fabrication)
+     - Pages 4-5 form a spread (personnel + next)
+     ============================================================ #}
+  
+  {# Determine Current ID and Page Side based on page URL #}
   {% set currentId = 0 %}
+  {% set currentItem = null %}
   {% for item in navigation.items %}
-    {% if page.url == item.url %}{% set currentId = item.id %}{% endif %}
+    {% if page.url == item.url %}
+      {% set currentId = item.id %}
+      {% set currentItem = item %}
+    {% endif %}
   {% endfor %}
+  
+  {# Calculate page side: odd IDs = right (recto), even IDs = left (verso) #}
+  {% set isLeftPage = (currentId % 2 == 0) %}
+  {% set isRightPage = (currentId % 2 == 1) %}
+  
+  {# Find the paired page for the spread #}
+  {% set pairedItem = null %}
+  {% set pairedId = currentId + 1 if isLeftPage else currentId - 1 %}
+  {% for item in navigation.items %}
+    {% if item.id == pairedId %}
+      {% set pairedItem = item %}
+    {% endif %}
+  {% endfor %}
+  
+  {# Get paired page content from collections (for spread view) #}
+  {% set pairedPageContent = null %}
+  {% if pairedItem %}
+    {% for p in collections.all %}
+      {% if p.url == pairedItem.url %}
+        {% set pairedPageContent = p.templateContent %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
   
 
   <main class="field-guide-container">
     <div class="field-guide-book">
       
-      <!-- LEFT PAGE WRAPPER & STACK -->
-      <div class="page-wrapper left">
+      {# ============================================================
+         LEFT PAGE WRAPPER
+         
+         Content Logic:
+         - If current page IS a left page: show current page content here
+         - If current page is a right page: show paired left page content
+         - Special case: /shop/ (id=1) shows TOC on left
+         
+         The is-primary class marks which wrapper contains the current page
+         (used for single-page responsive view)
+         ============================================================ #}
+      <div class="page-wrapper left{% if isLeftPage %} is-primary{% endif %}">
         <div class="page-stack" aria-hidden="true">
           <div class="stack-leaf layer-1"></div>
           <div class="stack-leaf layer-2"></div>
@@ -42,48 +94,62 @@
           <div class="stack-leaf layer-5"></div>
         </div>
         
-        <!-- Left Tabs (Previous) -->
+        <!-- Left Tabs (Previous pages) -->
         {% if page.url != '/' %}
+          {% set leftTabIndex = 0 %}
           {% for item in navigation.items %}
-            {% if item.id < currentId %}
-              <a href="{{ item.url }}" class="bookmark-tab left" style="--tab-index: {{ loop.index0 }}">
+            {# Show tabs for pages that would be in the left stack (earlier spreads) #}
+            {% if item.id < currentId - 1 or (item.id < currentId and isRightPage) %}
+              <a href="{{ item.url }}" class="bookmark-tab left" style="--tab-index: {{ leftTabIndex }}">
                 {{ item.tabLabel }}
               </a>
+              {% set leftTabIndex = leftTabIndex + 1 %}
             {% endif %}
           {% endfor %}
         {% endif %}
 
-        <section class="guide-page left">
+        <section class="guide-page left{% if isLeftPage %} single-page-left{% endif %}">
           <header class="guide-header">
-             <!-- Title varies based on page type -->
              <a href="/" class="guide-title">
                COOPER ST
              </a>
           </header>
   
           {% if page.url == '/shop/' %}
-            <!-- ON THE SHOP PAGE: Show Table of Contents -->
+            {# SHOP PAGE: Show Table of Contents on left #}
             {% include "nav.njk" %}
-            
             <div class="guide-footer">
                © 2026 Cooper St Logic Shop
             </div>
+          {% elif isLeftPage %}
+            {# CURRENT PAGE IS LEFT: Show main content here #}
+            <article>
+              {{ content | safe }}
+              <hr class="draughtsman-line">
+            </article>
+          {% elif pairedItem and pairedPageContent %}
+            {# CURRENT PAGE IS RIGHT: Show paired left page content #}
+            <article>
+              {{ pairedPageContent | safe }}
+              <hr class="draughtsman-line">
+            </article>
           {% else %}
-             <!-- ON OTHER PAGES: Show specific left page content (e.g. context, diagrams) -->
-             <!-- We pull this from front matter if available, or default to a standard minimal sidebar -->
-             {% if left_page_content %}
-               {{ left_page_content | safe }}
-             {% else %}
-              <div class="pending-content">
-                 (Field notes for this section are pending...)
-              </div>
-             {% endif %}
+            {# FALLBACK: No paired content available #}
+            <div class="pending-content">
+               (Field notes for this section are pending...)
+            </div>
           {% endif %}
         </section>
       </div>
 
-      <!-- RIGHT PAGE WRAPPER & STACK -->
-      <div class="page-wrapper right">
+      {# ============================================================
+         RIGHT PAGE WRAPPER
+         
+         Content Logic:
+         - If current page IS a right page: show current page content here
+         - If current page is a left page: show paired right page content
+         ============================================================ #}
+      <div class="page-wrapper right{% if isRightPage or page.url == '/' %} is-primary{% endif %}">
         <div class="page-stack" aria-hidden="true">
           <div class="stack-leaf layer-1"></div>
           <div class="stack-leaf layer-2"></div>
@@ -92,13 +158,16 @@
           <div class="stack-leaf layer-5"></div>
         </div>
 
-        <!-- Right Tabs (Next) -->
+        <!-- Right Tabs (Next pages) -->
         {% if page.url != '/' %}
+          {% set rightTabIndex = 0 %}
           {% for item in navigation.items %}
-            {% if item.id > currentId %}
-              <a href="{{ item.url }}" class="bookmark-tab right" style="--tab-index: {{ loop.index0 }}">
+            {# Show tabs for pages that would be in the right stack (later spreads) #}
+            {% if item.id > currentId + 1 or (item.id > currentId and isLeftPage) %}
+              <a href="{{ item.url }}" class="bookmark-tab right" style="--tab-index: {{ rightTabIndex }}">
                 {{ item.tabLabel }}
               </a>
+              {% set rightTabIndex = rightTabIndex + 1 %}
             {% endif %}
           {% endfor %}
         {% endif %}
@@ -115,10 +184,24 @@
             </button>
           </header>
   
-          <article>
-            {{ content | safe }}
-            <hr class="draughtsman-line">
-          </article>
+          {% if isRightPage or page.url == '/' %}
+            {# CURRENT PAGE IS RIGHT (or home): Show main content here #}
+            <article>
+              {{ content | safe }}
+              <hr class="draughtsman-line">
+            </article>
+          {% elif pairedItem and pairedPageContent %}
+            {# CURRENT PAGE IS LEFT: Show paired right page content #}
+            <article>
+              {{ pairedPageContent | safe }}
+              <hr class="draughtsman-line">
+            </article>
+          {% else %}
+            {# FALLBACK: No paired content available #}
+            <div class="pending-content">
+               (Next section coming soon...)
+            </div>
+          {% endif %}
         </section>
       </div>
       

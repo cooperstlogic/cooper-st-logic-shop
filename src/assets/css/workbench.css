@@ -14,9 +14,14 @@
   /* Textures */
   --bg-workbench: url("/assets/img/desktop.webp");
   
-  /* Layout Dimensions */
-  --book-width: 1100px; /* Standardizing on the open width */
-  --book-height: 80vh;
+  /* Layout Dimensions 
+     PHYSICALISM: Page dimensions are consistent throughout - 
+     600px wide × 800px tall (3:4 aspect ratio like a real field guide).
+     Open book = two pages side by side = 1200px wide.
+  */
+  --page-width: 600px;
+  --page-height: 800px;
+  --book-width: 1200px; /* Two pages side by side when open */
   
   /* Cover Typography */
   --c-cover-text: #fdebc5; /* Warm vanilla off-white for dark cover background */
@@ -374,7 +379,22 @@ body[data-state="open"] .page-wrapper.left {
 }
 
 body[data-state="open"] .field-guide-container {
-  max-width: 1100px; /* Wider when open */
+  max-width: var(--book-width); /* Two pages side by side: 1200px */
+}
+
+/* -----------------------------------------------------------
+   SINGLE PAGE VIEW TEXTURES
+   
+   In single-page responsive view, we need to show the correct
+   paper texture based on whether it's a left or right page.
+   By default, the right page texture is shown. When viewing a
+   left-hand page, we apply the left texture instead.
+   ----------------------------------------------------------- */
+
+/* Single page left: Use left page texture (spine shadow on right) */
+.guide-page.single-page-left::before {
+  background-image: url("../img/paper-left.webp");
+  transform: scaleX(-1); /* Mirror for left page spine shading */
 }
 
 /* Open State: Right page uses paper-right.webp with baked-in spine shadow (no override needed) */
@@ -575,7 +595,47 @@ hr,
 }
 
 /* -----------------------------------------------------------
+   RESPONSIVE: SINGLE PAGE VIEW (Tablet)
+   
+   PHYSICALISM PRINCIPLE: When the viewport can't fit a two-page spread,
+   we don't squish the pages together (that breaks the physical metaphor).
+   Instead, we transition to a single-page view - like holding the guide
+   with one page visible, ready to turn.
+   
+   At this breakpoint:
+   - Tabs disappear (navigation via page content or mobile menu)
+   - Only the primary page wrapper is displayed (whichever has .is-primary)
+   - Paper maintains its physical scale (600px - same as cover)
+   ----------------------------------------------------------- */
+@media (max-width: 1250px) {
+  /* INNER PAGES: Single page view - hide the non-primary wrapper */
+  body[data-state="open"] .page-wrapper:not(.is-primary) {
+    display: none !important;
+  }
+  
+  /* Hide bookmark tabs - they'd stick out awkwardly in single page view */
+  body[data-state="open"] .bookmark-tab {
+    display: none;
+  }
+  
+  /* Container sizes for single page (same as cover: 600px) */
+  body[data-state="open"] .field-guide-container {
+    max-width: var(--page-width);
+  }
+  
+  /* Center the book in the viewport */
+  body[data-state="open"] .field-guide-book {
+    justify-content: center;
+  }
+}
+
+/* -----------------------------------------------------------
    RESPONSIVE: MOBILE NOTEBOOK
+   
+   PHYSICALISM PRINCIPLE: Below this breakpoint, both cover and inner
+   pages scale fluidly - like moving the guide further from your eye.
+   The aspect ratio is preserved (3:4) to maintain the illusion of a 
+   real physical object rather than a cropped viewport.
    ----------------------------------------------------------- */
 @media (max-width: 900px) {
   :root {
@@ -638,25 +698,56 @@ hr,
     font-size: 0.9rem;
   }
 
-  /* INNER PAGES: Shrink to fit mobile */
+  /* INNER PAGES: Fluid responsive scaling (same as cover)
+     PHYSICALISM: Inner pages use the exact same dimensions and scaling
+     as the cover - maintaining consistent 3:4 aspect ratio throughout.
+     
+     FLUID MATH: Same formula as cover
+     - At 900px viewport → 600px width
+     - At 375px viewport → 350px width
+     Formula: width = 171.43px + 47.62vw
+  */
+  body[data-state="open"] {
+    overflow-x: hidden; /* No horizontal scroll - page scales to fit */
+  }
+
   body[data-state="open"] .field-guide-container {
-    margin: 1rem;
-    width: auto;
-    max-width: none; /* Reset max-width for mobile fluid */
+    width: clamp(350px, calc(171.43px + 47.62vw), 600px);
+    max-width: none;
+    margin: 1rem auto;
+  }
+
+  /* Inner page height scales proportionally (same 3:4 aspect ratio as cover)
+     Height formula: same as cover
+     At 900px: 800px height | At 375px: ~467px height
+     Formula: height = 228.57px + 63.49vw
+  */
+  body[data-state="open"] .guide-page {
+    min-height: auto;
+    max-height: none;
+    height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+    padding: 1.5rem;
+  }
+
+  /* Inner page texture fills the scaled page dimensions */
+  body[data-state="open"] .guide-page::before {
+    height: 100%;
+  }
+
+  /* Stack leaves scale with inner page (same as cover) */
+  body[data-state="open"] .page-stack,
+  body[data-state="open"] .stack-leaf,
+  body[data-state="open"] .stack-leaf::before {
+    height: clamp(467px, calc(228.57px + 63.49vw), 800px);
   }
 
   .field-guide-book {
     flex-direction: column;
   }
 
-  .page-wrapper.left {
-    display: none !important; /* Always hide TOC page on mobile */
-  }
-
-  /* Maintain paper height consistency - no jarring shifts */
-  .guide-page.right {
-    padding: 1.5rem;
-    /* Keep min-height: 800px from desktop - no sudden height changes */
+  /* In mobile, only show the primary page wrapper */
+  .page-wrapper:not(.is-primary) {
+    display: none !important;
   }
 
   /* Mobile Menu Drawer Logic (if needed) or simple vertical stack */
