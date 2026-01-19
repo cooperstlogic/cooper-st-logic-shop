@@ -12,7 +12,7 @@
   --c-wood-shadow: #3E2723;
   
   /* Textures */
-  --bg-workbench: url("/assets/img/workbench-right.webp");
+  --bg-workbench: url("/assets/img/desktop.webp");
   
   /* Layout Dimensions */
   --book-width: 1100px; /* Standardizing on the open width */
@@ -48,7 +48,7 @@ body {
 /* Fallback for bg */
 @supports not (background-image: url("test.webp")) {
   body {
-    background-image: url("/assets/img/workbench-right.jpg");
+    background-image: url("/assets/img/desktop.jpg");
   }
 }
 

@@ -74,8 +74,8 @@ cooper-st-logic-shop/
 │   │   ├── img/           # SVGs & Textures
 │   │   │   ├── icon-c.svg
 │   │   │   ├── paper-grain.svg
-│   │   │   ├── workbench-right.webp
-│   │   │   └── workbench-right.jpg
+│   │   │   ├── desktop.webp
+│   │   │   └── desktop.jpg
 │   │   └── js/            # Client Logic (Mobile Drawer)
 │   │       └── clamp.js
 │   ├── index.md           # [COVER]
@@ -189,8 +189,8 @@ We move from cold metal to warm wood and paper.
 
 ### 5.1 Protocol A: The Workbench (Warm Wood)
 
-- **Source:** `src/assets/img/workbench-right.webp` (Fallback: `.jpg`).
-- **Dimensions:** 2560 × 2865 (WebP) / 1920 × 2149 (JPG).
+- **Source:** `src/assets/img/desktop.webp` (Fallback: `.jpg`).
+- **Dimensions:** 2560 × 3000.
 - **Behavior:** The background extends down to allow for scrolling without breaking the illusion of the desk surface.
 - **Feel:** Warm, lived-in, history. Not a pristine digital surface, but a workspace.
 
