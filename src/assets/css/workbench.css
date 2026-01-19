@@ -323,16 +323,62 @@ body:not([data-state="open"]) .guide-page.right .guide-header {
 /* -----------------------------------------------------------
    FLIP STATE: Table of Contents View (Single Page Mode)
    
-   PHYSICALISM: In single-page view, clicking the C-icon/CONTENTS
-   "flips" the book to show the table of contents (left page of THE SHOP).
-   This simulates physically turning to the TOC page.
+   PHYSICALISM: In single-page view (< 1250px), clicking the C-icon/CONTENTS
+   toggles between page content and table of contents.
    ----------------------------------------------------------- */
-body[data-state="open"][data-flip="toc"] .page-wrapper.left {
-  display: flex !important;
+
+/* TOC Overlay: Hidden by default, will be shown in flip state */
+.toc-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--z-page) + 1);
+  
+  /* Hidden by default - will only show in single-page flip mode */
+  display: none;
+  pointer-events: none;
+  opacity: 0;
 }
 
-body[data-state="open"][data-flip="toc"] .page-wrapper.right {
-  display: none !important;
+/* Page Content: Default visible state */
+.page-content {
+  position: relative;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Above 1250px: Always hide TOC overlay (navigation goes to /shop/ instead) */
+@media (min-width: 1251px) {
+  .toc-overlay {
+    display: none !important;
+  }
+}
+
+/* Apply toggle behavior only in single-page view (< 1250px) */
+@media (max-width: 1250px) {
+  /* Enable TOC overlay in single-page view */
+  .toc-overlay {
+    display: block;
+  }
+  
+  /* Simple fade transition */
+  .page-content,
+  .toc-overlay {
+    transition: opacity 0.2s ease;
+  }
+  
+  /* When showing TOC: hide content, show TOC */
+  body[data-state="open"][data-flip="toc"] .page-content {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  body[data-state="open"][data-flip="toc"] .toc-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 /* COVER TEXT STYLING: Warm vanilla off-white text for dark cover background

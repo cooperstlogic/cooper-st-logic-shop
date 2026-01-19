@@ -151,10 +151,33 @@
           <div class="stack-leaf layer-5"></div>
         </div>
 
-        <section class="guide-page left{% if isLeftPage %} single-page-left{% endif %}">
+        {# TABLE OF CONTENTS OVERLAY (hidden by default, shown when data-flip="toc" in single-page view) #}
+        <section class="guide-page left toc-overlay{% if isLeftPage %} single-page-left{% endif %}">
           <header class="guide-header">
             <div class="header-contents-group">
-              <a href="/shop/" class="contents-link" data-contents-nav>
+              <a href="#" class="contents-link" data-contents-nav>
+                <svg class="contents-icon" width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="2" y="2" width="60" height="60" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M42 20 H 22 V 44 H 42" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="contents-label">CONTENTS</span>
+              </a>
+            </div>
+            <a href="/" class="guide-title">
+              COOPER ST
+            </a>
+          </header>
+          {% include "nav.njk" %}
+          <div class="guide-footer">
+             © 2026 Cooper St Logic Shop
+          </div>
+        </section>
+
+        {# REGULAR PAGE CONTENT #}
+        <section class="guide-page left page-content{% if isLeftPage %} single-page-left{% endif %}">
+          <header class="guide-header">
+            <div class="header-contents-group">
+              <a href="#" class="contents-link" data-contents-nav>
                 <svg class="contents-icon" width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <rect x="2" y="2" width="60" height="60" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M42 20 H 22 V 44 H 42" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -210,14 +233,37 @@
           <div class="stack-leaf layer-5"></div>
         </div>
 
-        <section class="guide-page right">
+        {# TABLE OF CONTENTS OVERLAY (hidden by default, shown when data-flip="toc" in single-page view) #}
+        <section class="guide-page left toc-overlay">
+          <header class="guide-header">
+            <div class="header-contents-group">
+              <a href="#" class="contents-link" data-contents-nav>
+                <svg class="contents-icon" width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="2" y="2" width="60" height="60" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M42 20 H 22 V 44 H 42" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="contents-label">CONTENTS</span>
+              </a>
+            </div>
+            <a href="/" class="guide-title">
+              COOPER ST
+            </a>
+          </header>
+          {% include "nav.njk" %}
+          <div class="guide-footer">
+             © 2026 Cooper St Logic Shop
+          </div>
+        </section>
+
+        {# REGULAR PAGE CONTENT #}
+        <section class="guide-page right page-content">
           <!-- Inner page Header (Title) -->
           <header class="guide-header">
             <a href="/" class="guide-title">
               LOGIC SHOP
             </a>
             <div class="header-contents-group">
-              <a href="/shop/" class="contents-link" data-contents-nav>
+              <a href="#" class="contents-link" data-contents-nav>
                 <span class="contents-label">CONTENTS</span>
                 <svg class="contents-icon" width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <rect x="2" y="2" width="60" height="60" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
