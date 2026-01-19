@@ -1,6 +1,6 @@
 ---
 layout: base.njk
-title: Field Guide
+title: Technical Manual
 ---
 
 <div style="margin-top: 4rem; text-align: center;">

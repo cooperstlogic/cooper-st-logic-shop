@@ -11,10 +11,10 @@ VERSION: 3.0.0 (Redesign)
 
 We operate at the intersection of high-level reasoning and hands-on craftsmanship. We do not view software as "magic." We view it as a material to be worked on—like timber or steel.
 
-The Interface Metaphor: The site is a "Field Guide" (Vellum) resting on a "Warm Wooden Workbench" (Organic).
+The Interface Metaphor: The site is a "Technical Manual" (Vellum) resting on a "Warm Wooden Workbench" (Organic).
 
 - **The Workbench:** Organic, warm, scarred.
-- **The Field Guide:** Physical, readable, bound.
+- **The Technical Manual:** Physical, readable, bound.
 - **The Relationship:** The Guide is a physical object centered on the bench. It does not stretch to fill the void; it maintains the dimensions of a printed book.
 
 This repository is itself an instantiation of a Digital Workshop.
@@ -63,7 +63,7 @@ cooper-st-logic-shop/
 │   ├── _data/             # Global Site Data (Single Source of Truth)
 │   │   └── navigation.json  # Navigation manifest (pages, tabs, TOC)
 │   ├── _includes/         # Layouts & Partials
-│   │   ├── base.njk       # The Field Guide Frame (HTML5 Shell)
+│   │   ├── base.njk       # The Technical Manual Frame (HTML5 Shell)
 │   │   ├── nav.njk        # Table of Contents (Generated from navigation.json)
 │   │   └── filters.svg    # SVG Filter Definitions (inkBleed for headings only)
 │   ├── assets/
@@ -110,13 +110,13 @@ All navigation data is centralized in `src/_data/navigation.json`. This file is 
 
 ---
 
-## 4.0 THE LAYOUT ENGINE (The Field Guide)
+## 4.0 THE LAYOUT ENGINE (The Technical Manual)
 
-We treat the content as a physical "Field Guide" book with specific dimensions, resting on a wooden surface.
+We treat the content as a physical "Technical Manual" book with specific dimensions, resting on a wooden surface.
 
 ### 4.1 The Physics of the Book
 
-**PHYSICALISM PRINCIPLE:** The Field Guide maintains consistent dimensions throughout—matching the physical constraints of a real printed guide.
+**PHYSICALISM PRINCIPLE:** The Technical Manual maintains consistent dimensions throughout—matching the physical constraints of a real printed guide.
 
 #### Page Dimensions & Book Width
 
@@ -126,7 +126,7 @@ We treat the content as a physical "Field Guide" book with specific dimensions, 
 
 #### The Cover (Home Page `/`)
 
-The home page behaves as the closed cover of the Field Guide (modeled after the Whole Earth Catalog).
+The home page behaves as the closed cover of the Technical Manual (modeled after the Whole Earth Catalog).
 
 - **Content:** Centered title "COOPER ST LOGIC SHOP" with a link to "access the shop" and an "Est 2026" footer positioned absolutely at the bottom-left corner.
 - **State:** `data-state` attribute is NOT set to "open" on the body element.
@@ -248,7 +248,7 @@ To prevent "z-index wars" when adding new layers, we formalize the stacking orde
 | `--z-stack`       | -10   | Base for page stack leaves (-11 to -15)|
 | `--z-tab`         | 1     | Bookmark tabs (between stack and page) |
 | `--z-page`        | 5     | Primary content page                   |
-| `--z-container`   | 10    | Field guide container                  |
+| `--z-container`   | 10    | Technical manual container             |
 
 **Rule:** When adding a new layer, select from this scale rather than inventing a new number.
 
@@ -264,7 +264,7 @@ To maintain consistency and enable global adjustments, critical dimensions and v
 |----------|-------|---------|
 | `--font-signage` | "Fraunces", serif | Display font for headings and titles |
 | `--font-manual` | "Public Sans", sans-serif | Body text font |
-| `--font-engraving` | "IBM Plex Mono", monospace | Monospace font for technical labels |
+| `--font-mono` | "IBM Plex Mono", monospace | Monospace font for technical labels |
 
 **Ink Colors:**
 
@@ -281,7 +281,7 @@ To maintain consistency and enable global adjustments, critical dimensions and v
 | `--z-stack` | -10 | Base for page stack leaves (-11 to -15) |
 | `--z-tab` | 1 | Bookmark tabs (between stack and page) |
 | `--z-page` | 5 | Primary content page |
-| `--z-container` | 10 | Field guide container |
+| `--z-container` | 10 | Technical manual container |
 
 **Tab Positioning:**
 
@@ -525,7 +525,7 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - **Result:** Realistic engraving effect.
 - **Implementation:** `.mobile-clamp` (mobile menu button) appears in the `.guide-header` element, which is only visible on interior pages (the header is hidden entirely on the cover page via `display: none`).
 
-### 5.3 Protocol C: The Field Guide (Paper & Vellum)
+### 5.3 Protocol C: The Technical Manual (Paper & Vellum)
 
 **Performance Principle:** We "bake" expensive texture compositing into static WebP images rather than solving rendering equations at runtime. The browser should display a simple image—not calculate multi-layer blend modes on every scroll frame.
 
@@ -606,7 +606,7 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - Changes color on hover via CSS `color` inheritance
 
 **CONTENTS Label:**
-- Font: `var(--font-engraving)` (IBM Plex Mono)
+- Font: `var(--font-mono)` (IBM Plex Mono)
 - Size: 0.65rem
 - Letter spacing: 0.5px
 - Text transform: uppercase
@@ -979,7 +979,7 @@ We will implement basic regression tests for critical flows (visual regression o
 
 ### 6.3 Content Validation (Physical Page Constraints)
 
-**PHYSICALISM PRINCIPLE:** The Field Guide has fixed physical dimensions. Paper doesn't grow to accommodate overflow—content must fit within the page bounds.
+**PHYSICALISM PRINCIPLE:** The Technical Manual has fixed physical dimensions. Paper doesn't grow to accommodate overflow—content must fit within the page bounds.
 
 #### Page Dimensions
 
