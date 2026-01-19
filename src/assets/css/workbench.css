@@ -27,7 +27,7 @@ body {
   background-position: center top;
   /* 
      SCROLL PHYSICS: 
-     Fixed at full resolution (1920px) to maintain physicalism - 
+     Fixed at  resolution (1920px) to maintain physicalism - 
      the workbench doesn't change size when you move your head.
      'scroll' attachment means it stays with the element (body), so as you scroll down, 
      you see lower parts of the image (scanning down the bench).
@@ -293,6 +293,11 @@ body {
 
 /* COVER STATE (Home Page): Use cover.webp for the closed book cover
    Modeled after the Whole Earth Catalog - thick cardstock texture */
+body:not([data-state="open"]) .guide-page.right {
+  overflow: visible; /* Allow cover content to extend beyond paper bounds */
+  max-height: none; /* Remove height constraint for cover */
+}
+
 body:not([data-state="open"]) .guide-page.right::before {
   background-image: url("../img/cover.webp");
   background-position: center;
@@ -560,7 +565,19 @@ hr,
     background-size: 1920px auto; /* Scaled down for mobile */
   }
 
-  .field-guide-container {
+  /* HOME PAGE (Cover): Allow horizontal scroll, maintain size */
+  body:not([data-state="open"]) {
+    overflow-x: auto !important; /* Enable horizontal scrolling for cover */
+  }
+
+  body:not([data-state="open"]) .field-guide-container {
+    min-width: 600px; /* Maintain cover width */
+    width: 600px; /* Fixed width for cover */
+    margin: 1rem auto;
+  }
+
+  /* INNER PAGES: Shrink to fit mobile */
+  body[data-state="open"] .field-guide-container {
     margin: 1rem;
     width: auto;
     max-width: none; /* Reset max-width for mobile fluid */
@@ -574,9 +591,10 @@ hr,
     display: none !important; /* Always hide TOC page on mobile */
   }
 
+  /* Maintain paper height consistency - no jarring shifts */
   .guide-page.right {
     padding: 1.5rem;
-    min-height: auto;
+    /* Keep min-height: 800px from desktop - no sudden height changes */
   }
 
   /* Mobile Menu Drawer Logic (if needed) or simple vertical stack */
