@@ -241,7 +241,7 @@ When navigating to any page other than `/`, the guide "flips" open to a two-page
 
 ### 4.3 Z-Index Scale (Layering Hierarchy)
 
-To prevent "z-index wars" when adding new layers (modals, tooltips, etc.), we formalize the stacking order in `variables.css`:
+To prevent "z-index wars" when adding new layers, we formalize the stacking order in `variables.css`:
 
 | Variable          | Value | Purpose                                |
 |-------------------|-------|----------------------------------------|
@@ -249,26 +249,41 @@ To prevent "z-index wars" when adding new layers (modals, tooltips, etc.), we fo
 | `--z-tab`         | 1     | Bookmark tabs (between stack and page) |
 | `--z-page`        | 5     | Primary content page                   |
 | `--z-container`   | 10    | Field guide container                  |
-| `--z-overlay`     | 100   | Future: modals, tooltips               |
-| `--z-mobile-menu` | 200   | Future: mobile drawer overlay          |
 
 **Rule:** When adding a new layer, select from this scale rather than inventing a new number.
 
 ### 4.4 CSS Variables (Design Tokens)
 
-To maintain consistency and enable global adjustments, all critical dimensions are defined as CSS custom properties in `variables.css`:
+To maintain consistency and enable global adjustments, critical dimensions and values are defined as CSS custom properties.
 
-#### Page Dimensions
+#### Core Design Tokens (`variables.css`)
+
+**Typography:**
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
-| `--page-width` | 600px | Width of a single page (cover and interior) |
-| `--page-height` | 800px | Height of a single page (fixed) |
-| `--book-width` | 1200px | Width of open book (two pages side by side) |
+| `--font-signage` | "Fraunces", serif | Display font for headings and titles |
+| `--font-manual` | "Public Sans", sans-serif | Body text font |
+| `--font-engraving` | "IBM Plex Mono", monospace | Monospace font for technical labels |
 
-**Design Rationale:** These variables enforce consistent physicalism—the cover and all interior pages share identical dimensions, and the open book is exactly double the single page width.
+**Ink Colors:**
 
-#### Tab Positioning
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `--c-carbon` | #1c1c1c | Primary ink color (dark) |
+| `--c-zinc` | #5f6b6d | Secondary ink color (medium gray) |
+| `--c-redwood` | #8b3a3a | Accent color for hover states |
+
+**Z-Index Scale:**
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `--z-stack` | -10 | Base for page stack leaves (-11 to -15) |
+| `--z-tab` | 1 | Bookmark tabs (between stack and page) |
+| `--z-page` | 5 | Primary content page |
+| `--z-container` | 10 | Field guide container |
+
+**Tab Positioning:**
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
@@ -279,7 +294,19 @@ To maintain consistency and enable global adjustments, all critical dimensions a
 
 **Usage:** Tab positions are calculated as `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))` where `--tab-index` is set inline from the navigation ID.
 
-#### Color Palette
+#### Layout Variables (`workbench.css`)
+
+**Page Dimensions:**
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `--page-width` | 600px | Width of a single page (cover and interior) |
+| `--page-height` | 800px | Height of a single page (fixed) |
+| `--book-width` | 1200px | Width of open book (two pages side by side) |
+
+**Design Rationale:** These variables enforce consistent physicalism—the cover and all interior pages share identical dimensions, and the open book is exactly double the single page width.
+
+**Material Colors:**
 
 | Variable | Value | Purpose |
 |----------|-------|---------|

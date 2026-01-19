@@ -555,7 +555,7 @@ hr,
 }
 
 .toc-number {
-  font-family: var(--font-mono);
+  font-family: var(--font-engraving);
   font-size: 0.9rem;
   color: var(--c-zinc);
 }
@@ -730,7 +730,7 @@ hr,
   text-align: center;
   font-size: 0.8rem;
   color: var(--c-zinc);
-  font-family: var(--font-mono);
+  font-family: var(--font-engraving);
 }
 
 .draughtsman-line {

@@ -1,14 +1,4 @@
 :root {
-  /* 5.1 Protocol A: The Workbench (Cold Rolled Steel) */
-  --c-metal: #e4e7ea;           /* Light silver - like real brushed steel */
-  --c-metal-shadow: #c0c6cc;    /* Mid shadow */
-  --c-metal-highlight: #f4f6f8; /* Bright edge catch */
-  --c-metal-deep: #a8b0b8;      /* Deep groove shadow */
-
-  /* 5.4 Protocol D: The Vellum (Vintage 70s Field Guide) */
-  --c-vellum: #E6DCC3;        /* Warm Manila / Aged paper */
-  --c-vellum-border: #C9BEA5; /* Warm aged edge tone */
-
   /* Ink & Etching */
   --c-carbon: #1c1c1c;
   --c-zinc: #5f6b6d;
@@ -19,20 +9,13 @@
   --font-manual: "Public Sans", sans-serif;
   --font-engraving: "IBM Plex Mono", monospace;
 
-  /* Dimensions */
-  --sidebar-width: 280px;
-  --header-height: 80px;
-  --vellum-width: 65ch;
-
   /* Z-Index Scale (Explicit Layering Hierarchy)
-     Formalized to prevent z-index wars when adding new layers (modals, tooltips, etc.)
+     Formalized to prevent z-index wars when adding new layers
   */
   --z-stack: -10;       /* Page stack leaves: -11 to -15 offset from this */
   --z-tab: 1;           /* Bookmark tabs: between stack and page */
   --z-page: 5;          /* Primary content page */
   --z-container: 10;    /* Field guide container */
-  --z-overlay: 100;     /* Future: modals, tooltips */
-  --z-mobile-menu: 200; /* Future: mobile drawer overlay */
 
   /* Bookmark Tab Positioning
      Uses CSS calc() to compute vertical position from index.
