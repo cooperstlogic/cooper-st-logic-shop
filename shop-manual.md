@@ -6,13 +6,13 @@
 
 ## 1.0 THE CORE ETHOS
 
-We operate at the intersection of high-level reasoning and hands-on craftsmanship. We do not view software as "magic." We view it as a material to be worked on—like timber or steel.
+We apply logic and hands-on craftsmanship to software development. We do not view software as "magic." We view it as a material to be worked on—like timber or steel.
 
-The Interface Metaphor: The site is a "Technical Manual" (Vellum) resting on a "Warm Wooden Workbench" (Organic).
+The Interface Metaphor: The site is a "Technical Manual" resting on a "Warm Wooden Workbench".
 
 - **The Workbench:** Organic, warm, scarred.
 - **The Technical Manual:** Physical, readable, bound.
-- **The Relationship:** The Guide is a physical object centered on the bench. It does not stretch to fill the void; it maintains the dimensions of a printed book.
+- **The Relationship:** The Technical Manual is a physical object centered on the bench. It does not stretch to fill the void; it maintains the dimensions of a printed book.
 
 This repository is itself an instantiation of a Digital Workshop.
 
@@ -113,6 +113,7 @@ All navigation data is centralized in `src/_data/navigation.json`. This file is 
 ```
 
 **Required Fields:**
+
 - `url`: Page path (e.g., `/shop/`)
 - `tabLabel`: Short label for bookmark tabs (e.g., `"SHOP"`)
 - `tocLabel`: Full name for Table of Contents (e.g., `"THE SHOP"`)
@@ -148,7 +149,6 @@ The home page behaves as the closed cover of the Technical Manual (modeled after
 - **Typography:** All text elements are styled in warm vanilla off-white (`var(--c-cover-text)`, currently `#fdebc5`) controlled by a single CSS variable to provide contrast against the dark cover background. This includes headings, body text, links, and the cover footer.
 - **Header:** The standard `.guide-header` element is completely hidden (`display: none`) on the cover page—no title bar, no C-icon, no CONTENTS navigation. The cover displays only the content area.
 - **Ink Effects:** Headings (`h1`, `h2`) and the cover footer retain the `#inkBleed` SVG filter for texture, but use `mix-blend-mode: screen` instead of `multiply` (screen mode brightens and works better for light text on dark backgrounds).
-- **Decorative Elements:** The divider line (`.draughtsman-line`) within the article content is hidden (`display: none`) on the cover.
 
 #### The Open Book (Two-Page Spreads)
 
@@ -221,7 +221,7 @@ When navigating to any page other than `/`, the guide "flips" open to a two-page
   - Paper maintains its physical scale (600px width, 800px height)
   - Left pages show left paper texture (spine shadow on right)
   - Right pages show right paper texture (spine shadow on left)
-- **Navigation:** 
+- **Navigation:**
   - Tabs hidden at this breakpoint (would stick out awkwardly from single page)
   - C-icon/CONTENTS link toggles TOC overlay on current page (no navigation)
   - TOC overlay appears with 0.2s fade transition
@@ -237,7 +237,7 @@ When navigating to any page other than `/`, the guide "flips" open to a two-page
   - Page scales using same formulas as cover (600px → 350px width)
   - Height scales proportionally to maintain 3:4 aspect ratio
   - Stack leaves scale with the page dimensions
-- **Navigation:** 
+- **Navigation:**
   - Tabs hidden (single page view)
   - C-icon/CONTENTS link toggles TOC overlay on current page (same as Breakpoint 2)
   - TOC overlay scales fluidly with page dimensions
@@ -245,22 +245,22 @@ When navigating to any page other than `/`, the guide "flips" open to a two-page
 
 #### Summary of Page Widths Across Breakpoints
 
-| Viewport | Cover Width | Open Book Width | Behavior |
-|----------|-------------|-----------------|----------|
-| > 1250px | 600px | 1200px (2 pages) | Full two-page spread |
-| 900-1250px | 600px | 600px (1 page) | Single page at full scale |
-| < 900px | 600px → 350px | 600px → 350px | Fluid scaling with 3:4 ratio |
+| Viewport   | Cover Width   | Open Book Width  | Behavior                     |
+| ---------- | ------------- | ---------------- | ---------------------------- |
+| > 1250px   | 600px         | 1200px (2 pages) | Full two-page spread         |
+| 900-1250px | 600px         | 600px (1 page)   | Single page at full scale    |
+| < 900px    | 600px → 350px | 600px → 350px    | Fluid scaling with 3:4 ratio |
 
 ### 4.3 Z-Index Scale (Layering Hierarchy)
 
 To prevent "z-index wars" when adding new layers, we formalize the stacking order in `variables.css`:
 
-| Variable          | Value | Purpose                                |
-|-------------------|-------|----------------------------------------|
-| `--z-stack`       | -10   | Base for page stack leaves (-11 to -15)|
-| `--z-tab`         | 1     | Bookmark tabs (between stack and page) |
-| `--z-page`        | 5     | Primary content page                   |
-| `--z-container`   | 10    | Technical manual container             |
+| Variable        | Value | Purpose                                 |
+| --------------- | ----- | --------------------------------------- |
+| `--z-stack`     | -10   | Base for page stack leaves (-11 to -15) |
+| `--z-tab`       | 1     | Bookmark tabs (between stack and page)  |
+| `--z-page`      | 5     | Primary content page                    |
+| `--z-container` | 10    | Technical manual container              |
 
 **Rule:** When adding a new layer, select from this scale rather than inventing a new number.
 
@@ -272,37 +272,37 @@ To maintain consistency and enable global adjustments, critical dimensions and v
 
 **Typography:**
 
-| Variable | Value | Purpose |
-|----------|-------|---------|
-| `--font-signage` | "Fraunces", serif | Display font for headings and titles |
-| `--font-manual` | "Public Sans", sans-serif | Body text font |
-| `--font-mono` | "IBM Plex Mono", monospace | Monospace font for technical labels |
+| Variable         | Value                      | Purpose                              |
+| ---------------- | -------------------------- | ------------------------------------ |
+| `--font-signage` | "Fraunces", serif          | Display font for headings and titles |
+| `--font-manual`  | "Public Sans", sans-serif  | Body text font                       |
+| `--font-mono`    | "IBM Plex Mono", monospace | Monospace font for technical labels  |
 
 **Ink Colors:**
 
-| Variable | Value | Purpose |
-|----------|-------|---------|
-| `--c-carbon` | #1c1c1c | Primary ink color (dark) |
-| `--c-zinc` | #5f6b6d | Secondary ink color (medium gray) |
-| `--c-redwood` | #8b3a3a | Accent color for hover states |
+| Variable      | Value   | Purpose                           |
+| ------------- | ------- | --------------------------------- |
+| `--c-carbon`  | #1c1c1c | Primary ink color (dark)          |
+| `--c-zinc`    | #5f6b6d | Secondary ink color (medium gray) |
+| `--c-redwood` | #8b3a3a | Accent color for hover states     |
 
 **Z-Index Scale:**
 
-| Variable | Value | Purpose |
-|----------|-------|---------|
-| `--z-stack` | -10 | Base for page stack leaves (-11 to -15) |
-| `--z-tab` | 1 | Bookmark tabs (between stack and page) |
-| `--z-page` | 5 | Primary content page |
-| `--z-container` | 10 | Technical manual container |
+| Variable        | Value | Purpose                                 |
+| --------------- | ----- | --------------------------------------- |
+| `--z-stack`     | -10   | Base for page stack leaves (-11 to -15) |
+| `--z-tab`       | 1     | Bookmark tabs (between stack and page)  |
+| `--z-page`      | 5     | Primary content page                    |
+| `--z-container` | 10    | Technical manual container              |
 
 **Tab Positioning:**
 
-| Variable | Value | Purpose |
-|----------|-------|---------|
-| `--tab-start` | 100px | First tab offset from top of book |
-| `--tab-height` | 70px | Vertical spacing between tabs |
-| `--tab-width` | 45px | Tab width (horizontal depth from book edge) |
-| `--tab-depth` | 50px | Tab height (vertical text area) |
+| Variable       | Value | Purpose                                     |
+| -------------- | ----- | ------------------------------------------- |
+| `--tab-start`  | 100px | First tab offset from top of book           |
+| `--tab-height` | 70px  | Vertical spacing between tabs               |
+| `--tab-width`  | 45px  | Tab width (horizontal depth from book edge) |
+| `--tab-depth`  | 50px  | Tab height (vertical text area)             |
 
 **Usage:** Tab positions are calculated as `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))` where `--tab-index` is set inline from the navigation ID.
 
@@ -310,22 +310,22 @@ To maintain consistency and enable global adjustments, critical dimensions and v
 
 **Page Dimensions:**
 
-| Variable | Value | Purpose |
-|----------|-------|---------|
-| `--page-width` | 600px | Width of a single page (cover and interior) |
-| `--page-height` | 800px | Height of a single page (fixed) |
-| `--book-width` | 1200px | Width of open book (two pages side by side) |
+| Variable        | Value  | Purpose                                     |
+| --------------- | ------ | ------------------------------------------- |
+| `--page-width`  | 600px  | Width of a single page (cover and interior) |
+| `--page-height` | 800px  | Height of a single page (fixed)             |
+| `--book-width`  | 1200px | Width of open book (two pages side by side) |
 
 **Design Rationale:** These variables enforce consistent physicalism—the cover and all interior pages share identical dimensions, and the open book is exactly double the single page width.
 
 **Material Colors:**
 
-| Variable | Value | Purpose |
-|----------|-------|---------|
-| `--c-cover-text` | #fdebc5 | Warm vanilla off-white for cover typography |
-| `--c-wood-base` | #5D4037 | Base workbench wood color |
-| `--c-wood-highlight` | #8D6E63 | Wood highlight tones |
-| `--c-wood-shadow` | #3E2723 | Wood shadow/carved text color |
+| Variable             | Value   | Purpose                                     |
+| -------------------- | ------- | ------------------------------------------- |
+| `--c-cover-text`     | #fdebc5 | Warm vanilla off-white for cover typography |
+| `--c-wood-base`      | #5D4037 | Base workbench wood color                   |
+| `--c-wood-highlight` | #8D6E63 | Wood highlight tones                        |
+| `--c-wood-shadow`    | #3E2723 | Wood shadow/carved text color               |
 
 **Rule:** When adjusting dimensions or colors, modify these variables rather than hardcoding values throughout the CSS.
 
@@ -334,6 +334,7 @@ To maintain consistency and enable global adjustments, critical dimensions and v
 The `clamp.js` file handles all client-side navigation interactivity, using `window.matchMedia` for performant breakpoint detection instead of `resize` events with `setTimeout` debouncing. This only fires when breakpoints are actually crossed—not on every pixel change during window dragging.
 
 **Contents Navigation:**
+
 - Intercepts clicks on all `[data-contents-nav]` elements (C-icon + CONTENTS label)
 - Detects viewport state via media queries to determine behavior:
   - **Full Width (>= 1250px):** Standard navigation to `/shop/` page
@@ -342,6 +343,7 @@ The `clamp.js` file handles all client-side navigation interactivity, using `win
 - Automatically resets flip state when viewport expands back to full width
 
 **Behavior by Viewport:**
+
 ```javascript
 // Full width: navigate to /shop/
 if (!isSinglePageView()) {
@@ -360,6 +362,7 @@ else {
 ```
 
 **Breakpoint Monitoring:**
+
 ```javascript
 const singlePageQuery = window.matchMedia("(max-width: 1250px)");
 const mobileQuery = window.matchMedia("(max-width: 900px)");
@@ -369,12 +372,38 @@ const isSinglePageView = () => singlePageQuery.matches || mobileQuery.matches;
 
 // Reset state when returning to full width
 singlePageQuery.addEventListener("change", handleBreakpointChange);
+
+/**
+ * Swipe Gesture Navigation
+ * Detects horizontal swipes to trigger page turns.
+ */
+document.addEventListener(
+  "touchstart",
+  (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  },
+  { passive: true },
+);
+
+document.addEventListener(
+  "touchend",
+  (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+  },
+  { passive: true },
+);
 ```
 
 **Performance Notes:**
+
 - No URL parameters or query strings needed (toggle is purely client-side)
 - No `resize` event listeners (only breakpoint change events)
-- Minimal DOM manipulation (single attribute toggle on body element)
+- **Swipe Support:** Detects horizontal swipes (>50px) while ignoring vertical scrolling to trigger linear navigation.
+- **Visibility Filtering:** Logic filters for visible navigation arrows (using `offsetParent` check) to ensure swipes target the active page spread correctly.
+- Minimal DOM manipulation (single attribute toggle or `window.location` change)
 - CSS handles all visual transitions via `data-flip` attribute selector
 
 ### 4.6 Responsive Page Scaling (Fluid Physicalism)
@@ -394,22 +423,27 @@ singlePageQuery.addEventListener("change", handleBreakpointChange);
 Both cover and inner pages use CSS `clamp()` with calculated viewport-based formulas to scale smoothly between breakpoints:
 
 **Width Scaling (Cover & Inner Pages):**
+
 ```css
 width: clamp(350px, calc(171.43px + 47.62vw), 600px);
 ```
+
 - At 900px viewport → 600px width (full size)
 - At 375px viewport → 350px width (minimum)
 - Linear interpolation: Slope = (600-350)/(900-375) = 250/525 ≈ 0.476
 
 **Height Scaling (Proportional - Cover & Inner Pages):**
+
 ```css
 height: clamp(467px, calc(228.57px + 63.49vw), 800px);
 ```
+
 - At 900px viewport → 800px height (full size)
 - At 375px viewport → ~467px height (maintains 3:4 ratio)
 - Formula: width × (800/600) = width × 1.333
 
 **Math Reference:**
+
 - Width formula derivation: `width = 171.43px + 47.62vw`
   - At 900px: 171.43 + (900 × 0.4762) = 600px ✓
   - At 375px: 171.43 + (375 × 0.4762) = 350px ✓
@@ -490,6 +524,7 @@ body:not([data-state="open"]) .guide-page.right {
 **DESIGN PRINCIPLE:** All cover text shares a unified warm vanilla off-white color to contrast against the dark cover background. A single CSS variable controls the color palette for consistent theming.
 
 **Variable Definition:**
+
 ```css
 :root {
   --c-cover-text: #fdebc5; /* Warm vanilla off-white for dark cover background */
@@ -497,12 +532,14 @@ body:not([data-state="open"]) .guide-page.right {
 ```
 
 **Application Scope:**
+
 - **Headings (h1, h2):** `color: var(--c-cover-text)` with `mix-blend-mode: screen` and `filter: url(#inkBleed)`
 - **Body text (p, h3-h6, strong, a):** `color: var(--c-cover-text)` with `opacity: 0.95`
 - **Link borders:** `border-color: var(--c-cover-text)`
 - **Cover footer:** `color: var(--c-cover-text)`
 
 **Rationale:**
+
 - Single source of truth: Change `--c-cover-text` to adjust all cover typography at once
 - Warm vanilla tone (#fdebc5) provides optimal contrast and readability against dark cover texture
 - Screen blend mode (not multiply) used for light text on dark backgrounds
@@ -599,11 +636,13 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 ##### Visual Layout
 
 **Left Pages:**
+
 - C-icon positioned on far left
 - CONTENTS label to the right of icon
 - "COOPER ST" title on far right
 
 **Right Pages:**
+
 - "LOGIC SHOP" title on far left
 - CONTENTS label to the left of icon
 - C-icon positioned on far right
@@ -611,12 +650,14 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 ##### Styling Details
 
 **C-Icon Implementation:**
+
 - Inlined SVG (not `<img src>`) with `stroke="currentColor"` to inherit text color
 - Dimensions: 28px × 28px
 - Applies `filter: url(#inkBleed)` for organic ink texture
 - Changes color on hover via CSS `color` inheritance
 
 **CONTENTS Label:**
+
 - Font: `var(--font-mono)` (IBM Plex Mono)
 - Size: 0.65rem
 - Letter spacing: 0.5px
@@ -625,6 +666,7 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - Opacity: 0.9
 
 **Hover State:**
+
 - Entire link changes to `var(--c-redwood)` color
 - Both icon and label transition together (0.2s ease)
 - Matches the hover behavior of TOC links for visual consistency
@@ -632,11 +674,13 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 ##### Interaction Behavior
 
 **Full Width View (Viewport >= 1250px):**
+
 - Clicking navigates directly to `/shop/` page
 - Shows both TOC (left page) and main content (right page) in spread view
 - Standard navigation behavior - no toggle functionality
 
 **Single Page View (Viewport < 1250px):**
+
 - Clicking toggles between page content and TOC overlay on the **current page**
 - **No navigation occurs** - user stays on the current page
 - Toggle behavior:
@@ -645,6 +689,7 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - Works on all pages (not just THE SHOP)
 
 **TOC Overlay Structure:**
+
 - Complete left page replica including:
   - Full page styling (`.guide-page.left`) with paper texture
   - Header with "COOPER ST" title
@@ -655,6 +700,7 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
 - Hidden by default (`opacity: 0`, `pointer-events: none`)
 
 **Transition Effect:**
+
 - Simple fade transition: `0.2s ease`
 - When toggling TO TOC:
   - Page content: `opacity: 0`, `pointer-events: none`
@@ -663,6 +709,7 @@ Elements on the workbench (like the C-Icon) are **carved** or **burned** into th
   - Reverse transition automatically applied
 
 **Breakpoint Detection:**
+
 - Uses `window.matchMedia("(max-width: 1250px)")` for performant breakpoint detection
 - Flip state automatically resets when returning to full width view (>= 1250px)
 - No resize event listeners - only fires on actual breakpoint crossing
@@ -710,18 +757,23 @@ Each page wrapper contains two sections: a TOC overlay and the regular page cont
 ```
 
 **Key Points:**
+
 - TOC overlay uses `href="#"` instead of `href="/shop/"` to prevent navigation
 - Both overlay and content sections have full page structure with headers
 - C-icon is functional in both states (clicking toggles between them)
 
 **CSS Toggle Behavior (workbench.css):**
+
 ```css
 /* Default state: TOC hidden, content visible */
 .toc-overlay {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: calc(var(--z-page) + 1);
-  display: none;      /* Hidden above 1250px */
+  display: none; /* Hidden above 1250px */
   opacity: 0;
   pointer-events: none;
 }
@@ -734,20 +786,22 @@ Each page wrapper contains two sections: a TOC overlay and the regular page cont
 
 /* Enable TOC in single-page view */
 @media (max-width: 1250px) {
-  .toc-overlay { display: block; }
-  
+  .toc-overlay {
+    display: block;
+  }
+
   /* Simple fade transition */
   .page-content,
   .toc-overlay {
     transition: opacity 0.2s ease;
   }
-  
+
   /* When data-flip="toc": show TOC, hide content */
   body[data-state="open"][data-flip="toc"] .page-content {
     opacity: 0;
     pointer-events: none;
   }
-  
+
   body[data-state="open"][data-flip="toc"] .toc-overlay {
     opacity: 1;
     pointer-events: auto;
@@ -756,26 +810,29 @@ Each page wrapper contains two sections: a TOC overlay and the regular page cont
 
 /* Above 1250px: always hide TOC (navigation goes to /shop/) */
 @media (min-width: 1251px) {
-  .toc-overlay { display: none !important; }
+  .toc-overlay {
+    display: none !important;
+  }
 }
 ```
 
 **JavaScript Logic (clamp.js):**
+
 ```javascript
 document.addEventListener("DOMContentLoaded", () => {
   const contentsLinks = document.querySelectorAll("[data-contents-nav]");
-  
+
   // Media queries for breakpoint detection
   const singlePageQuery = window.matchMedia("(max-width: 1250px)");
   const mobileQuery = window.matchMedia("(max-width: 900px)");
-  
+
   // Check if in single-page view
   const isSinglePageView = () => singlePageQuery.matches || mobileQuery.matches;
-  
-  contentsLinks.forEach(link => {
+
+  contentsLinks.forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
-      
+
       if (isSinglePageView()) {
         // SINGLE PAGE VIEW: Toggle TOC on current page
         const currentFlip = document.body.getAttribute("data-flip");
@@ -790,19 +847,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-  
+
   // Reset flip state when returning to full width
   const handleBreakpointChange = (e) => {
     if (!e.matches) {
       document.body.removeAttribute("data-flip");
     }
   };
-  
+
   singlePageQuery.addEventListener("change", handleBreakpointChange);
 });
 ```
 
 **Key Implementation Notes:**
+
 - All `[data-contents-nav]` links are intercepted by JavaScript
 - In single-page view, clicking toggles `data-flip` attribute instead of navigating
 - TOC overlay includes complete page structure (header, nav, footer)
@@ -812,16 +870,19 @@ document.addEventListener("DOMContentLoaded", () => {
 ##### Design Rationale
 
 **Why toggle instead of navigate in single-page view?**
+
 - **User Experience:** In single-page view (tablets/mobile), navigating away from the current page just to see the TOC is disruptive. Users lose their place and must navigate back.
 - **Efficiency:** Toggle behavior allows quick TOC reference without leaving the current page—similar to flipping to an index in a physical book and then returning.
 - **Consistency:** Both the TOC overlay and regular content have functional C-icons, so clicking either one toggles between views seamlessly.
 
 **Why simple fade instead of flip animation?**
+
 - **Performance:** Complex 3D transforms and rotations can cause jank on mid-range mobile devices.
 - **Clarity:** A simple fade is more predictable and doesn't distract from the content transition.
 - **Speed:** 0.2s fade feels instant while still being smooth—flip animations often feel sluggish.
 
 **Why absolute positioning for TOC overlay?**
+
 - **No Layout Shift:** Absolute positioning keeps the overlay out of document flow, preventing any reflow or shift in page dimensions.
 - **Z-Index Control:** Overlay sits at `calc(var(--z-page) + 1)`, ensuring it appears above content without affecting other elements.
 - **Clean Toggle:** Simple opacity/pointer-events toggle is more reliable than DOM insertion/removal.
@@ -829,6 +890,7 @@ document.addEventListener("DOMContentLoaded", () => {
 ##### Why Inline SVG?
 
 The C-icon is inlined (not loaded via `<img src>`) because:
+
 - `currentColor` allows the icon to inherit text color from parent link
 - Enables seamless color transitions on hover without complex CSS filters
 - `filter: url(#inkBleed)` can be applied directly to the SVG element
@@ -847,6 +909,7 @@ The C-icon is inlined (not loaded via `<img src>`) because:
 ##### Tab Positioning System
 
 **Fixed Vertical Positions:**
+
 - Each tab has a FIXED vertical position calculated from its navigation ID
 - Position formula: `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))`
 - `--tab-index` = navigation ID - 1 (for 0-based positioning)
@@ -859,12 +922,12 @@ Tabs switch sides based on the current spread position, simulating a physical bo
 - **Pages Already Turned (ID <= spreadLeftId):**
   - Tabs appear on the **LEFT** edge of the book
   - These pages are in the "read" stack
-  
 - **Current Right Page & Beyond (ID >= spreadRightId):**
   - Tabs appear on the **RIGHT** edge of the book
   - These pages are in the "unread" stack
 
 **Example: Pages 2-3 Spread (Inventory/Fabrication):**
+
 - SHOP tab (id=1) → LEFT side (already turned)
 - INV tab (id=2) → LEFT side (left page of current spread)
 - FAB tab (id=3) → RIGHT side (right page of current spread)
@@ -873,11 +936,13 @@ Tabs switch sides based on the current spread position, simulating a physical bo
 ##### Tab Interactivity
 
 **Active Tabs (Clickable):**
+
 - Rendered as `<a>` elements with `href` to navigate
 - Hover effect: slightly extends outward (`transform: translateX(±3px)`)
 - Lighter background on hover (`#e0d5bb`)
 
 **Inactive Tabs (Current Spread):**
+
 - Tabs for pages currently visible in the spread are non-clickable
 - Rendered as `<span>` elements instead of `<a>` links
 - Styled with `pointer-events: none` and `cursor: default`
@@ -896,10 +961,11 @@ Tabs switch sides based on the current spread position, simulating a physical bo
 ##### Implementation Details
 
 **Template Logic (base.njk):**
+
 ```nunjucks
 {% for item in navigation.items %}
   {% set isInCurrentSpread = (item.id == spreadLeftId or item.id == spreadRightId) %}
-  
+
   {% if item.id <= spreadLeftId %}
     {# Tab goes on LEFT side #}
     {% if isInCurrentSpread %}
@@ -919,17 +985,54 @@ Tabs switch sides based on the current spread position, simulating a physical bo
 ```
 
 **CSS Variables (variables.css):**
+
 ```css
---tab-start: 100px;   /* First tab offset from top */
---tab-height: 70px;   /* Vertical spacing between tabs */
---tab-width: 45px;    /* Tab width */
---tab-depth: 50px;    /* Tab height (vertical text area) */
+--tab-start: 100px; /* First tab offset from top */
+--tab-height: 70px; /* Vertical spacing between tabs */
+--tab-width: 45px; /* Tab width */
+--tab-depth: 50px; /* Tab height (vertical text area) */
 ```
 
 **Responsive Behavior:**
+
 - **Desktop (> 1250px):** All tabs visible
 - **Tablet (900-1250px):** Tabs hidden (single-page view)
 - **Mobile (< 900px):** Tabs hidden (single-page view)
+
+#### Linear Navigation (Footer Arrows & Swipe Gestures)
+
+**PHYSICALISM PRINCIPLE:** To support seamless linear reading (especially in single-page mobile views), the manual provides "Forward" and "Back" navigation cues in the footer, matching the behavior of physical page turning.
+
+##### Visual Design (The Footer)
+
+- **Positioning:** Pinned absolutely to the bottom of the page (`bottom: 1rem`) to ensure a consistent anchor point.
+- **Layout:** 3-column Grid (`1fr auto 1fr`):
+  - **Left Slot:** Previous Page Number + Arrow (e.g., `← 02`)
+  - **Center Slot:** Copyright Notice (`© 2026 Dylan Webster`)
+  - **Right Slot:** Page Number + Next Arrow (e.g., `03 →`)
+- **Styling:**
+  - Typography: `var(--font-mono)` at `0.8rem` size.
+  - Page numbers use regular weight (400) and 0.7 opacity.
+  - Arrows (`←`, `→`) have a subtle default state (0.7 opacity) and transition to full opacity + `var(--c-redwood)` on hover.
+
+##### Logical Behavior
+
+- **Directional UI:** Arrows only render if a corresponding neighbor (previous or next ID) exists in `navigation.json`.
+- **Single-Page View Support:**
+  - On a **LEFT** page (e.g., Page 2), a "Next" arrow is rendered in the right footer slot to allow jumping to Page 3.
+  - On a **RIGHT** page (e.g., Page 3), a "Prev" arrow is rendered in the left footer slot to allow jumping back to Page 2.
+  - This prevents navigation "dead ends" when the physical tabs are hidden.
+
+##### Swipe Gestures
+
+**Interaction Logic:**
+
+- **Trigger:** Horizontal swipe distance > 50px.
+- **Safety:** Vertical movement must be < 50px (ensures navigation doesn't trigger while a user is scrolling down content).
+- **Action:**
+  - **Swipe Left** (Finger moves right to left) → "Turns the page forward" (Next Page).
+  - **Swipe Right** (Finger moves left to right) → "Flips the page back" (Prev Page).
+- **Targeting:** The JavaScript identifies the currently **visible** navigation arrows to determine the target URL, ensuring correct behavior across spreads and overlays.
 
 ### 5.5 Protocol E: The Entry Animation
 
@@ -1003,6 +1106,7 @@ npm run validate
 ```
 
 **Output:**
+
 - ✅ **OK:** Content fits within page bounds
 - ⚠️ **WARNING:** Page is 90% full (approaching limit)
 - ❌ **ERROR:** Content overflows fixed page size
@@ -1107,16 +1211,19 @@ Displays the Table of Contents on the left page with dynamic spread pairings.
 ### 9.2 Inventory (`/inventory/`)
 
 **Status:** Placeholder content indicating the page is offline.
+
 - **Message:** "STOCKROOM LOCKED. ANNUAL INVENTORY AUDIT IN PROGRESS."
 
 ### 9.3 Fabrication (`/fabrication/`)
 
 **Status:** Placeholder content indicating maintenance status.
+
 - **Message:** "MACHINERY UNDER MAINTENANCE. CALIBRATING LOGIC GATES."
 
 ### 9.4 Personnel (`/personnel/`)
 
 **Title:** "PERSONNEL"
+
 - **Role:** Nights and Weekends Manager
 - **Content:** Brief bio of Dylan Webster as sole proprietor
 
