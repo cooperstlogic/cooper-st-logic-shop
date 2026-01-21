@@ -6,6 +6,8 @@
 
 We’re currently fitting out the shop. Sweeping up the sawdust and getting the tools organized.
 
+(See shop-manual.md for detailed documentation of how this site works.)
+
 Leave a note: <hello@cooperstlogicshop.com>
 
 Santa Cruz, California  
