@@ -3,8 +3,9 @@
   "version": "2.0.0",
   "description": "Pacific Pragmatism. Static & Honest.",
   "scripts": {
-    "start": "eleventy --serve",
-    "build": "eleventy",
+    "clean": "rm -rf _site",
+    "start": "npm run clean && eleventy --serve",
+    "build": "npm run clean && eleventy",
     "validate": "node validate-content.js",
     "prebuild": "npm run validate",
     "format": "prettier --write '**/*.{html,css,js,md,njk}'",
