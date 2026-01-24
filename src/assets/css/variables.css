@@ -1,0 +1,28 @@
+:root {
+  /* Ink & Etching */
+  --c-carbon: #1c1c1c;
+  --c-zinc: #5f6b6d;
+  --c-redwood: #8b3a3a;
+
+  /* Typography */
+  --font-signage: "Fraunces", serif;
+  --font-manual: "Public Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  /* Z-Index Scale (Explicit Layering Hierarchy)
+     Formalized to prevent z-index wars when adding new layers
+  */
+  --z-stack: -10;       /* Page stack leaves: -11 to -15 offset from this */
+  --z-tab: 1;           /* Bookmark tabs: between stack and page */
+  --z-page: 5;          /* Primary content page */
+  --z-container: 10;    /* Technical manual container */
+
+  /* Bookmark Tab Positioning
+     Uses CSS calc() to compute vertical position from index.
+     tab-top = var(--tab-start) + (var(--tab-height) * index)
+  */
+  --tab-start: 100px;   /* First tab offset from top */
+  --tab-height: 70px;   /* Vertical spacing between tabs */
+  --tab-width: 45px;    /* Tab width */
+  --tab-depth: 50px;    /* Tab height (vertical text area) */
+}

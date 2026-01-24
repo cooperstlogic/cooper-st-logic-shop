@@ -1,175 +1,1266 @@
-<!-- markdownlint-disable-next-line MD033 -->
-# COOPER ST <br> LOGIC SHOP: <br> SHOP MANUAL
+# SHOP MANUAL: COOPER ST LOGIC SHOP
 
-**VERSION:** 1.0.0
+## Pacific Pragmatism / Santa Cruz, CA
 
 ---
 
 ## 1.0 THE CORE ETHOS
 
-This repository is a Digital Workshop. It contains the raw materials (HTML/CSS) and the tools (Scripts) required to manufacture the company landing page.
+We apply logic and hands-on craftsmanship to software development. We do not view software as "magic." We view it as a material to be worked on—like timber or steel.
+
+The Interface Metaphor: The site is a "Technical Manual" resting on a "Warm Wooden Workbench".
+
+- **The Workbench:** Organic, warm, scarred.
+- **The Technical Manual:** Physical, readable, bound.
+- **The Relationship:** The Technical Manual is a physical object centered on the bench. It does not stretch to fill the void; it maintains the dimensions of a printed book.
+
+This repository is itself an instantiation of a Digital Workshop.
 
 ---
 
 ## 2.0 WORKBENCH PREPARATION
 
-Before commencing work, ensure your local environment meets the shop standards.
+### 2.1 Required Tooling
 
-### 2.1 First-Time Setup (Fitting Out)
+- **Runtime:** Node.js v18+ (The Power Source).
+- **The Machine:** **Eleventy (11ty)**. We utilize a Static Site Generator (SSG) to assemble the "Inventory" and "Fabrication" catalogs from raw data.
+- **Version Control:** Git.
 
-If you are initializing the shop for the first time, execute the following sequence:
+### 2.2 First-Time Setup (Fitting Out)
 
-1. **Clone the Repository**
-   Bring the materials onto your local workbench.
+1. **Clone the Repository:**
 
    ```bash
    git clone https://github.com/your-username/cooper-st-logic-shop.git
    cd cooper-st-logic-shop
    ```
 
-2. **Install Shop Tools**
-   We use minimal dependencies (`serve`, `prettier`, `htmlhint`) to keep the shop floor clean.
+2. **Install Shop Tools:**
 
    ```bash
    npm install
    ```
 
-   _Note: This command reads the inventory in `package.json` and provisions the necessary equipment._
+   _(Installs @11ty/eleventy, Prettier, HTMLHint, and local server utilities)_
 
 ---
 
-## 3.0 FABRICATION (Development)
+## 3.0 ARCHITECTURE (The 11ty Structure)
 
-We work with Structural Honesty. We edit the raw files directly. There is no compilation step, no bundler, and no "transpiling." What you write is what the browser renders.
+We separate "Raw Materials" (Source) from "Finished Goods" (Output).
 
-### 3.1 Firing Up (Local Server)
+```text
+cooper-st-logic-shop/
+├── .eleventy.js           # The Machine Config
+├── .gitignore             # Shop Hygiene
+├── netlify.toml           # Shipping Label
+├── package.json           # Inventory
+├── README.md              # Public Repository Description
+├── shop-manual.md         # Shop Manual (This Document)
+├── src/                   # RAW MATERIALS
+│   ├── _data/             # Global Site Data (Single Source of Truth)
+│   │   └── navigation.json  # Navigation manifest (pages, tabs, TOC)
+│   ├── _includes/         # Layouts & Partials
+│   │   ├── base.njk       # The Technical Manual Frame (HTML5 Shell)
+│   │   ├── nav.njk        # Table of Contents (Generated from navigation.json)
+│   │   └── filters.svg    # SVG Filter Definitions (inkBleed for headings only)
+│   ├── assets/
+│   │   ├── css/           # The Materiality Engine
+│   │   │   ├── reset.css
+│   │   │   ├── variables.css  # Design tokens: colors, z-index scale, tab spacing, page dimensions
+│   │   │   └── workbench.css
+│   │   ├── img/           # Textures & Icons
+│   │   │   ├── icon-c.svg
+│   │   │   ├── cover.webp       # Baked cover texture (home page)
+│   │   │   ├── paper-left.webp  # Baked page texture for left pages (mirrored)
+│   │   │   ├── paper-right.webp # Baked page texture for right pages
+│   │   │   ├── desktop.webp
+│   │   │   └── desktop.jpg
+│   │   └── js/            # Client Logic (Contents Navigation & TOC Toggle)
+│   │       └── clamp.js   # Handles C-icon clicks, TOC toggle, breakpoint detection
+│   ├── index.md           # [COVER]
+│   ├── shop.md            # [01 // THE SHOP]
+│   ├── inventory.md       # [02 // INVENTORY]
+│   ├── fabrication.md     # [03 // FABRICATION]
+│   └── personnel.md       # [04 // PERSONNEL]
+└── _site/                 # FINISHED GOODS (Gitignored)
+```
 
-To inspect the work-in-progress, start the local static server.
+### 3.1 Data Architecture (The Single Manifest)
+
+All navigation data is centralized in `src/_data/navigation.json`. This file is the **single source of truth** for:
+
+- **Bookmark Tabs:** Label, URL, and positioning index for the physical tab markers.
+- **Table of Contents:** Full page names and section numbers displayed on the left page.
+- **Page Ordering:** ID field determines page side assignment (odd=right, even=left) and spread pairing.
+
+**Rule:** If you change a page slug, add a page, or rename a section—edit **one file**: `navigation.json`. The templates (`base.njk`, `nav.njk`) consume this data automatically via Eleventy's global data system.
+
+**Navigation Item Structure:**
+
+```json
+{
+  "items": [
+    {
+      "url": "/shop/",
+      "label": "SHOP",
+      "tabLabel": "SHOP",
+      "tocLabel": "THE SHOP",
+      "id": 1,
+      "number": "01"
+    }
+  ]
+}
+```
+
+**Required Fields:**
+
+- `url`: Page path (e.g., `/shop/`)
+- `label`: Short label (legacy field, typically matches `tabLabel`)
+- `tabLabel`: Short label for bookmark tabs (e.g., `"SHOP"`)
+- `tocLabel`: Full name for Table of Contents (e.g., `"THE SHOP"`)
+- `id`: Unique sequential integer (determines page side: odd=right, even=left)
+- `number`: Two-digit section number for TOC display (e.g., `"01"`)
+
+**Note:** Tab positioning (vertical spacing, offsets) is controlled by CSS variables in `variables.css` (`--tab-start`, `--tab-height`), not by navigation data.
+
+---
+
+## 4.0 THE LAYOUT ENGINE (The Technical Manual)
+
+We treat the content as a physical "Technical Manual" book with specific dimensions, resting on a wooden surface.
+
+### 4.1 The Physics of the Book
+
+**PHYSICALISM PRINCIPLE:** The Technical Manual maintains consistent dimensions throughout—matching the physical constraints of a real printed guide.
+
+#### Page Dimensions & Book Width
+
+- **Single Page:** 600px width × 800px height (3:4 aspect ratio)
+- **Open Book (Two-Page Spread):** 1200px width (600px × 2)
+- **Design Rationale:** All pages (cover and interior) share identical width for consistent physicalism. The open book is exactly double the width of a single page.
+
+#### The Cover (Home Page `/`)
+
+The home page behaves as the closed cover of the Technical Manual (modeled after the Whole Earth Catalog).
+
+- **Content:** Centered title "COOPER ST LOGIC SHOP" with a link to "access the shop" and an "Est 2026" footer positioned absolutely at the bottom-left corner.
+- **State:** `data-state` attribute is NOT set to "open" on the body element.
+- **Texture:** Uses `cover.webp` as the background—a baked cardstock texture with a dark/black base color, distinct from the interior page paper.
+- **Responsive Scaling:** The cover scales fluidly between 600px width (at 900px viewport) and 350px width (at 375px minimum viewport) while maintaining a fixed 3:4 aspect ratio. Stack leaves beneath the cover scale proportionally. See Section 4.6 for complete implementation details.
+- **Typography:** All text elements are styled in warm vanilla off-white (`var(--c-cover-text)`, currently `#fdebc5`) controlled by a single CSS variable to provide contrast against the dark cover background. This includes headings, body text, links, and the cover footer.
+- **Header:** The standard `.guide-header` element is completely hidden (`display: none`) on the cover page—no title bar, no C-icon, no CONTENTS navigation. The cover displays only the content area.
+- **Ink Effects:** Headings (`h1`, `h2`) and the cover footer retain the `#inkBleed` SVG filter for texture, but use `mix-blend-mode: screen` instead of `multiply` (screen mode brightens and works better for light text on dark backgrounds).
+
+#### The Open Book (Two-Page Spreads)
+
+When navigating to any page other than `/`, the guide "flips" open to a two-page spread.
+
+- **State:** `data-state="open"` is set on the body element via Nunjucks conditional logic.
+- **Layout:** `.field-guide-book` container uses `display: flex` and expands to 1200px (600px × 2 pages).
+
+#### Dynamic Page Positioning System
+
+**PHYSICALISM PRINCIPLE:** Pages are automatically positioned like a real book based on their navigation order. Odd-numbered pages are RIGHT pages (recto), even-numbered pages are LEFT pages (verso).
+
+- **Page Side Assignment (from `navigation.json` ID):**
+  - **Odd IDs (1, 3, 5...):** RIGHT pages (recto)
+  - **Even IDs (2, 4, 6...):** LEFT pages (verso)
+
+- **Automatic Spread Pairing:**
+  - Pages 1-2: TOC (left) + Shop (right)
+  - Pages 2-3: Inventory (left) + Fabrication (right)
+  - Pages 4-5: Personnel (left) + (next page, if added)
+
+- **Content Logic (Dynamic):**
+  - When viewing a RIGHT page → paired LEFT page content appears in left wrapper
+  - When viewing a LEFT page → paired RIGHT page content appears in right wrapper
+  - Special case: `/shop/` (id=1) always shows TOC on the left side
+
+- **Implementation:** Template logic in `base.njk` calculates page side using modulo math (`id % 2 == 0` for left pages) and dynamically fetches paired page content from Eleventy collections.
+
+#### Page-Specific Content
+
+- **Left Page Logic:**
+  - **On `/shop/` (The Shop):** Displays the Table of Contents (`nav.njk`) and copyright footer.
+  - **On LEFT Pages (even IDs):** Displays the page's primary content.
+  - **On RIGHT Pages (odd IDs):** Displays the paired left page's content from the spread.
+
+- **Right Page Logic:**
+  - **On RIGHT Pages (odd IDs):** Displays the page's primary content (Markdown body).
+  - **On LEFT Pages (even IDs):** Displays the paired right page's content from the spread.
+  - **Spine Shadow:** Baked into `paper-right.webp`—appears on the inner edge to simulate depth in the gutter binding.
+
+- **Bookmark Tabs:** Navigation is handled via realistic bookmark tabs sticking out from the book edges. See **Section 5.4 Protocol D** for complete tab navigation documentation.
+
+- **Symmetry:** Both left and right pages use `flex: 1` for equal 50/50 width distribution.
+
+- **Page Depth:** Physical DOM implementation (`.page-stack` containing 5 `.stack-leaf` divs) nested within page wrappers to create a realistic, fanned book edge. Shadow artifacts on the inner spine edges are avoided by clipping the content layer shadows.
+  - **Accessibility:** The `.page-stack` element carries `aria-hidden="true"` to prevent screen readers from announcing the decorative empty divs.
+
+### 4.2 Responsive States & Breakpoints
+
+**PHYSICALISM PRINCIPLE:** When the viewport can't fit a two-page spread, we don't squish the pages together (that breaks the physical metaphor). Instead, we transition to a single-page view—like holding the guide with one page visible, ready to turn.
+
+**Transition Specification:** All layout transitions use `0.6s cubic-bezier(0.25, 1, 0.5, 1)` to mimic the weight of paper and wood.
+
+#### Breakpoint 1: Full Spread View (Desktop > 1250px)
+
+- **Home:** Centered Cover at full size (600px × 800px).
+- **Open State:** Two-page spread layout showing both pages of the current spread.
+  - Left page displays: TOC (for Shop) or paired content
+  - Right page displays: Primary content or paired content
+- **Navigation:** All bookmark tabs visible on appropriate sides based on spread position.
+- **Book Width:** 1200px (600px × 2 pages).
+
+#### Breakpoint 2: Single Page View (900px - 1250px)
+
+**PHYSICALISM PRINCIPLE:** At this breakpoint, the viewport can't fit a two-page spread, so we show only the primary page (the one you navigated to) at its full physical scale.
+
+- **Home (Cover):** Centered at full size (600px × 800px).
+- **Open State:** Single page view.
+  - Only the primary page wrapper (marked with `.is-primary` class) is displayed
+  - Paper maintains its physical scale (600px width, 800px height)
+  - Left pages show left paper texture (spine shadow on right)
+  - Right pages show right paper texture (spine shadow on left)
+- **Navigation:**
+  - Tabs hidden at this breakpoint (would stick out awkwardly from single page)
+  - C-icon/CONTENTS link toggles TOC overlay on current page (no navigation)
+  - TOC overlay appears with 0.2s fade transition
+- **Container Width:** 600px (single page).
+
+#### Breakpoint 3: Scaled Mobile View (< 900px)
+
+**PHYSICALISM PRINCIPLE:** Below this breakpoint, both cover and inner pages scale fluidly—like moving the guide further from your eye. The aspect ratio is preserved to maintain the illusion of a real physical object.
+
+- **Home (Cover):** Fluidly scales from 600px width down to 350px width (at 375px viewport minimum), maintaining 3:4 aspect ratio throughout. No horizontal scrolling required—the cover "recedes" naturally. See Section 4.6 for detailed scaling formulas.
+- **Layout (Open Pages):** Single page view with fluid scaling.
+  - Only the primary page wrapper is displayed (`.is-primary` class)
+  - Page scales using same formulas as cover (600px → 350px width)
+  - Height scales proportionally to maintain 3:4 aspect ratio
+  - Stack leaves scale with the page dimensions
+- **Navigation:**
+  - Tabs hidden (single page view)
+  - C-icon/CONTENTS link toggles TOC overlay on current page (same as Breakpoint 2)
+  - TOC overlay scales fluidly with page dimensions
+- **Background:** Scaled wooden texture to maintain context.
+
+#### Summary of Page Widths Across Breakpoints
+
+| Viewport   | Cover Width   | Open Book Width  | Behavior                     |
+| ---------- | ------------- | ---------------- | ---------------------------- |
+| > 1250px   | 600px         | 1200px (2 pages) | Full two-page spread         |
+| 900-1250px | 600px         | 600px (1 page)   | Single page at full scale    |
+| < 900px    | 600px → 350px | 600px → 350px    | Fluid scaling with 3:4 ratio |
+
+### 4.3 Z-Index Scale (Layering Hierarchy)
+
+To prevent "z-index wars" when adding new layers, we formalize the stacking order in `variables.css`:
+
+| Variable        | Value | Purpose                                 |
+| --------------- | ----- | --------------------------------------- |
+| `--z-stack`     | -10   | Base for page stack leaves (-11 to -15) |
+| `--z-tab`       | 1     | Bookmark tabs (between stack and page)  |
+| `--z-page`      | 5     | Primary content page                    |
+| `--z-container` | 10    | Technical manual container              |
+
+**Rule:** When adding a new layer, select from this scale rather than inventing a new number.
+
+### 4.4 CSS Variables (Design Tokens)
+
+To maintain consistency and enable global adjustments, critical dimensions and values are defined as CSS custom properties.
+
+#### Core Design Tokens (`variables.css`)
+
+**Typography:**
+
+| Variable         | Value                      | Purpose                              |
+| ---------------- | -------------------------- | ------------------------------------ |
+| `--font-signage` | "Fraunces", serif          | Display font for headings and titles |
+| `--font-manual`  | "Public Sans", sans-serif  | Body text font                       |
+| `--font-mono`    | "IBM Plex Mono", monospace | Monospace font for technical labels  |
+
+**Ink Colors:**
+
+| Variable      | Value   | Purpose                           |
+| ------------- | ------- | --------------------------------- |
+| `--c-carbon`  | #1c1c1c | Primary ink color (dark)          |
+| `--c-zinc`    | #5f6b6d | Secondary ink color (medium gray) |
+| `--c-redwood` | #8b3a3a | Accent color for hover states     |
+
+**Z-Index Scale:**
+
+| Variable        | Value | Purpose                                 |
+| --------------- | ----- | --------------------------------------- |
+| `--z-stack`     | -10   | Base for page stack leaves (-11 to -15) |
+| `--z-tab`       | 1     | Bookmark tabs (between stack and page)  |
+| `--z-page`      | 5     | Primary content page                    |
+| `--z-container` | 10    | Technical manual container              |
+
+**Tab Positioning:**
+
+| Variable       | Value | Purpose                                     |
+| -------------- | ----- | ------------------------------------------- |
+| `--tab-start`  | 100px | First tab offset from top of book           |
+| `--tab-height` | 70px  | Vertical spacing between tabs               |
+| `--tab-width`  | 45px  | Tab width (horizontal depth from book edge) |
+| `--tab-depth`  | 50px  | Tab height (vertical text area)             |
+
+**Usage:** Tab positions are calculated as `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))` where `--tab-index` is set inline from the navigation ID.
+
+#### Layout Variables (`workbench.css`)
+
+**Page Dimensions:**
+
+| Variable        | Value  | Purpose                                     |
+| --------------- | ------ | ------------------------------------------- |
+| `--page-width`  | 600px  | Width of a single page (cover and interior) |
+| `--page-height` | 800px  | Height of a single page (fixed)             |
+| `--book-width`  | 1200px | Width of open book (two pages side by side) |
+
+**Design Rationale:** These variables enforce consistent physicalism—the cover and all interior pages share identical dimensions, and the open book is exactly double the single page width.
+
+**Material Colors:**
+
+| Variable             | Value   | Purpose                                     |
+| -------------------- | ------- | ------------------------------------------- |
+| `--c-cover-text`     | #fdebc5 | Warm vanilla off-white for cover typography |
+| `--c-wood-base`      | #5D4037 | Base workbench wood color                   |
+| `--c-wood-highlight` | #8D6E63 | Wood highlight tones                        |
+| `--c-wood-shadow`    | #3E2723 | Wood shadow/carved text color               |
+
+**Rule:** When adjusting dimensions or colors, modify these variables rather than hardcoding values throughout the CSS.
+
+### 4.5 Interactive JavaScript (clamp.js)
+
+The `clamp.js` file handles all client-side navigation interactivity, using `window.matchMedia` for performant breakpoint detection instead of `resize` events with `setTimeout` debouncing. This only fires when breakpoints are actually crossed—not on every pixel change during window dragging.
+
+**Contents Navigation:**
+
+- Intercepts clicks on all `[data-contents-nav]` elements (C-icon + CONTENTS label)
+- Detects viewport state via media queries to determine behavior:
+  - **Full Width (>= 1250px):** Standard navigation to `/shop/` page
+  - **Single Page (< 1250px):** Toggle TOC overlay on current page
+- Toggles `data-flip="toc"` attribute on body element to show/hide TOC overlay
+- Automatically resets flip state when viewport expands back to full width
+
+**Behavior by Viewport:**
+
+```javascript
+// Full width: navigate to /shop/
+if (!isSinglePageView()) {
+  window.location.href = "/shop/";
+}
+
+// Single page: toggle TOC overlay
+else {
+  const currentFlip = document.body.getAttribute("data-flip");
+  if (currentFlip === "toc") {
+    document.body.removeAttribute("data-flip");
+  } else {
+    document.body.setAttribute("data-flip", "toc");
+  }
+}
+```
+
+**Breakpoint Monitoring:**
+
+```javascript
+const singlePageQuery = window.matchMedia("(max-width: 1250px)");
+const mobileQuery = window.matchMedia("(max-width: 900px)");
+
+// Combined check for either breakpoint
+const isSinglePageView = () => singlePageQuery.matches || mobileQuery.matches;
+
+// Reset state when returning to full width
+singlePageQuery.addEventListener("change", handleBreakpointChange);
+
+/**
+ * Swipe Gesture Navigation
+ * Detects horizontal swipes to trigger page turns.
+ */
+document.addEventListener(
+  "touchstart",
+  (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  },
+  { passive: true },
+);
+
+document.addEventListener(
+  "touchend",
+  (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+  },
+  { passive: true },
+);
+```
+
+**Performance Notes:**
+
+- No URL parameters or query strings needed (toggle is purely client-side)
+- No `resize` event listeners (only breakpoint change events)
+- **Swipe Support:** Detects horizontal swipes (>50px) while ignoring vertical scrolling to trigger linear navigation.
+- **Visibility Filtering:** Logic filters for visible navigation arrows (using `offsetParent` check) to ensure swipes target the active page spread correctly.
+- Minimal DOM manipulation (single attribute toggle or `window.location` change)
+- CSS handles all visual transitions via `data-flip` attribute selector
+
+### 4.6 Responsive Page Scaling (Fluid Physicalism)
+
+**PHYSICALISM PRINCIPLE:** Both cover and inner pages scale proportionally as the viewport shrinks, maintaining their physical aspect ratio (3:4). This preserves the illusion of a real object receding into the distance rather than being cropped or distorted.
+
+#### Design Philosophy
+
+- **Minimum Assumed Viewport:** 375px (smallest common mobile browser width)
+- **Scaling Strategy:** Fluid responsive sizing (linear interpolation) between 900px and 375px breakpoints
+- **Aspect Ratio:** Fixed 3:4 ratio (600px width : 800px height) maintained across all viewport sizes
+- **Consistency:** Cover and inner pages use IDENTICAL scaling formulas for uniform physicalism
+- **Background Visibility:** At minimum viewport (375px), pages reach ~350px width, leaving ~12.5px margin on each side to reveal the workbench surface
+
+#### Implementation: Fluid Scaling Formulas (Universal)
+
+Both cover and inner pages use CSS `clamp()` with calculated viewport-based formulas to scale smoothly between breakpoints:
+
+**Width Scaling (Cover & Inner Pages):**
+
+```css
+width: clamp(350px, calc(171.43px + 47.62vw), 600px);
+```
+
+- At 900px viewport → 600px width (full size)
+- At 375px viewport → 350px width (minimum)
+- Linear interpolation: Slope = (600-350)/(900-375) = 250/525 ≈ 0.476
+
+**Height Scaling (Proportional - Cover & Inner Pages):**
+
+```css
+height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+```
+
+- At 900px viewport → 800px height (full size)
+- At 375px viewport → ~467px height (maintains 3:4 ratio)
+- Formula: width × (800/600) = width × 1.333
+
+**Math Reference:**
+
+- Width formula derivation: `width = 171.43px + 47.62vw`
+  - At 900px: 171.43 + (900 × 0.4762) = 600px ✓
+  - At 375px: 171.43 + (375 × 0.4762) = 350px ✓
+- Height formula derivation: `height = 228.57px + 63.49vw`
+  - At 900px: 228.57 + (900 × 0.6349) = 800px ✓
+  - At 375px: 228.57 + (375 × 0.6349) = 467px ✓
+
+#### Implementation: Supporting Elements
+
+**Stack Leaves (Underlying Pages):**
+The page stack must scale identically to maintain physical realism. Both cover and inner page stacks use the same formula:
+
+```css
+/* Cover state */
+body:not([data-state="open"]) .page-stack,
+body:not([data-state="open"]) .stack-leaf,
+body:not([data-state="open"]) .stack-leaf::before {
+  height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+}
+
+/* Open state (inner pages) */
+body[data-state="open"] .page-stack,
+body[data-state="open"] .stack-leaf,
+body[data-state="open"] .stack-leaf::before {
+  height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+}
+```
+
+**Page Textures:**
+The background images fill the scaled dimensions:
+
+```css
+/* Cover texture */
+body:not([data-state="open"]) .guide-page.right::before {
+  height: 100%; /* Fills the dynamically scaled cover height */
+}
+
+/* Inner page textures */
+body[data-state="open"] .guide-page::before {
+  height: 100%; /* Fills the dynamically scaled page height */
+}
+```
+
+**Cover Footer ("Est 2026"):**
+Positioned absolutely from the bottom-left corner to maintain consistent spatial relationship regardless of cover scale:
+
+```css
+.cover-footer {
+  position: absolute;
+  bottom: 4rem;
+  left: 4rem;
+  /* Desktop positioning */
+}
+
+/* Mobile scaling */
+@media (max-width: 900px) {
+  body:not([data-state="open"]) .cover-footer {
+    bottom: 4rem;
+    left: 4rem;
+    font-size: 0.9rem;
+  }
+}
+```
+
+**Positioning Context:**
+The cover page explicitly establishes positioning context:
+
+```css
+body:not([data-state="open"]) .guide-page.right {
+  position: relative; /* Explicit positioning context for cover-footer */
+  overflow: visible;
+  max-height: none;
+}
+```
+
+#### Implementation: Cover Text Color System
+
+**DESIGN PRINCIPLE:** All cover text shares a unified warm vanilla off-white color to contrast against the dark cover background. A single CSS variable controls the color palette for consistent theming.
+
+**Variable Definition:**
+
+```css
+:root {
+  --c-cover-text: #fdebc5; /* Warm vanilla off-white for dark cover background */
+}
+```
+
+**Application Scope:**
+
+- **Headings (h1, h2):** `color: var(--c-cover-text)` with `mix-blend-mode: screen` and `filter: url(#inkBleed)`
+- **Body text (p, h3-h6, strong, a):** `color: var(--c-cover-text)` with `opacity: 0.95`
+- **Link borders:** `border-color: var(--c-cover-text)`
+- **Cover footer:** `color: var(--c-cover-text)`
+
+**Rationale:**
+
+- Single source of truth: Change `--c-cover-text` to adjust all cover typography at once
+- Warm vanilla tone (#fdebc5) provides optimal contrast and readability against dark cover texture
+- Screen blend mode (not multiply) used for light text on dark backgrounds
+
+#### Browser Compatibility
+
+- **CSS `clamp()`:** Supported in all modern browsers (Chrome 79+, Firefox 75+, Safari 13.1+)
+- **CSS Custom Properties:** Widely supported
+- **Fallback:** Not required for target browsers (2024+ baseline)
+
+---
+
+## 5.0 THE MATERIALITY ENGINE (Organic Realism)
+
+We move from cold metal to warm wood and paper.
+
+### 5.1 Protocol A: The Workbench (Warm Wood)
+
+- **Source:** `src/assets/img/desktop.webp` (Fallback: `.jpg`).
+- **Dimensions:** 2560 × 3000.
+- **Behavior:** The background extends down to allow for scrolling without breaking the illusion of the desk surface.
+- **Feel:** Warm, lived-in, history. Not a pristine digital surface, but a workspace.
+
+### 5.2 Protocol B: The Carving (Text/Icons on Wood)
+
+Elements on the workbench (like the C-Icon) are **carved** or **burned** into the wood, not printed on top.
+
+- **Technique:** Inner shadows and highlights to create depth.
+- **Highlight:** Bottom-right light edge (`rgba(255,255,255,0.3)`).
+- **Shadow:** Top-left dark recess (`rgba(0,0,0,0.4)`).
+- **Blend Mode:** `mix-blend-mode: multiply` to "burn" into the wood.
+- **Result:** Realistic engraving effect.
+
+### 5.3 Protocol C: The Technical Manual (Paper & Vellum)
+
+**Performance Principle:** We "bake" expensive texture compositing into static WebP images rather than solving rendering equations at runtime. The browser should display a simple image—not calculate multi-layer blend modes on every scroll frame.
+
+- **Cover (Home Page `/`):** Uses `cover.webp` as the background texture.
+  - **Feel:** Textured, thick cardstock with a dark/black base mimicking the cover boards of the Whole Earth Catalog.
+  - **Application:** Applied via `background-image` on the page element when `data-state` is NOT "open".
+  - **Text Styling (Cover-Specific):** Because the cover background is dark, all text elements are inverted to warm vanilla off-white tones using the `--c-cover-text` CSS variable (currently `#fdebc5`):
+    - **Headings (`h1`, `h2`):** Color `var(--c-cover-text)` with `mix-blend-mode: screen` and `filter: url(#inkBleed)` for realistic ink texture.
+    - **Body Text (`p`, `strong`, `a`):** Color `var(--c-cover-text)` with `opacity: 0.95` for subtle ink density.
+    - **Link Borders:** Button borders use `var(--c-cover-text)` for visual consistency.
+    - **Cover Footer ("Est 2026"):** Color `var(--c-cover-text)` with `mix-blend-mode: screen` and `filter: url(#inkBleed)`.
+    - **Rationale:** The `screen` blend mode is used instead of `multiply` because it brightens rather than darkens—appropriate for light text on dark backgrounds. This preserves the organic ink aesthetic while ensuring readability on the black cover. All cover text references a single CSS variable for unified theming (see Section 4.6 for implementation details).
+
+- **Pages (Interior Spreads):** Use separate pre-rendered background textures for left and right pages.
+  - **Source Images:**
+    - `src/assets/img/paper-right.webp` — Baked texture for right pages containing:
+      - Aged Vellum/Bond paper base color (late-60s printed catalog tones)
+      - Paper grain and fiber structure
+      - **Spine shading:** Subtle shadow gradient simulating paper curving into the binding gutter (shadow falls toward the left/spine edge)
+    - `src/assets/img/paper-left.webp` — Baked texture for left pages with the same characteristics but oriented for the left side.
+  - **Left Page Implementation:** `paper-left.webp` is applied with `transform: scaleX(-1)` to mirror the texture, ensuring the spine shading correctly falls toward the center binding.
+  - **Right Page Implementation:** `paper-right.webp` is applied directly without transformation, with spine shading falling naturally toward the binding.
+  - **Application:** Applied via `background-image` on `.guide-page::before` pseudo-elements, replacing the previous runtime-composited approach (paper-grain.svg + gradients + filters).
+
+- **Page Stack Depth:** Physical DOM implementation (`.page-stack` containing 5 `.stack-leaf` divs) behind each page to create a realistic, fanned book edge.
+  - **Fanning:** Each leaf is subject to randomized micro-rotations (e.g., 0.05deg to 0.25deg) to simulate the subtle imperfections of a physical book.
+  - **Texture:** Stack leaves use the same page textures (`paper-left.webp` for left side, `paper-right.webp` for right side, with left side mirrored) for cohesive materiality.
+  - **Shading:** Variable opacity applied to lower layers to create depth and separation between sheets.
+  - **Layering:** The primary content page sits at `var(--z-page)`, tabs at `var(--z-tab)`, and stack leaves at `calc(var(--z-stack) - n)` where n = 1–5. See Section 4.3 for the full z-index scale.
+
+- **Physical Depth (Shadows):** The book casts realistic shadows onto the workbench surface to convey physical presence.
+  - **Book Shadow:** `.field-guide-book` uses a three-layer `box-shadow`:
+    1. Contact shadow (0 2px 4px) - tight shadow directly under the book
+    2. Ambient shadow (0 8px 24px) - soft, diffused depth shadow
+    3. Distance shadow (0 16px 48px) - subtle far-reaching shadow for weight
+  - **Page Shadow:** Individual pages have subtle shadows to separate them from the stack beneath.
+
+- **Spine Handling:**
+  - **Straight Edge:** Inner edges are clipped using `clip-path: polygon(...)` to ensure a clean, bound spine.
+  - **Gutter Shadow:** Baked into `paper-left.webp` and `paper-right.webp` rather than applied via CSS gradients, providing authentic depth without runtime performance cost.
+
+- **Typography:**
+  - **Logo:** "Cooper St Logic Shop" behaves as the Book Title on the cover, and a Header on inner pages.
+  - **Body:** Serif for readability (Fraunces/Public Sans mix).
+  - **Ink Simulation (Performance-Optimized):**
+    - **Interior Pages (Default):**
+      - **Headings (`h1`, `h2`):** Apply `filter: url(#inkBleed)` and `mix-blend-mode: multiply`. These are high-impact elements where the expensive filter is justified. Dark ink (`#1a1a1a`) on light paper.
+      - **Body Text (`p`, `h3`, `li`):** Use `color: #1a1a1a` with `opacity: 0.9` to simulate ink density. **No blend mode or filter.** The carefully selected color and weight create the impression of ink without per-pixel blend calculations on every scroll frame.
+    - **Cover Page (Dark Background Override):**
+      - **Headings (`h1`, `h2`):** Apply `filter: url(#inkBleed)` and `mix-blend-mode: screen` with `var(--c-cover-text)` color (`#fdebc5`). The `screen` blend mode brightens rather than darkens—essential for light text on dark backgrounds.
+      - **Body Text:** Use `var(--c-cover-text)` color (`#fdebc5`) with `opacity: 0.95` for subtle contrast.
+      - **Implementation:** Cover-specific styles are scoped with `body:not([data-state="open"])` selector to isolate the styling from interior pages.
+
+### 5.4 Protocol D: The Navigation (Tabs & TOC)
+
+#### Contents Navigation (C-Icon + Label)
+
+**PHYSICALISM PRINCIPLE:** The C-icon and CONTENTS label provide persistent navigation to the table of contents, integrated into the page headers with behavior that respects the physical book metaphor.
+
+##### Visual Layout
+
+**Left Pages:**
+
+- C-icon positioned on far left
+- CONTENTS label to the right of icon
+- "COOPER ST" title on far right
+
+**Right Pages:**
+
+- "LOGIC SHOP" title on far left
+- CONTENTS label to the left of icon
+- C-icon positioned on far right
+
+##### Styling Details
+
+**C-Icon Implementation:**
+
+- Inlined SVG (not `<img src>`) with `stroke="currentColor"` to inherit text color
+- Dimensions: 28px × 28px
+- Applies `filter: url(#inkBleed)` for organic ink texture
+- Changes color on hover via CSS `color` inheritance
+
+**CONTENTS Label:**
+
+- Font: `var(--font-mono)` (IBM Plex Mono)
+- Size: 0.65rem
+- Letter spacing: 0.5px
+- Text transform: uppercase
+- **No ink bleed filter** - clean, crisp text (explicitly `filter: none !important`)
+- Opacity: 0.9
+
+**Hover State:**
+
+- Entire link changes to `var(--c-redwood)` color
+- Both icon and label transition together (0.2s ease)
+- Matches the hover behavior of TOC links for visual consistency
+
+##### Interaction Behavior
+
+**Full Width View (Viewport >= 1250px):**
+
+- Clicking navigates directly to `/shop/` page
+- Shows both TOC (left page) and main content (right page) in spread view
+- Standard navigation behavior - no toggle functionality
+
+**Single Page View (Viewport < 1250px):**
+
+- Clicking toggles between page content and TOC overlay on the **current page**
+- **No navigation occurs** - user stays on the current page
+- Toggle behavior:
+  - First click: `data-flip="toc"` attribute set on body → TOC overlay fades in
+  - Second click: `data-flip` attribute removed → TOC overlay fades out, content returns
+- Works on all pages (not just THE SHOP)
+
+**TOC Overlay Structure:**
+
+- Complete left page replica including:
+  - Full page styling (`.guide-page.left`) with paper texture
+  - Header with "COOPER ST" title
+  - Functional C-icon and "CONTENTS" label (clicking toggles back to content)
+  - Table of contents generated from `navigation.json`
+  - Footer with copyright
+- Positioned absolutely over page content (`position: absolute`, `z-index: calc(var(--z-page) + 1)`)
+- Hidden by default (`opacity: 0`, `pointer-events: none`)
+
+**Transition Effect:**
+
+- Simple fade transition: `0.2s ease`
+- When toggling TO TOC:
+  - Page content: `opacity: 0`, `pointer-events: none`
+  - TOC overlay: `opacity: 1`, `pointer-events: auto`
+- When toggling back TO content:
+  - Reverse transition automatically applied
+
+**Breakpoint Detection:**
+
+- Uses `window.matchMedia("(max-width: 1250px)")` for performant breakpoint detection
+- Flip state automatically resets when returning to full width view (>= 1250px)
+- No resize event listeners - only fires on actual breakpoint crossing
+
+##### Implementation Details
+
+**Template Structure (base.njk):**
+
+Each page wrapper contains two sections: a TOC overlay and the regular page content.
+
+```html
+<!-- Left Page Wrapper -->
+<div class="page-wrapper left">
+  <!-- TOC Overlay (hidden by default) -->
+  <section class="guide-page left toc-overlay">
+    <header class="guide-header">
+      <div class="header-contents-group">
+        <a href="#" class="contents-link" data-contents-nav>
+          <svg class="contents-icon">...</svg>
+          <span class="contents-label">CONTENTS</span>
+        </a>
+      </div>
+      <a href="/" class="guide-title">COOPER ST</a>
+    </header>
+    {% include "nav.njk" %}
+    <div class="guide-footer">© 2026 Cooper St Logic Shop</div>
+  </section>
+
+  <!-- Regular Page Content (visible by default) -->
+  <section class="guide-page left page-content">
+    <header class="guide-header">
+      <div class="header-contents-group">
+        <a href="#" class="contents-link" data-contents-nav>
+          <svg class="contents-icon">...</svg>
+          <span class="contents-label">CONTENTS</span>
+        </a>
+      </div>
+      <a href="/" class="guide-title">COOPER ST</a>
+    </header>
+    <!-- Page content here -->
+  </section>
+</div>
+
+<!-- Right Page Wrapper (same structure, reversed header order) -->
+```
+
+**Key Points:**
+
+- TOC overlay uses `href="#"` instead of `href="/shop/"` to prevent navigation
+- Both overlay and content sections have full page structure with headers
+- C-icon is functional in both states (clicking toggles between them)
+
+**CSS Toggle Behavior (workbench.css):**
+
+```css
+/* Default state: TOC hidden, content visible */
+.toc-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--z-page) + 1);
+  display: none; /* Hidden above 1250px */
+  opacity: 0;
+  pointer-events: none;
+}
+
+.page-content {
+  position: relative;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Enable TOC in single-page view */
+@media (max-width: 1250px) {
+  .toc-overlay {
+    display: block;
+  }
+
+  /* Simple fade transition */
+  .page-content,
+  .toc-overlay {
+    transition: opacity 0.2s ease;
+  }
+
+  /* When data-flip="toc": show TOC, hide content */
+  body[data-state="open"][data-flip="toc"] .page-content {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  body[data-state="open"][data-flip="toc"] .toc-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Above 1250px: always hide TOC (navigation goes to /shop/) */
+@media (min-width: 1251px) {
+  .toc-overlay {
+    display: none !important;
+  }
+}
+```
+
+**JavaScript Logic (clamp.js):**
+
+```javascript
+document.addEventListener("DOMContentLoaded", () => {
+  const contentsLinks = document.querySelectorAll("[data-contents-nav]");
+
+  // Media queries for breakpoint detection
+  const singlePageQuery = window.matchMedia("(max-width: 1250px)");
+  const mobileQuery = window.matchMedia("(max-width: 900px)");
+
+  // Check if in single-page view
+  const isSinglePageView = () => singlePageQuery.matches || mobileQuery.matches;
+
+  contentsLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      if (isSinglePageView()) {
+        // SINGLE PAGE VIEW: Toggle TOC on current page
+        const currentFlip = document.body.getAttribute("data-flip");
+        if (currentFlip === "toc") {
+          document.body.removeAttribute("data-flip");
+        } else {
+          document.body.setAttribute("data-flip", "toc");
+        }
+      } else {
+        // FULL WIDTH VIEW: Navigate to THE SHOP
+        window.location.href = "/shop/";
+      }
+    });
+  });
+
+  // Reset flip state when returning to full width
+  const handleBreakpointChange = (e) => {
+    if (!e.matches) {
+      document.body.removeAttribute("data-flip");
+    }
+  };
+
+  singlePageQuery.addEventListener("change", handleBreakpointChange);
+});
+```
+
+**Key Implementation Notes:**
+
+- All `[data-contents-nav]` links are intercepted by JavaScript
+- In single-page view, clicking toggles `data-flip` attribute instead of navigating
+- TOC overlay includes complete page structure (header, nav, footer)
+- Simple fade transition (0.2s) replaces complex flip animation
+- Breakpoint change listener automatically resets state when resizing to full width
+
+##### Design Rationale
+
+**Why toggle instead of navigate in single-page view?**
+
+- **User Experience:** In single-page view (tablets/mobile), navigating away from the current page just to see the TOC is disruptive. Users lose their place and must navigate back.
+- **Efficiency:** Toggle behavior allows quick TOC reference without leaving the current page—similar to flipping to an index in a physical book and then returning.
+- **Consistency:** Both the TOC overlay and regular content have functional C-icons, so clicking either one toggles between views seamlessly.
+
+**Why simple fade instead of flip animation?**
+
+- **Performance:** Complex 3D transforms and rotations can cause jank on mid-range mobile devices.
+- **Clarity:** A simple fade is more predictable and doesn't distract from the content transition.
+- **Speed:** 0.2s fade feels instant while still being smooth—flip animations often feel sluggish.
+
+**Why absolute positioning for TOC overlay?**
+
+- **No Layout Shift:** Absolute positioning keeps the overlay out of document flow, preventing any reflow or shift in page dimensions.
+- **Z-Index Control:** Overlay sits at `calc(var(--z-page) + 1)`, ensuring it appears above content without affecting other elements.
+- **Clean Toggle:** Simple opacity/pointer-events toggle is more reliable than DOM insertion/removal.
+
+##### Why Inline SVG?
+
+The C-icon is inlined (not loaded via `<img src>`) because:
+
+- `currentColor` allows the icon to inherit text color from parent link
+- Enables seamless color transitions on hover without complex CSS filters
+- `filter: url(#inkBleed)` can be applied directly to the SVG element
+- External `<img>` tags cannot have their internal fill/stroke colors changed via CSS
+
+#### Table of Contents
+
+- **Visibility:** Only visible on the left page when viewing `/shop/`.
+- **Implementation:** Conditional logic in `base.njk`: `{% if page.url == '/shop/' %}{% include "nav.njk" %}{% endif %}`.
+- **Data Source:** `nav.njk` loops over `navigation.items` from `_data/navigation.json` to generate the TOC list.
+
+#### Physical Bookmark Tabs (Realistic Page Markers)
+
+**PHYSICALISM PRINCIPLE:** Tabs are physically attached to pages in the guide. Each tab has a fixed vertical position based on its page number, and the tab's side (left or right edge) depends on whether that page has been turned past the current spread.
+
+##### Tab Positioning System
+
+**Fixed Vertical Positions:**
+
+- Each tab has a FIXED vertical position calculated from its navigation ID
+- Position formula: `top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index)))`
+- `--tab-index` = navigation ID - 1 (for 0-based positioning)
+- Example: Page 2 (INV) → `--tab-index: 1` → top: 100px + (70px × 1) = 170px
+
+**Dynamic Side Assignment (Spread-Based):**
+
+Tabs switch sides based on the current spread position, simulating a physical book where turned pages stack on the left and unread pages stack on the right.
+
+- **Pages Already Turned (ID <= spreadLeftId):**
+  - Tabs appear on the **LEFT** edge of the book
+  - These pages are in the "read" stack
+- **Current Right Page & Beyond (ID >= spreadRightId):**
+  - Tabs appear on the **RIGHT** edge of the book
+  - These pages are in the "unread" stack
+
+**Example: Pages 2-3 Spread (Inventory/Fabrication):**
+
+- SHOP tab (id=1) → LEFT side (already turned)
+- INV tab (id=2) → LEFT side (left page of current spread)
+- FAB tab (id=3) → RIGHT side (right page of current spread)
+- PERS tab (id=4) → RIGHT side (ahead, not yet reached)
+
+##### Tab Interactivity
+
+**Active Tabs (Clickable):**
+
+- Rendered as `<a>` elements with `href` to navigate
+- Hover effect: slightly extends outward (`transform: translateX(±3px)`)
+- Lighter background on hover (`#e0d5bb`)
+
+**Inactive Tabs (Current Spread):**
+
+- Tabs for pages currently visible in the spread are non-clickable
+- Rendered as `<span>` elements instead of `<a>` links
+- Styled with `pointer-events: none` and `cursor: default`
+- No hover effects (you're already viewing this page)
+
+**Example on Pages 2-3:** INV and FAB tabs are inactive (both pages visible), while SHOP and PERS tabs remain clickable.
+
+##### Visual Design
+
+- **Color:** All tabs use paper color (`#d8cdb0`) to match the physical pages
+- **Border:** Subtle border (`rgba(139, 119, 101, 0.3)`) for definition
+- **Shadow:** `1px 1px 3px rgba(0,0,0,0.15)` for depth
+- **Typography:** Vertical text (`writing-mode: vertical-rl`) in handwriting font
+- **Size:** `45px` wide × `50px` tall (controlled by `--tab-width` and `--tab-depth`)
+
+##### Implementation Details
+
+**Template Logic (base.njk):**
+
+```nunjucks
+{% for item in navigation.items %}
+  {% set isInCurrentSpread = (item.id == spreadLeftId or item.id == spreadRightId) %}
+
+  {% if item.id <= spreadLeftId %}
+    {# Tab goes on LEFT side #}
+    {% if isInCurrentSpread %}
+      <span class="bookmark-tab left is-current" style="--tab-index: {{ item.id - 1 }}">
+        {{ item.tabLabel }}
+      </span>
+    {% else %}
+      <a href="{{ item.url }}" class="bookmark-tab left" style="--tab-index: {{ item.id - 1 }}">
+        {{ item.tabLabel }}
+      </a>
+    {% endif %}
+  {% else %}
+    {# Tab goes on RIGHT side #}
+    {# ... similar logic ... #}
+  {% endif %}
+{% endfor %}
+```
+
+**CSS Variables (variables.css):**
+
+```css
+--tab-start: 100px; /* First tab offset from top */
+--tab-height: 70px; /* Vertical spacing between tabs */
+--tab-width: 45px; /* Tab width */
+--tab-depth: 50px; /* Tab height (vertical text area) */
+```
+
+**Responsive Behavior:**
+
+- **Desktop (> 1250px):** All tabs visible
+- **Tablet (900-1250px):** Tabs hidden (single-page view)
+- **Mobile (< 900px):** Tabs hidden (single-page view)
+
+#### Linear Navigation (Footer Arrows & Swipe Gestures)
+
+**PHYSICALISM PRINCIPLE:** To support seamless linear reading (especially in single-page mobile views), the manual provides "Forward" and "Back" navigation cues in the footer, matching the behavior of physical page turning.
+
+##### Visual Design (The Footer)
+
+- **Positioning:** Pinned absolutely to the bottom of the page (`bottom: 1rem`) to ensure a consistent anchor point.
+- **Layout:** 3-column Grid (`1fr auto 1fr`):
+  - **Left Slot:** Previous Page Number + Arrow (e.g., `← 02`)
+  - **Center Slot:** Copyright Notice (`© 2026 Dylan Webster`)
+  - **Right Slot:** Page Number + Next Arrow (e.g., `03 →`)
+- **Styling:**
+  - Typography: `var(--font-mono)` at `0.8rem` size.
+  - Page numbers use regular weight (400) and 0.7 opacity.
+  - Arrows (`←`, `→`) have a subtle default state (0.7 opacity) and transition to full opacity + `var(--c-redwood)` on hover.
+
+##### Logical Behavior
+
+- **Directional UI:** Arrows only render if a corresponding neighbor (previous or next ID) exists in `navigation.json`.
+- **Single-Page View Support:**
+  - On a **LEFT** page (e.g., Page 2), a "Next" arrow is rendered in the right footer slot to allow jumping to Page 3.
+  - On a **RIGHT** page (e.g., Page 3), a "Prev" arrow is rendered in the left footer slot to allow jumping back to Page 2.
+  - This prevents navigation "dead ends" when the physical tabs are hidden.
+
+##### Swipe Gestures
+
+**Interaction Logic:**
+
+- **Trigger:** Horizontal swipe distance > 50px.
+- **Safety:** Vertical movement must be < 50px (ensures navigation doesn't trigger while a user is scrolling down content).
+- **Action:**
+  - **Swipe Left** (Finger moves right to left) → "Turns the page forward" (Next Page).
+  - **Swipe Right** (Finger moves left to right) → "Flips the page back" (Prev Page).
+- **Targeting:** The JavaScript identifies the currently **visible** navigation arrows to determine the target URL, ensuring correct behavior across spreads and overlays.
+
+### 5.5 Protocol E: The Entry Animation
+
+- **Effect:** `@keyframes settleBook` creates a subtle "placement" animation when the book loads.
+- **Motion:** `translateY(10px) rotateX(2deg)` → `translateY(0) rotateX(0)`.
+- **Duration:** `1s cubic-bezier(0.25, 1, 0.5, 1)`.
+
+### 5.6 Protocol F: SVG Filter Synthesis (Materiality Library)
+
+**Performance Principle:** Complex SVG filters like `feTurbulence` and `feDisplacementMap` trigger repaint and composite operations on every scroll frame. On a high-end MacBook, this looks like ink; on a mid-range phone, it looks like lag. We limit filter use to high-impact, low-frequency elements.
+
+#### Deprecated: `#paperDistress`
+
+The previous `#paperDistress` filter (macro noise, diffuse lighting, displacement mapping) has been **removed**. Paper texture, grain, and spine shading are now "baked" into static WebP images (`paper-left.webp`, `paper-right.webp`, `cover.webp`). This eliminates per-frame rendering calculations for the page background.
+
+#### Active: `#inkBleed` (Headings Only)
+
+- **Scope:** Applied **only** to `h1` and `h2` elements. Body text (`p`, `h3`, `li`) does NOT receive this filter.
+- **Warping:** Simulates the slight wicking of liquid ink into cellulose fibers.
+- **Dilation:** Uses `feMorphology` to slightly thicken letterforms, mimicking the weight of old-school printing presses.
+- **Thresholding:** `feColorMatrix` ensures the ink remains dark while having slightly fuzzy, organic edges.
+- **Rationale:** Headings are sparse, high-visual-impact elements. The per-pixel cost of the filter is acceptable because there are few of them on any given page. Body text, which dominates the DOM, uses color/opacity simulation instead (see Section 5.3).
+
+---
+
+## 6.0 FABRICATION (Development Workflow)
+
+### 6.1 Firing Up (Local Server)
+
+We use 11ty's hot-reloading server for development.
 
 ```bash
 npm start
 ```
 
-- **Output:** `http://localhost:3000`
-- **Behavior:** Serves the current directory as a static site. Changes to HTML/CSS require a browser refresh.
+- **Output:** `http://localhost:8080`
+- **Process:** 11ty watches `src/` and rebuilds instantly upon save.
 
-### 3.2 The Materiality Engine (CSS Architecture)
-
-All styling is handled in `assets/css/styles.css`. We use CSS Custom Properties (Variables) to define the physics of the brand.
-
-**The Palette:**
-
-- `--c-vellum` (#F2F0E9): The Page Background (Warm Manual).
-- `--c-primer` (#E3E5E6): The Workbench Background (Cool Bench).
-- `--c-carbon` (#1C1C1C): The Ink.
-- `--c-zinc` (#5F6B6D): The Grid/Metadata.
-- `--c-redwood` (#8B3A3A): Action items.
-
-**The Physics:**
-
-- **Transitions:** `none`. Feedback must be instant.
-- **Depth:** Flat. No drop shadows. Use borders to define edges.
-
-### 3.3 Shop Safety Checks (Linting)
+### 6.2 Shop Safety Checks (Linting & Testing)
 
 Before committing any code, sweep the floor.
 
 ```bash
-# Format code (Prettier)
+# Format Code (Prettier)
 npm run format
 
-# Inspect HTML structure (HTMLHint)
+# Inspect HTML Structure (HTMLHint)
 npm run lint
+
+# Validate Content Fits Page Bounds
+npm run validate
 ```
+
+### 6.3 Content Validation (Physical Page Constraints)
+
+**PHYSICALISM PRINCIPLE:** The Technical Manual has fixed physical dimensions. Paper doesn't grow to accommodate overflow—content must fit within the page bounds.
+
+#### Page Dimensions
+
+- **Fixed Height:** 800px
+- **Padding:** 4rem (top) + 4rem (bottom) = 128px
+- **Header:** ~100px
+- **Usable Content Area:** ~572px
+
+#### Validation Script
+
+Run `npm run validate` to check if content exceeds the fixed page size:
+
+```bash
+npm run validate
+```
+
+**Output:**
+
+- ✅ **OK:** Content fits within page bounds
+- ⚠️ **WARNING:** Page is 90% full (approaching limit)
+- ❌ **ERROR:** Content overflows fixed page size
+
+**Build Integration:** The validation script runs automatically before each build via the `prebuild` hook in `package.json`. If content overflows, the build will fail with exit code 1, preventing deployment of broken layouts.
+
+#### Implementation Details
+
+The validation script (`validate-content.js`) estimates rendered height by analyzing Markdown content:
+
+- **Headings:** `h1` = 48px, `h2` = 36px, `h3` = 28px
+- **Paragraphs:** ~24px line height + 16px spacing
+- **Rules:** `<hr>` = 32px
+
+**Note:** These are rough estimates. For precise validation, test in the browser using `npm start`.
+
+#### Content Overflow Handling (CSS)
+
+When content exceeds the fixed page size:
+
+- `.guide-page`: `max-height: 800px` with `overflow: hidden`
+- `.guide-page::before`: Paper texture fixed at `height: 800px`
+- `.page-stack`: Stack leaves fixed at `height: 800px`
+
+**Result:** Content that exceeds 800px is clipped (hidden), not displayed. The paper texture doesn't stretch or create discontinuities.
 
 ---
 
-## 4.0 ASSEMBLY (File Structure)
-
-The repository is organized like a physical workshop. Everything has a place.
-
-```text
-cooper-st-logic-shop/
-├── .well-known/           # Standard Protocols (Security)
-│   └── security.txt       # Reporting contact
-├── assets/                # Raw Materials
-│   ├── css/               # The Paint Shop
-│   └── img/               # The Parts Bin
-├── index.html             # The Main Assembly
-├── netlify.toml           # Shipping Label
-├── package.json           # Tool Inventory
-├── robots.txt             # Access Control
-└── sitemap.xml            # Shop Map
-```
-
-**WARNING:** Do not add "junk" folders. Keep the work zone clear of debris.
-
----
-
-## 5.0 SHIPPING (Deployment)
+## 7.0 SHIPPING (Deployment)
 
 We use **Netlify** as our shipping container. The deployment is atomic and immutable.
 
-### 5.1 Configuration (`netlify.toml`)
+### 7.1 Configuration (`netlify.toml`)
 
-The repository includes a `netlify.toml` file that defines the shipping parameters.
+- **Build Command:** `npm run build` (Runs `eleventy`).
+- **Publish Directory:** `_site`.
+- **Headers:** Configured for security (`X-Frame-Options: DENY`) and cache control.
 
-- **Build Command:** (Empty). We ship raw HTML.
-- **Publish Directory:** `.` (Root).
+### 7.2 Connection Procedure
 
-### 5.2 Connecting the Pipe (First Run)
-
-1. Log in to Netlify.
-2. Select **"Import from Git"**.
-3. Choose this repository (`cooper-st-logic-shop`).
-4. **Build Settings:**
-   - _Build Command:_ Leave blank.
-   - _Publish Directory:_ `.`
-5. Click **Deploy Site**.
-
-### 5.3 Domain Binding
-
-1. Navigate to **Domain Management** in Netlify.
-2. Add custom domain: `cooperstlogicshop.com`.
-3. Update DNS records (A Record / CNAME) at your registrar to point to Netlify's load balancers.
-4. **SSL:** Netlify will automatically provision a Let's Encrypt certificate. This is non-negotiable.
+1. Push `main` branch to GitHub.
+2. Connect Repository to Netlify.
+3. **Build Settings:**
+   - Command: `npm run build`
+   - Directory: `_site`
+4. Netlify will auto-detect the `.nvmrc` or `engines` field in `package.json`.
 
 ---
 
-## 6.0 STANDARD OPERATING PROCEDURES (SOP)
+## 8.0 STANDARD OPERATING PROCEDURES (SOP)
 
 ### SOP-01: Updating Content
 
-1. Edit `index.html`.
-2. [Ensure text hierarchy follows the "Fraunces" (Header) vs "Public Sans" (Body) rule.
-3. Run `npm run format`.
-4. Commit and Push.
+1. Navigate to `src/`.
+2. Open the relevant Markdown file (`index.md`, `shop.md`).
+3. Edit the content using standard Markdown.
+   - _Note:_ Do not use HTML tags for structure unless absolutely necessary.
+4. **Validate content fits within page bounds:** Run `npm run validate` to ensure content doesn't exceed the fixed 800px page height (~572px usable area after padding/header).
+   - If validation fails, reduce content length or split across multiple pages.
+   - Remember: Paper has fixed dimensions—content must fit the physical page.
+5. Commit and Push. Netlify handles the rest.
 
-   ```bash
-   git add .
-   git commit -m "Update: Revised copy for Q1 Strategy"
-   git push origin main
-   ```
+### SOP-02: Adding or Renaming Pages (Navigation Manifest)
 
-5. Netlify triggers a deploy automatically.
+1. Open `src/_data/navigation.json`.
+2. Add a new item to the `items` array or modify an existing entry.
+   - `url`: The page path (e.g., `/new-page/`).
+   - `tabLabel`: Short label for bookmark tabs (e.g., `"NEW"`).
+   - `tocLabel`: Full name for Table of Contents (e.g., `"NEW PAGE"`).
+   - `id`: Unique sequential integer for ordering.
+     - **IMPORTANT:** The ID determines page side assignment:
+       - **Odd IDs (1, 3, 5...)**: RIGHT pages (recto)
+       - **Even IDs (2, 4, 6...)**: LEFT pages (verso)
+     - Pages automatically pair in spreads based on sequential IDs
+     - Example: ID 4 (Personnel, left) pairs with ID 5 (next page, right)
+   - `number`: Two-digit section number (e.g., `"05"`).
+3. Create the corresponding Markdown file in `src/` with the correct front matter.
+   - Add `layout: base.njk` to front matter
+   - Add `title: Page Title` for the page heading
+4. The TOC, bookmark tabs, and spread pairings will auto-generate from this manifest.
+5. Pages will automatically position as left or right based on their ID (odd=right, even=left).
 
-### SOP-02: Adding Images
+### SOP-03: Image Processing
 
-1. **Process:** All images must be desaturated, high-contrast, and halftoned.
-2. **Storage:** Save processed images to `assets/img/`.
+All imagery must pass through the **Dither Protocol**.
+
+1. **Desaturate:** Convert to Grayscale.
+2. **Threshold:** Increase contrast (High blacks).
+3. **Halftone:** Apply a visible dot pattern (or dithering).
+4. **Save:** Optimized PNG/WebP to `src/assets/img/`.
 
 ---
 
-## 7.0 LICENSE & LEGAL
+## 9.0 CONTENT STRATEGY
 
-**Proprietary / Closed Source.**
-The visual identity, including the "Cooper St" wordmark, the "Structural C" icon, and the specific CSS implementation of the "Materiality Engine," is the property of Cooper St Logic Shop.
+The site currently features placeholder content for pages under development.
 
-- **Code License:** UNLICENSED (All rights reserved).
-- **Font Licenses:**
-  - _Fraunces:_ OFL (Open Font License).
-  - _Public Sans:_ OFL (Open Font License).
-  - _IBM Plex Mono:_ OFL (Open Font License).
+### 9.1 The Shop (`/shop/`)
+
+Displays the Table of Contents on the left page with dynamic spread pairings.
+
+### 9.2 Inventory (`/inventory/`)
+
+**Status:** Placeholder content indicating the page is offline.
+
+- **Message:** "STOCKROOM LOCKED. ANNUAL INVENTORY AUDIT IN PROGRESS."
+
+### 9.3 Fabrication (`/fabrication/`)
+
+**Status:** Placeholder content indicating maintenance status.
+
+- **Message:** "MACHINERY UNDER MAINTENANCE. CALIBRATING LOGIC GATES."
+
+### 9.4 Personnel (`/personnel/`)
+
+**Title:** "PERSONNEL"
+
+- **Role:** Nights and Weekends Manager
+- **Content:** Brief bio of Dylan Webster as sole proprietor
+
+---
+
+## 10.0 LICENSE & LEGAL
+
+### Source Code License
+
+The source code in this repository is **free software**: you can redistribute it and/or modify it under the terms of the **GNU General Public License (GPL) version 3** as published by the Free Software Foundation.
+
+**Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.**
+
+See the [LICENSE](./LICENSE) file for the full text of the GPL-3.
+
+### Trademark & Asset Exclusion
+
+Pursuant to **Section 7 of the GPLv3**, the following terms apply as exceptions to the standard license regarding the use of brand assets:
+
+1. **Trademarks:** This license does **not** grant permission to use the trade names, trademarks, service marks, or product names of the Licensor (**COOPER ST LOGIC SHOP**), except as required for reasonable and customary use in describing the origin of the work.
+2. **Asset Exclusion:** The following files are proprietary, **All Rights Reserved**, and are NOT covered by the GPLv3:
+   - The C Icon (`icon-c.svg`)
+   - The Favicon (`favicon-dark.svg`, `favicon-light.svg`)
+   - The text string "**COOPER ST LOGIC SHOP**" when used as a brand identifier
+
+**What this means for you:**
+
+If you fork this repository or redistribute this code, you **must remove** the icon, favicon, and references to "COOPER ST LOGIC SHOP" and replace them with your own assets. You may not use our brand to imply endorsement or affiliation.
+
+### Open Source Dependencies
+
+- **11ty:** MIT License
+- **Fraunces Font:** SIL Open Font License (OFL)
+- **Public Sans Font:** SIL Open Font License (OFL)
+- **IBM Plex Mono Font:** SIL Open Font License (OFL)
 
 ---
 

@@ -1,0 +1,10 @@
+---
+layout: base.njk
+title: Inventory
+---
+
+## INVENTORY
+
+### STATUS: OFFLINE
+
+STOCKROOM LOCKED. ANNUAL INVENTORY AUDIT IN PROGRESS.

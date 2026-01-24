@@ -1,20 +1,21 @@
 {
   "name": "cooper-st-logic-shop",
-  "version": "1.0.0",
-  "description": "Purveyors of Product Strategy & Digital Goods. Santa Cruz, California.",
+  "version": "2.0.0",
+  "description": "Pacific Pragmatism. Static & Honest.",
   "scripts": {
-    "start": "serve .",
-    "format": "prettier --write '**/*.{html,css,js,md}'",
-    "lint": "htmlhint index.html"
+    "clean": "rm -rf _site",
+    "start": "npm run clean && eleventy --serve",
+    "build": "npm run clean && eleventy",
+    "validate": "node validate-content.js",
+    "prebuild": "npm run validate",
+    "format": "prettier --write '**/*.{html,css,js,md,njk}'",
+    "lint": "htmlhint _site/**/*.html"
   },
   "author": "Dylan Webster",
-  "license": "UNLICENSED",
+  "license": "GPL-3.0",
   "devDependencies": {
-    "serve": "^14.2.0",
+    "@11ty/eleventy": "^2.0.1",
     "prettier": "^3.0.0",
     "htmlhint": "^1.0.0"
-  },
-  "engines": {
-    "node": ">=18"
   }
 }

@@ -1,0 +1,1030 @@
+/* IMPORT DEPENDENCIES */
+@import "variables.css";
+@import "reset.css";
+
+/* -----------------------------------------------------------
+   5.1 PROTOCOL A: THE WORKBENCH (Warm Wood)
+   ----------------------------------------------------------- */
+:root {
+  /* Wood Palette */
+  --c-wood-base: #5D4037;
+  --c-wood-highlight: #8D6E63;
+  --c-wood-shadow: #3E2723;
+  
+  /* Textures */
+  --bg-workbench: url("/assets/img/desktop.webp");
+  
+  /* Layout Dimensions 
+     PHYSICALISM: Page dimensions are consistent throughout - 
+     600px wide × 800px tall (3:4 aspect ratio like a real technical manual).
+     Open book = two pages side by side = 1200px wide.
+  */
+  --page-width: 600px;
+  --page-height: 800px;
+  --book-width: 1200px; /* Two pages side by side when open */
+  
+  /* Cover Typography */
+  --c-cover-text: #fdebc5; /* Warm vanilla off-white for dark cover background */
+}
+
+body {
+  /* The Workbench Surface */
+  background-color: var(--c-wood-base);
+  background-image: var(--bg-workbench);
+  background-repeat: repeat-y;
+  background-position: center top;
+  /* 
+     SCROLL PHYSICS: 
+     Fixed at  resolution (1920px) to maintain physicalism - 
+     the workbench doesn't change size when you move your head.
+     'scroll' attachment means it stays with the element (body), so as you scroll down, 
+     you see lower parts of the image (scanning down the bench).
+  */
+  background-size: 1920px auto; 
+  background-attachment: scroll; 
+  
+  color: var(--c-carbon);
+  font-family: var(--font-manual);
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Fallback for bg */
+@supports not (background-image: url("test.webp")) {
+  body {
+    background-image: url("/assets/img/desktop.jpg");
+  }
+}
+
+
+/* -----------------------------------------------------------
+   LAYOUT ENGINE: THE TECHNICAL MANUAL
+   ----------------------------------------------------------- */
+
+/* The Container for the Book */
+.field-guide-container {
+  width: 100%;
+  max-width: var(--book-width);
+  margin-top: 1rem;
+  margin-bottom: 8rem;
+  position: relative;
+  z-index: var(--z-container);
+  perspective: 2500px;
+}
+
+/* The Book Itself */
+.field-guide-book {
+  display: flex; /* Spread layout */
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  /* Simple entry animation */
+  animation: settleBook 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  
+  /* Physical depth: Book sitting on the workbench surface
+     - First shadow: Soft contact shadow directly under the book
+     - Second shadow: Larger diffused shadow for ambient depth
+     - Third shadow: Subtle edge definition */
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 16px 48px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes settleBook {
+  from { transform: translateY(10px) rotateX(2deg); opacity: 0; }
+  to { transform: translateY(0) rotateX(0); opacity: 1; }
+}
+
+/* -----------------------------------------------------------
+   PAGE WRAPPERS (The Containers)
+   ----------------------------------------------------------- */
+.page-wrapper {
+  flex: 1; /* Match symmetry */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Left Wrapper Logic */
+.page-wrapper.left {
+  /* Pivot on the spine (right edge) */
+  transform-origin: right center;
+  z-index: 2; /* Stack order if they overlap */
+}
+
+/* Right Wrapper Logic */
+.page-wrapper.right {
+  /* Pivot on the spine (left edge) */
+  transform-origin: left center;
+  z-index: 2;
+}
+
+
+/* -----------------------------------------------------------
+   THE PHYSICAL STACK (Behind the Pages)
+   ----------------------------------------------------------- */
+.page-stack {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 800px; /* Fixed stack height matching page */
+  z-index: -1; /* Behind the main content page */
+  pointer-events: none;
+}
+
+.stack-leaf {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 800px; /* Fixed leaf height matching page */
+  background-color: #d8cdb0;
+  border: 1px solid rgba(139, 119, 101, 0.1); /* Very subtle edge */
+  
+  /* Texture: Uses baked paper textures via pseudo-element */
+}
+
+.stack-leaf::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; left: 0;
+  height: 800px; /* Fixed texture height */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6; /* Slightly faded for depth illusion */
+  /* No filter - texture is baked into the image */
+}
+
+/* LEFT STACK DYNAMICS */
+.page-wrapper.left .stack-leaf {
+  transform-origin: right center;
+  border-right: none; /* Spine connection */
+  /* Spine Clip */
+  clip-path: polygon(0% -2%, 100% -2%, 100% 102%, 0% 102%);
+}
+
+/* Left stack leaves use paper-left.webp (mirrored) */
+.page-wrapper.left .stack-leaf::before {
+  background-image: url("../img/paper-left.webp");
+  transform: scaleX(-1);
+}
+
+/* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
+.page-wrapper.left .layer-1 { transform: rotate(-0.05deg) translateY(0px); z-index: calc(var(--z-stack) - 1); }
+.page-wrapper.left .layer-2 { transform: rotate(-0.15deg) translateY(0.5px); z-index: calc(var(--z-stack) - 2); opacity: 0.98; }
+.page-wrapper.left .layer-3 { transform: rotate(-0.08deg) translateY(1.0px); z-index: calc(var(--z-stack) - 3); opacity: 0.95; }
+.page-wrapper.left .layer-4 { transform: rotate(-0.22deg) translateY(1.5px); z-index: calc(var(--z-stack) - 4); opacity: 0.90; }
+.page-wrapper.left .layer-5 { transform: rotate(-0.12deg) translateY(2.0px); z-index: calc(var(--z-stack) - 5); opacity: 0.85; }
+
+
+/* RIGHT STACK DYNAMICS */
+.page-wrapper.right .stack-leaf {
+  transform-origin: left center;
+  border-left: none; /* Spine connection */
+  /* Spine Clip */
+  clip-path: polygon(0% -2%, 100% -2%, 100% 102%, 0% 102%);
+  /* Spine shading baked into paper-right.webp - no gradient needed */
+}
+
+/* Right stack leaves use paper-right.webp */
+.page-wrapper.right .stack-leaf::before {
+  background-image: url("../img/paper-right.webp");
+}
+
+/* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
+.page-wrapper.right .layer-1 { transform: rotate(0.08deg) translateY(0px); z-index: calc(var(--z-stack) - 1); }
+.page-wrapper.right .layer-2 { transform: rotate(0.18deg) translateY(0.5px); z-index: calc(var(--z-stack) - 2); opacity: 0.98; }
+.page-wrapper.right .layer-3 { transform: rotate(0.04deg) translateY(1.0px); z-index: calc(var(--z-stack) - 3); opacity: 0.95; }
+.page-wrapper.right .layer-4 { transform: rotate(0.25deg) translateY(1.5px); z-index: calc(var(--z-stack) - 4); opacity: 0.90; }
+.page-wrapper.right .layer-5 { transform: rotate(0.12deg) translateY(2.0px); z-index: calc(var(--z-stack) - 5); opacity: 0.85; }
+
+
+/* -----------------------------------------------------------
+   THE MAIN CONTENT PAGE (Top Layer)
+   ----------------------------------------------------------- */
+.guide-page {
+  min-height: 800px; /* Minimal height of the book */
+  max-height: 800px; /* Fixed height - paper doesn't grow */
+  padding: 4rem 3rem;
+  position: relative;
+  width: 100%; 
+  box-sizing: border-box;
+  background-color: #d8cdb0;
+  z-index: var(--z-page); /* Top of stack */
+  overflow: hidden; /* Clip content that exceeds paper bounds */
+  
+  /* Subtle shadow for page lift above the stack */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Page Background & Texture Layer (The Physical Paper)
+   PERFORMANCE: We use baked WebP textures instead of runtime-composited 
+   SVG filters + gradients. The browser renders a simple image, not a math equation.
+   - paper-right.webp contains: aged vellum color, paper grain, spine shading for RIGHT page
+   - paper-left.webp contains: aged vellum color, paper grain, spine shading for LEFT page
+   
+   PHYSICALISM: Paper has fixed dimensions. The texture height is locked to 800px
+   to match the physical page size. This prevents texture stretching when content
+   is too long (content gets clipped, not the paper).
+*/
+.guide-page::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 800px; /* Fixed paper height - doesn't stretch */
+  z-index: -1;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* No filter here - texture is baked into the image */
+}
+
+
+/* Left Page Specifics */
+.guide-page.left {
+  border-right: none; 
+  /* Left Page Box Shadow: Left, Top, Bottom ONLY. No Right (Spine) Shadow */
+  box-shadow: -1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.guide-page.left::before {
+  /* Spine Handling: Clip the RIGHT edge (inner) to be straight */
+  clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%); 
+  
+  /* Baked texture: paper-left.webp mirrored for left page (spine shadow falls right) */
+  background-image: url("../img/paper-left.webp");
+  transform: scaleX(-1); /* Mirror the texture so spine shading falls toward center */
+  
+  right: -2px; 
+}
+
+/* Right Page Specifics */
+.guide-page.right {
+  border-left: none;
+  /* Right Page Box Shadow: Right, Top, Bottom ONLY. No Left (Spine) Shadow */
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.guide-page.right::before {
+  /* Spine Handling: Clip the LEFT edge (inner) to be straight */
+  clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%);
+  
+  /* Baked texture: paper-right.webp (spine shadow falls left toward binding) */
+  background-image: url("../img/paper-right.webp");
+  
+  left: -2px;
+}
+
+/* -----------------------------------------------------------
+   STATES: HOME vs OPEN
+   ----------------------------------------------------------- */
+
+/* -----------------------------------------------------------
+   STATES: HOME vs OPEN
+   ----------------------------------------------------------- */
+
+/* Default State (Closed Book / Home) */
+.page-wrapper.left {
+  display: none;
+}
+
+.field-guide-container {
+  /* Closed width = half of open width (approx) */
+  max-width: 600px; 
+}
+
+/* COVER STATE (Home Page): Use cover.webp for the closed book cover
+   Modeled after the Whole Earth Catalog - thick cardstock texture */
+body:not([data-state="open"]) .guide-page.right {
+  overflow: visible; /* Allow cover content to extend beyond paper bounds */
+  max-height: none; /* Remove height constraint for cover */
+  position: relative; /* Explicit positioning context for cover-footer */
+}
+
+body:not([data-state="open"]) .guide-page.right::before {
+  background-image: url("../img/cover.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* No spine shadow needed on cover - it's a flat board */
+}
+
+/* COVER PAGE: Hide header (no title bar or C-icon on cover) */
+body:not([data-state="open"]) .guide-page.right .guide-header {
+  display: none;
+}
+
+/* -----------------------------------------------------------
+   FLIP STATE: Table of Contents View (Single Page Mode)
+   
+   PHYSICALISM: In single-page view (< 1250px), clicking the C-icon/CONTENTS
+   toggles between page content and table of contents.
+   ----------------------------------------------------------- */
+
+/* TOC Overlay: Hidden by default, will be shown in flip state */
+.toc-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--z-page) + 1);
+  
+  /* Hidden by default - will only show in single-page flip mode */
+  display: none;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Page Content: Default visible state */
+.page-content {
+  position: relative;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Above 1250px: Always hide TOC overlay (navigation goes to /shop/ instead) */
+@media (min-width: 1251px) {
+  .toc-overlay {
+    display: none !important;
+  }
+}
+
+/* Apply toggle behavior only in single-page view (< 1250px) */
+@media (max-width: 1250px) {
+  /* Enable TOC overlay in single-page view */
+  .toc-overlay {
+    display: block;
+  }
+  
+  /* Simple fade transition */
+  .page-content,
+  .toc-overlay {
+    transition: opacity 0.2s ease;
+  }
+  
+  /* When showing TOC: hide content, show TOC */
+  body[data-state="open"][data-flip="toc"] .page-content {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  body[data-state="open"][data-flip="toc"] .toc-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* COVER TEXT STYLING: Warm vanilla off-white text for dark cover background
+   All cover text uses --c-cover-text variable for consistent theming */
+body:not([data-state="open"]) .guide-page.right h1,
+body:not([data-state="open"]) .guide-page.right h2 {
+  color: var(--c-cover-text);
+  mix-blend-mode: screen; /* Screen blend mode works better for light text */
+  filter: url(#inkBleed); /* Keep the ink bleed effect */
+}
+
+body:not([data-state="open"]) .guide-page.right p,
+body:not([data-state="open"]) .guide-page.right strong,
+body:not([data-state="open"]) .guide-page.right a,
+body:not([data-state="open"]) .guide-page.right h3,
+body:not([data-state="open"]) .guide-page.right h4,
+body:not([data-state="open"]) .guide-page.right h5,
+body:not([data-state="open"]) .guide-page.right h6 {
+  color: var(--c-cover-text);
+  opacity: 0.95; /* Maintain the ink density effect */
+}
+
+/* Cover page link/button styling */
+body:not([data-state="open"]) .guide-page.right a {
+  border-color: var(--c-cover-text) !important;
+  color: var(--c-cover-text) !important;
+}
+
+body:not([data-state="open"]) .guide-page.right a:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
+}
+
+/* Cover page divider line styling */
+body:not([data-state="open"]) .guide-page.right .draughtsman-line,
+body:not([data-state="open"]) .guide-page.right hr {
+  display: none;
+}
+
+/* COVER FOOTER: "Est 2026" anchored to bottom of cover
+   Uses absolute positioning relative to the guide-page container
+   to maintain fixed distance from bottom regardless of cover scale */
+.cover-footer {
+  position: absolute;
+  bottom: 4rem;
+  left: 4rem;
+  font-family: var(--font-signage);
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-variation-settings: 'WONK' 1, 'SOFT' 100;
+  color: var(--c-cover-text);
+  mix-blend-mode: screen;
+  filter: url(#inkBleed);
+}
+
+
+/* Open State: Show the left page & expand container */
+body[data-state="open"] .page-wrapper.left {
+  display: flex;
+}
+
+body[data-state="open"] .field-guide-container {
+  max-width: var(--book-width); /* Two pages side by side: 1200px */
+}
+
+/* -----------------------------------------------------------
+   SINGLE PAGE VIEW TEXTURES
+   
+   In single-page responsive view, we need to show the correct
+   paper texture based on whether it's a left or right page.
+   By default, the right page texture is shown. When viewing a
+   left-hand page, we apply the left texture instead.
+   ----------------------------------------------------------- */
+
+/* Single page left: Use left page texture (spine shadow on right) */
+.guide-page.single-page-left::before {
+  background-image: url("../img/paper-left.webp");
+  transform: scaleX(-1); /* Mirror for left page spine shading */
+}
+
+/* Open State: Right page uses paper-right.webp with baked-in spine shadow (no override needed) */
+
+
+/* -----------------------------------------------------------
+   INK SIMULATION (Performance-Optimized)
+   
+   PERFORMANCE PRINCIPLE: Complex SVG filters trigger repaint/composite 
+   on every scroll frame. On a high-end MacBook this looks like ink; 
+   on a mid-range phone it looks like lag.
+   
+   STRATEGY:
+   - Headings (h1, h2): Apply expensive #inkBleed filter + blend mode.
+     These are sparse, high-visual-impact elements where the cost is justified.
+   - Body text: Use color #1a1a1a with opacity 0.9 to simulate ink density.
+     No filter, no blend mode. The carefully selected color creates the 
+     impression of ink without per-pixel blend calculations.
+   ----------------------------------------------------------- */
+
+/* HEADINGS: Full ink treatment (filter + blend mode) */
+.guide-page h1, 
+.guide-page h2,
+.guide-header {
+  font-family: var(--font-signage);
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-variation-settings: 'WONK' 1, 'SOFT' 100;
+  mix-blend-mode: multiply;
+  color: #1a1a1a; 
+  filter: url(#inkBleed); 
+}
+
+/* Default heading sizes (desktop) */
+.guide-page h1 {
+  font-size: 3rem;
+}
+
+.guide-page h2 {
+  font-size: 2rem;
+}
+
+.guide-page h3 {
+  font-size: 1.5rem;
+}
+
+/* Prevent Double-Filtering on heading children */
+.guide-header *,
+.guide-page h1 *,
+.guide-page h2 * {
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+
+/* BODY TEXT: Simulated ink via color/opacity (no filter, no blend mode) */
+.guide-page p, 
+.guide-page h3, 
+.guide-page h4, 
+.guide-page h5, 
+.guide-page h6, 
+.guide-page li, 
+.guide-page blockquote,
+.guide-page pre,
+.guide-page code,
+.guide-page table,
+.guide-footer, 
+.pending-content,
+hr,
+.draughtsman-line {
+  color: #1a1a1a;
+  opacity: 0.9;
+  /* No filter, no blend mode - simulates ink through color selection */
+}
+
+.pending-content {
+  opacity: 0.6;
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+/* IN-LINE LINKS: Consistent hover state for body hyperlinks */
+.guide-page article a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(26, 26, 26, 0.2); 
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.guide-page article a:hover {
+  color: var(--c-redwood);
+  text-decoration-color: var(--c-redwood);
+}
+
+/* -----------------------------------------------------------
+   COMPONENTS: NAVIGATION (TOC)
+   ----------------------------------------------------------- */
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.toc-item {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.2); /* Hand-drawn line */
+  padding-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.toc-link {
+  font-family: var(--font-mono);
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: var(--c-carbon);
+  transition: color 0.2s ease;
+}
+
+.toc-link:hover {
+  color: var(--c-redwood);
+}
+
+.toc-number {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--c-zinc);
+}
+
+/* -----------------------------------------------------------
+   COMPONENTS: BOOKMARKS (Tabs)
+   
+   PHYSICALISM: Tabs are physically attached to pages in the guide.
+   - Each tab has a FIXED vertical position based on --tab-index
+   - --tab-index corresponds to (navigation ID - 1) for 0-based positioning
+   - Tab SIDE depends on current spread position:
+     • Pages already turned → tabs on LEFT (in the turned stack)
+     • Current right page and beyond → tabs on RIGHT (in the unread stack)
+   - Tabs are children of .field-guide-book (positioned relative to book)
+   ----------------------------------------------------------- */
+.bookmark-tab {
+  position: absolute;
+  /* Position calculated from CSS custom property --tab-index (set inline by template)
+     Uses navigation ID - 1 for consistent spacing across all pages */
+  top: calc(var(--tab-start) + (var(--tab-height) * var(--tab-index, 0)));
+  width: var(--tab-width);
+  height: var(--tab-depth);
+  background-color: #d8cdb0; /* Match page color - tabs are part of the paper */
+  border: 1px solid rgba(139, 119, 101, 0.3);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: var(--font-handwriting, sans-serif);
+  font-size: 0.75rem;
+  color: var(--c-wood-shadow);
+  cursor: pointer;
+  /* Z-Index Hierarchy (see variables.css for full scale):
+     --z-page: Primary content page
+     --z-tab: Tabs sit between stack and page
+     --z-stack: Stack leaves behind everything
+  */
+  z-index: var(--z-tab); 
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+}
+
+.bookmark-tab:hover {
+  background-color: #e0d5bb; /* Slightly lighter on hover */
+}
+
+/* Current spread tabs - not clickable (you're already viewing this page) */
+.bookmark-tab.is-current {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Fixed Tabs - Left tabs attach to the LEFT of the BOOK (relative to field-guide-book) */
+.bookmark-tab.left {
+  left: -40px; /* Aligned to left edge of book */
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.bookmark-tab.left:hover {
+  transform: translateX(-3px);
+}
+
+/* Fixed Tabs - Right tabs attach to the RIGHT of the BOOK */
+.bookmark-tab.right {
+  right: -40px; /* Aligned to right edge of book */
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+
+.bookmark-tab.right:hover {
+  transform: translateX(3px);
+}
+
+/* -----------------------------------------------------------
+   HEADER & FOOTER (Inside Book)
+   ----------------------------------------------------------- */
+.guide-header {
+  border-bottom: 2px solid var(--c-carbon);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.guide-title {
+  font-family: var(--font-signage);
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-optical-sizing: auto;
+  font-variation-settings: 'WONK' 1, 'SOFT' 100;
+}
+
+/* -----------------------------------------------------------
+   HEADER CONTENTS GROUP (C-Icon + CONTENTS Label)
+   
+   PHYSICALISM: The contents link is always visible in the header.
+   - Left pages: C-icon on far left, CONTENTS label to its right
+   - Right pages: CONTENTS label on left, C-icon to its right
+   ----------------------------------------------------------- */
+.header-contents-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contents-link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+/* Hover: Match TOC link hover state (redwood color) */
+.contents-link:hover {
+  color: var(--c-redwood);
+}
+
+/* C-Icon: Inline SVG with currentColor inherits text color */
+.contents-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  filter: url(#inkBleed);
+  /* Color inherited from parent via currentColor in SVG stroke */
+}
+
+/* CONTENTS Label: IBM Plex Mono, NO ink bleed filter */
+.contents-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.9;
+  /* Explicitly no filter - clean text */
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+
+/* Left page header: icon first, then label */
+.guide-page.left .header-contents-group {
+  order: -1; /* Contents group on far left */
+}
+
+.guide-page.left .guide-title {
+  order: 1; /* Title on far right */
+}
+
+/* Right page header: label first, then icon (already set in HTML order) */
+.guide-page.right .header-contents-group {
+  order: 1; /* Contents group on far right */
+}
+
+.guide-page.right .guide-title {
+  order: -1; /* Title on far left */
+}
+
+.guide-footer {
+  position: absolute;
+  bottom: 1rem; 
+  left: 3rem;
+  right: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--c-zinc);
+  font-family: var(--font-mono);
+  /* Ensure it sits above potential overlaps */
+  z-index: 2;
+}
+
+.footer-copyright {
+  grid-column: 2;
+  text-align: center;
+}
+
+.footer-page-num {
+  font-weight: 400; /* Regular weight (was 600) */
+  color: var(--c-carbon);
+  opacity: 0.6;
+}
+
+.footer-nav-arrow {
+  text-decoration: none;
+  color: inherit;
+  opacity: 0.7; /* Increased from 0.4 */
+  transition: opacity 0.2s ease, color 0.2s ease;
+  padding: 0 0.25rem;
+  display: inline-block;
+}
+
+.footer-nav-arrow:hover {
+  opacity: 1;
+  color: var(--c-redwood);
+}
+
+/* Slot 1: Always Left */
+.guide-footer > .footer-page-num:first-child {
+  grid-column: 1;
+  text-align: left;
+}
+
+/* Slot 3: Always Right */
+.guide-footer > .footer-page-num:last-child {
+  grid-column: 3;
+  text-align: right;
+}
+
+.draughtsman-line {
+  border: none;
+  border-top: 1px solid var(--c-carbon);
+  margin: 2rem 0;
+  opacity: 0.6;
+}
+
+/* -----------------------------------------------------------
+   RESPONSIVE: SINGLE PAGE VIEW (Tablet)
+   
+   PHYSICALISM PRINCIPLE: When the viewport can't fit a two-page spread,
+   we don't squish the pages together (that breaks the physical metaphor).
+   Instead, we transition to a single-page view - like holding the guide
+   with one page visible, ready to turn.
+   
+   At this breakpoint:
+   - Tabs disappear (navigation via page content or mobile menu)
+   - Only the primary page wrapper is displayed (whichever has .is-primary)
+   - Paper maintains its physical scale (600px - same as cover)
+   ----------------------------------------------------------- */
+@media (max-width: 1250px) {
+  /* INNER PAGES: Single page view - hide the non-primary wrapper */
+  body[data-state="open"] .page-wrapper:not(.is-primary) {
+    display: none !important;
+  }
+  
+  /* Hide bookmark tabs - they'd stick out awkwardly in single page view */
+  body[data-state="open"] .bookmark-tab {
+    display: none;
+  }
+  
+  /* Container sizes for single page (same as cover: 600px) */
+  body[data-state="open"] .field-guide-container {
+    max-width: var(--page-width);
+  }
+  
+  /* Center the book in the viewport */
+  body[data-state="open"] .field-guide-book {
+    justify-content: center;
+  }
+}
+
+/* -----------------------------------------------------------
+   RESPONSIVE: MOBILE NOTEBOOK
+   
+   PHYSICALISM PRINCIPLE: Below this breakpoint, both cover and inner
+   pages scale fluidly - like moving the guide further from your eye.
+   The aspect ratio is preserved (3:4) to maintain the illusion of a 
+   real physical object rather than a cropped viewport.
+   ----------------------------------------------------------- */
+@media (max-width: 900px) {
+  :root {
+    --book-width: 100%;
+  }
+
+  body {
+    background-size: 1920px auto; /* Scaled down for mobile */
+  }
+
+  /* HOME PAGE (Cover): Fluid responsive scaling
+     PHYSICALISM: The cover scales proportionally to maintain its physical
+     aspect ratio (3:4) as the viewport shrinks. This preserves the illusion
+     of a real object getting further away rather than being cropped.
+     
+     FLUID MATH (linear interpolation between breakpoints):
+     - At 900px viewport → 600px width (full size)
+     - At 375px viewport → 350px width (~12.5px margin each side for background)
+     Slope: (600-350)/(900-375) = 250/525 ≈ 0.476
+     Formula: width = 171.43px + 47.62vw
+  */
+  body:not([data-state="open"]) {
+    overflow-x: hidden; /* No horizontal scroll needed - cover scales to fit */
+  }
+
+  body:not([data-state="open"]) .field-guide-container {
+    /* Fluid width: subtle scaling from 600px down to 350px */
+    width: clamp(350px, calc(171.43px + 47.62vw), 600px);
+    min-width: auto;
+    margin: 1rem auto;
+  }
+
+  /* Cover page height scales proportionally (maintains 3:4 aspect ratio)
+     Height formula: width × (800/600) = width × 1.333
+     At 900px: 800px height | At 375px: ~467px height
+     Formula: height = 228.57px + 63.49vw
+  */
+  body:not([data-state="open"]) .guide-page.right {
+    min-height: auto;
+    max-height: none;
+    height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+  }
+
+  /* Cover texture fills the scaled page dimensions */
+  body:not([data-state="open"]) .guide-page.right::before {
+    height: 100%;
+  }
+
+  /* Stack leaves scale with cover (same height formula as cover page) */
+  body:not([data-state="open"]) .page-stack,
+  body:not([data-state="open"]) .stack-leaf,
+  body:not([data-state="open"]) .stack-leaf::before {
+    height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+  }
+
+  /* Cover footer scales position proportionally */
+  body:not([data-state="open"]) .cover-footer {
+    bottom: 4rem;
+    left: 4rem;
+    /* Fluid font size: scales from 1rem at 900px to 0.75rem at 375px */
+    font-size: clamp(0.75rem, 0.286rem + 1.14vw, 1rem);
+  }
+
+  /* INNER PAGES: Fluid responsive scaling (same as cover)
+     PHYSICALISM: Inner pages use the exact same dimensions and scaling
+     as the cover - maintaining consistent 3:4 aspect ratio throughout.
+     
+     FLUID MATH: Same formula as cover
+     - At 900px viewport → 600px width
+     - At 375px viewport → 350px width
+     Formula: width = 171.43px + 47.62vw
+  */
+  body[data-state="open"] {
+    overflow-x: hidden; /* No horizontal scroll - page scales to fit */
+  }
+
+  body[data-state="open"] .field-guide-container {
+    width: clamp(350px, calc(171.43px + 47.62vw), 600px);
+    max-width: none;
+    margin: 1rem auto;
+  }
+
+  /* Inner page height scales proportionally (same 3:4 aspect ratio as cover)
+     Height formula: same as cover
+     At 900px: 800px height | At 375px: ~467px height
+     Formula: height = 228.57px + 63.49vw
+  */
+  body[data-state="open"] .guide-page {
+    min-height: auto;
+    max-height: none;
+    height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+    padding: 1.5rem;
+  }
+
+  /* Inner page texture fills the scaled page dimensions */
+  body[data-state="open"] .guide-page::before {
+    height: 100%;
+  }
+
+  /* Stack leaves scale with inner page (same as cover) */
+  body[data-state="open"] .page-stack,
+  body[data-state="open"] .stack-leaf,
+  body[data-state="open"] .stack-leaf::before {
+    height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+  }
+
+  .field-guide-book {
+    flex-direction: column;
+  }
+
+  /* In mobile, only show the primary page wrapper */
+  .page-wrapper:not(.is-primary) {
+    display: none !important;
+  }
+
+  /* -----------------------------------------------------------
+     FLUID TYPOGRAPHY: Smooth scaling from 900px down to 375px
+     Using clamp() for seamless responsive text sizing
+     ----------------------------------------------------------- */
+  
+  /* Main headings: h1 scales from 3rem (48px) to 2rem (32px) */
+  .guide-page h1 {
+    font-size: clamp(2rem, 0.857rem + 2.86vw, 3rem);
+  }
+  
+  /* Secondary headings: h2 scales from 2rem (32px) to 1.5rem (24px) */
+  .guide-page h2 {
+    font-size: clamp(1.5rem, 1.071rem + 1.07vw, 2rem);
+  }
+  
+  /* Tertiary headings: h3 scales from 1.5rem (24px) to 1.125rem (18px) */
+  .guide-page h3 {
+    font-size: clamp(1.125rem, 0.804rem + 0.80vw, 1.5rem);
+  }
+  
+  /* Smaller headings: h4, h5, h6 scale from 1.25rem to 1rem */
+  .guide-page h4,
+  .guide-page h5,
+  .guide-page h6 {
+    font-size: clamp(1rem, 0.714rem + 0.71vw, 1.25rem);
+  }
+  
+  /* Header title: scales from 1.5rem to 1.125rem */
+  .guide-title {
+    font-size: clamp(1.125rem, 0.804rem + 0.80vw, 1.5rem);
+  }
+  
+  /* Body text: scales from 1rem to 0.9rem */
+  .guide-page p,
+  .guide-page li,
+  .guide-page blockquote {
+    font-size: clamp(0.9rem, 0.771rem + 0.32vw, 1rem);
+  }
+  
+  /* TOC links: scales from 1.1rem to 0.95rem */
+  .toc-link {
+    font-size: clamp(0.95rem, 0.821rem + 0.32vw, 1.1rem);
+  }
+  
+  /* TOC numbers: scales from 0.9rem to 0.8rem */
+  .toc-number {
+    font-size: clamp(0.8rem, 0.729rem + 0.18vw, 0.9rem);
+  }
+  
+  /* Contents label: scales from 0.65rem to 0.55rem */
+  .contents-label {
+    font-size: clamp(0.55rem, 0.479rem + 0.18vw, 0.65rem);
+  }
+  
+  /* Contents icon: scales from 28px to 22px */
+  .contents-icon {
+    width: clamp(22px, 17.714px + 1.07vw, 28px);
+    height: clamp(22px, 17.714px + 1.07vw, 28px);
+  }
+
+  /* Mobile Menu Drawer Logic (if needed) or simple vertical stack */
+}

@@ -1,0 +1,40 @@
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+  <defs>
+    <!-- 
+      #paperDistress DEPRECATED
+      Paper texture, grain, and spine shading are now "baked" into static WebP images 
+      (paper-left.webp, paper-right.webp, cover.webp). This eliminates per-frame rendering calculations.
+      See shop-manual.md Section 5.6 for rationale.
+    -->
+
+    <!-- 
+      INK BLEED FILTER (Headings Only)
+      Purpose: Simulates ink absorption, wicking, and paper grain interaction for text.
+      
+      SCOPE: Applied ONLY to h1, h2 elements. Body text uses color/opacity simulation.
+      RATIONALE: Headings are sparse, high-visual-impact elements where the per-pixel 
+      cost of the filter is acceptable. Body text dominates the DOM and would cause 
+      scroll performance issues on mid-range devices.
+    -->
+    <filter id="inkBleed" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" result="paper_grain" />
+      
+      <feTurbulence type="turbulence" baseFrequency="0.01 0.04" numOctaves="2" seed="5" result="ink_warp" />
+      
+      <feMorphology operator="dilate" radius="1.6" in="SourceGraphic" result="thickened_text" />
+      
+      <feDisplacementMap in="thickened_text" in2="ink_warp" scale="2" xChannelSelector="R" yChannelSelector="G" result="warped_text" />
+
+      <feGaussianBlur in="warped_text" stdDeviation="1.5" result="blurred_text" />
+
+      <feComposite operator="arithmetic" in="blurred_text" in2="paper_grain" k1="0" k2="1" k3="-0.5" k4="0" result="textured_text" />
+      
+      <feColorMatrix type="matrix" values="0 0 0 0 0 
+                                           0 0 0 0 0 
+                                           0 0 0 0 0 
+                                           0 0 0 14 -5.5" in="textured_text" result="final_ink" />
+                                           
+      <feComposite operator="in" in="SourceGraphic" in2="final_ink" result="final_color" />
+    </filter>
+  </defs>
+</svg>

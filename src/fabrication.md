@@ -1,0 +1,10 @@
+---
+layout: base.njk
+title: Fabrication
+---
+
+## FABRICATION
+
+### STATUS: MAINTENANCE
+
+MACHINERY UNDER MAINTENANCE. CALIBRATING LOGIC GATES.
