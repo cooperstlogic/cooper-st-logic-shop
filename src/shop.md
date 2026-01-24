@@ -9,4 +9,4 @@ Welcome to COOPER ST. We keep an inventory of off the shelf [_software products_
 
 We are currently fitting out the shop—sweeping up the sawdust and getting the tools organized.
 
-Leave a note: [_hello@cooperstlogicshop.com_](mailto:hello@cooperstlogicshop.com)
+Leave a note: _hello [at] cooperstlogic [dot] shop_
