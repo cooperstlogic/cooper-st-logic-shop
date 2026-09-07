@@ -9,10 +9,13 @@
     "validate": "node validate-content.js",
     "prebuild": "npm run validate",
     "format": "prettier --write '**/*.{html,css,js,md,njk}'",
-    "lint": "htmlhint _site/**/*.html"
+    "lint": "htmlhint \"_site/**/*.html\""
   },
   "author": "Dylan Webster",
   "license": "GPL-3.0",
+  "engines": {
+    "node": ">=22"
+  },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
     "prettier": "^3.0.0",
