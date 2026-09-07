@@ -13,6 +13,9 @@
   },
   "author": "Dylan Webster",
   "license": "GPL-3.0",
+  "engines": {
+    "node": ">=22"
+  },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
     "prettier": "^3.0.0",
