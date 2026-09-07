@@ -8,12 +8,15 @@
 :root {
   /* Wood Palette */
   --c-wood-base: #5D4037;
-  --c-wood-highlight: #8D6E63;
   --c-wood-shadow: #3E2723;
   
-  /* Textures */
-  --bg-workbench: url("/assets/img/desktop.webp");
-  
+  /* Textures: the workbench background is deliberately NOT a token.
+     A working WebP fallback needs two competing `background-image`
+     declarations (see `body`), and var() would defeat that — a declaration
+     containing var() is validated only after substitution, so an
+     unsupported image-set() would leave the property `unset` instead of
+     falling back to the declaration above it. */
+
   /* Layout Dimensions 
      PHYSICALISM: Page dimensions are consistent throughout - 
      600px wide × 800px tall (3:4 aspect ratio like a real technical manual).
@@ -30,7 +33,20 @@
 body {
   /* The Workbench Surface */
   background-color: var(--c-wood-base);
-  background-image: var(--bg-workbench);
+
+  /* WebP, with a JPEG fallback that actually fires.
+     1. The plain url() is the floor: any engine that cannot parse
+        image-set() discards the next declaration as a syntax error and
+        lands here.
+     2. image-set() negotiates on MIME type and wins wherever it parses.
+     Safari 14-16 predates type() inside image-set(), so it takes the
+     JPEG — correct, if not optimal. */
+  background-image: url("/assets/img/desktop.jpg");
+  background-image: image-set(
+    url("/assets/img/desktop.webp") type("image/webp"),
+    url("/assets/img/desktop.jpg") type("image/jpeg")
+  );
+
   background-repeat: repeat-y;
   background-position: center top;
   /* 
@@ -53,14 +69,6 @@ body {
   overflow-x: hidden;
   position: relative;
 }
-
-/* Fallback for bg */
-@supports not (background-image: url("test.webp")) {
-  body {
-    background-image: url("/assets/img/desktop.jpg");
-  }
-}
-
 
 /* -----------------------------------------------------------
    LAYOUT ENGINE: THE TECHNICAL MANUAL
@@ -132,7 +140,7 @@ body {
 .page-stack {
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 800px; /* Fixed stack height matching page */
+  height: var(--page-height); /* Fixed stack height matching page */
   z-index: -1; /* Behind the main content page */
   pointer-events: none;
 }
@@ -140,7 +148,7 @@ body {
 .stack-leaf {
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 800px; /* Fixed leaf height matching page */
+  height: var(--page-height); /* Fixed leaf height matching page */
   background-color: #d8cdb0;
   border: 1px solid rgba(139, 119, 101, 0.1); /* Very subtle edge */
   
@@ -151,7 +159,7 @@ body {
   content: "";
   position: absolute;
   top: 0; right: 0; left: 0;
-  height: 800px; /* Fixed texture height */
+  height: var(--page-height); /* Fixed texture height */
   background-size: cover;
   background-position: center;
   opacity: 0.6; /* Slightly faded for depth illusion */
@@ -206,8 +214,8 @@ body {
    THE MAIN CONTENT PAGE (Top Layer)
    ----------------------------------------------------------- */
 .guide-page {
-  min-height: 800px; /* Minimal height of the book */
-  max-height: 800px; /* Fixed height - paper doesn't grow */
+  min-height: var(--page-height); /* Minimal height of the book */
+  max-height: var(--page-height); /* Fixed height - paper doesn't grow */
   padding: 4rem 3rem;
   position: relative;
   width: 100%; 
@@ -234,7 +242,7 @@ body {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 800px; /* Fixed paper height - doesn't stretch */
+  height: var(--page-height); /* Fixed paper height - doesn't stretch */
   z-index: -1;
   background-position: center;
   background-repeat: no-repeat;
@@ -277,10 +285,6 @@ body {
   
   left: -2px;
 }
-
-/* -----------------------------------------------------------
-   STATES: HOME vs OPEN
-   ----------------------------------------------------------- */
 
 /* -----------------------------------------------------------
    STATES: HOME vs OPEN
@@ -409,7 +413,6 @@ body:not([data-state="open"]) .guide-page.right a:hover {
 }
 
 /* Cover page divider line styling */
-body:not([data-state="open"]) .guide-page.right .draughtsman-line,
 body:not([data-state="open"]) .guide-page.right hr {
   display: none;
 }
@@ -518,10 +521,9 @@ body[data-state="open"] .field-guide-container {
 .guide-page pre,
 .guide-page code,
 .guide-page table,
-.guide-footer, 
+.guide-footer,
 .pending-content,
-hr,
-.draughtsman-line {
+hr {
   color: #1a1a1a;
   opacity: 0.9;
   /* No filter, no blend mode - simulates ink through color selection */
@@ -611,7 +613,7 @@ hr,
   justify-content: center;
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-family: var(--font-handwriting, sans-serif);
+  font-family: var(--font-mono); /* Matches the rest of the navigation chrome */
   font-size: 0.75rem;
   color: var(--c-wood-shadow);
   cursor: pointer;
@@ -623,7 +625,7 @@ hr,
   z-index: var(--z-tab); 
   transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500; /* 400 and 500 are the loaded Plex Mono weights — no faux bold */
   letter-spacing: 0.5px;
   border-radius: 4px;
 }
@@ -800,13 +802,6 @@ hr,
 .guide-footer > .footer-page-num:last-child {
   grid-column: 3;
   text-align: right;
-}
-
-.draughtsman-line {
-  border: none;
-  border-top: 1px solid var(--c-carbon);
-  margin: 2rem 0;
-  opacity: 0.6;
 }
 
 /* -----------------------------------------------------------

@@ -1,13 +1,6 @@
 <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
   <defs>
-    <!-- 
-      #paperDistress DEPRECATED
-      Paper texture, grain, and spine shading are now "baked" into static WebP images 
-      (paper-left.webp, paper-right.webp, cover.webp). This eliminates per-frame rendering calculations.
-      See shop-manual.md Section 5.6 for rationale.
-    -->
-
-    <!-- 
+    <!--
       INK BLEED FILTER (Headings Only)
       Purpose: Simulates ink absorption, wicking, and paper grain interaction for text.
       
