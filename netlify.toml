@@ -32,3 +32,37 @@
   for = "/assets/img/*"
   [headers.values]
     Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+# ---------------------------------------------------------------------------
+# THE ANNEX
+#
+# Unlisted supplementary material — direct links handed out alongside a CV.
+# These pages are absent from navigation.json, so nothing on the site links
+# to them, but "unlinked" is not "unindexed": a URL that leaks into a browser
+# toolbar, a shared inbox or someone else's blogroll is fair game otherwise.
+#
+# X-Robots-Tag rather than a robots.txt Disallow, for two reasons:
+#   1. robots.txt is public, so listing /annex/ there advertises the exact
+#      paths it is meant to keep quiet. It is the first file anyone curious
+#      opens.
+#   2. Disallow blocks crawling, which means the crawler never fetches the
+#      page and never sees a noindex. A disallowed URL that gets linked from
+#      somewhere can still be indexed URL-only, off the strength of the link
+#      alone. The header is what actually removes a page from an index.
+#
+# The header also reaches bare files, where a <meta> tag has nowhere to live.
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/annex/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+
+# Documents are linked from annex plates and must carry the same instruction
+# themselves — a PDF is indexed on its own merits, not its referrer's.
+# They are versioned by filename and effectively immutable once sent out, so
+# they cache far longer than the HTML that points at them.
+[[headers]]
+  for = "/assets/docs/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"

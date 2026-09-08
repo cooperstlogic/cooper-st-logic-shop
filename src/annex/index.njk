@@ -1,0 +1,30 @@
+---
+title: Annex
+summary: >-
+  Supplementary material kept outside the manual — recorded talks and
+  conference posters, each on its own plate and linked directly.
+plateNo: "CONTENTS"
+wide: true
+tags: []
+---
+<ul class="annex-contents">
+  {% for item in collections.annexPlates %}
+  {% set thumbSrc = item.data.thumb or item.data.poster %}
+  <li class="annex-entry">
+    <a class="annex-entry-link" href="{{ item.url }}">
+      {% if thumbSrc %}
+      <span class="annex-entry-frame">
+        <img class="annex-entry-thumb" src="{{ thumbSrc }}" alt="" loading="lazy">
+      </span>
+      {% endif %}
+      <span class="annex-entry-text">
+        <span class="annex-entry-no">{{ item.data.plateNo }}</span>
+        <span class="annex-entry-title">{{ item.data.title }}</span>
+        {% if item.data.caption or item.data.pdfMeta %}
+        <span class="annex-entry-meta">{{ item.data.caption or item.data.pdfMeta }}</span>
+        {% endif %}
+      </span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>

@@ -1023,3 +1023,450 @@ hr {
 
   /* Mobile Menu Drawer Logic (if needed) or simple vertical stack */
 }
+
+/* -----------------------------------------------------------
+   THE ANNEX: FOLD-OUT PLATES
+
+   Loose sheets on the same bench, not leaves in the manual.
+   Same vellum, same ink, same wordmark — no spine, no bookmark
+   tabs, and crucially no fixed 800px height. A plate carries a
+   video or a drawing that has no business being cropped to book
+   paper, so the sheet grows to its contents instead of clipping
+   them. `validate-content.js` never weighs in: it reads src/
+   non-recursively and these pages live in src/annex/.
+
+   Reached by direct link only — see src/_includes/annex.njk.
+   ----------------------------------------------------------- */
+.annex-plate {
+  width: 100%;
+  max-width: 960px;
+  margin: 3rem auto 8rem;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+  position: relative;
+  z-index: var(--z-container);
+}
+
+.annex-sheet {
+  position: relative;
+  padding: 4rem 3.5rem;
+  box-sizing: border-box;
+  background-color: #d8cdb0;
+  color: #1a1a1a;
+
+  /* The book's baked vellum. Its spine shading sits on the left
+     edge and reads as a curl once the sheet is unbound. */
+  background-image: url("../img/paper-right.webp");
+  background-size: cover;
+  background-position: center;
+
+  /* Same contact-plus-ambient shadow the book casts on the bench. */
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 16px 48px rgba(0, 0, 0, 0.1);
+}
+
+/* MASTHEAD -------------------------------------------------- */
+.annex-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.25);
+}
+
+.annex-wordmark {
+  font-family: var(--font-signage);
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-variation-settings: "WONK" 1, "SOFT" 100;
+  font-size: 1.125rem;
+  letter-spacing: 0.02em;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.annex-marginalia {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--c-zinc);
+  white-space: nowrap;
+}
+
+/* INK ------------------------------------------------------- */
+.annex-title,
+.annex-body h2 {
+  font-family: var(--font-signage);
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-variation-settings: "WONK" 1, "SOFT" 100;
+  mix-blend-mode: multiply;
+  color: #1a1a1a;
+  filter: url(#inkBleed);
+}
+
+.annex-title {
+  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+  margin: 0 0 0.75rem;
+  line-height: 1.1;
+}
+
+.annex-body h2 {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  margin: 2.5rem 0 0.75rem;
+}
+
+/* Body copy simulates ink through colour, never a filter. */
+.annex-summary,
+.annex-body p,
+.annex-body li,
+.annex-body h3,
+.annex-body h4,
+.annex-body blockquote,
+.annex-caption,
+.annex-footer {
+  color: #1a1a1a;
+  opacity: 0.9;
+}
+
+.annex-summary {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin: 0 0 2rem;
+  max-width: 62ch;
+}
+
+.annex-body {
+  line-height: 1.7;
+  max-width: 68ch;
+}
+
+.annex-body h3 {
+  font-family: var(--font-manual);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: 0.04em;
+  margin: 2rem 0 0.5rem;
+}
+
+.annex-body a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(26, 26, 26, 0.3);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.annex-body a:hover {
+  color: var(--c-redwood);
+  text-decoration-color: var(--c-redwood);
+}
+
+/* PLATES ---------------------------------------------------- */
+.annex-media {
+  margin: 0 0 2.5rem;
+}
+
+.annex-video {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  /* Reserve the box before metadata arrives so the sheet does not
+     jump on load. Odd ratios letterbox against the dark ground
+     rather than resizing the page under the reader. */
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #1a1a1a;
+
+  /* A plate is pasted onto the sheet, not printed into it. */
+  border: 1px solid rgba(26, 26, 26, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.annex-caption,
+.annex-fallback {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin: 0.75rem 0 0;
+  color: var(--c-zinc);
+}
+
+/* DOCUMENTS ------------------------------------------------- */
+.annex-doc {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 0 0 2.5rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid rgba(26, 26, 26, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+  color: #1a1a1a;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.annex-doc:hover {
+  border-color: var(--c-redwood);
+  color: var(--c-redwood);
+}
+
+.annex-doc-mark {
+  flex: 0 0 auto;
+}
+
+.annex-doc-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.annex-doc-text strong {
+  font-family: var(--font-manual);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.annex-doc-text small {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--c-zinc);
+}
+
+/* CONTENTS PAGE --------------------------------------------- */
+/* The plate at /annex/ lists the others. It is the one annex page
+   that wants the full sheet rather than a reading measure. */
+.annex-body.is-wide {
+  max-width: none;
+}
+
+.annex-contents {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.annex-entry + .annex-entry {
+  border-top: 1px solid rgba(26, 26, 26, 0.18);
+}
+
+/* Outruns `.annex-body a`, which would otherwise underline the plate number
+   and the mono meta line along with the title. */
+.annex-body .annex-entry-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  text-decoration: none;
+  color: #1a1a1a;
+  transition: color 0.2s ease;
+}
+
+.annex-entry-link:hover {
+  color: var(--c-redwood);
+}
+
+/* Thumbnails are pasted-on plates, matching the video frame treatment. */
+/* Fixed frame, so a portrait poster and a 16:9 still occupy the same slot
+   and the list keeps an even rhythm. Cropping from the top means a poster
+   shows its title block rather than its middle. */
+.annex-entry-frame {
+  flex: 0 0 200px;
+  display: block;
+  height: 118px;
+  overflow: hidden;
+  border: 1px solid rgba(26, 26, 26, 0.3);
+  background: #1a1a1a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s ease;
+}
+
+.annex-entry-link:hover .annex-entry-frame {
+  border-color: var(--c-redwood);
+}
+
+.annex-entry-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.annex-entry-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-top: 0.15rem;
+}
+
+.annex-entry-no {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--c-zinc);
+}
+
+.annex-entry-title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(26, 26, 26, 0.25);
+  font-family: var(--font-signage);
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-variation-settings: "WONK" 1, "SOFT" 100;
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.annex-entry-meta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--c-zinc);
+}
+
+.annex-marginalia-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.annex-marginalia-link:hover {
+  color: var(--c-redwood);
+}
+
+/* PROVENANCE ------------------------------------------------ */
+.annex-credit {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  margin: -1.5rem 0 2.5rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid rgba(26, 26, 26, 0.3);
+  color: var(--c-zinc);
+  max-width: 62ch;
+}
+
+.annex-references {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(26, 26, 26, 0.2);
+}
+
+.annex-references-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--c-zinc);
+  margin: 0 0 0.75rem;
+}
+
+.annex-reference-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.annex-reference-list li {
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* A hanging arrow marks the link as leaving the plate. */
+.annex-reference-list li::before {
+  content: "\2192";
+  margin-right: 0.5rem;
+  color: var(--c-zinc);
+}
+
+.annex-reference-list a {
+  color: #1a1a1a;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(26, 26, 26, 0.3);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.annex-reference-list a:hover {
+  color: var(--c-redwood);
+  text-decoration-color: var(--c-redwood);
+}
+
+/* COLOPHON -------------------------------------------------- */
+.annex-footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(26, 26, 26, 0.25);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.annex-back {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.annex-back:hover {
+  color: var(--c-redwood);
+}
+
+.annex-copyright {
+  color: var(--c-zinc);
+}
+
+@media (max-width: 700px) {
+  .annex-plate {
+    margin: 1.5rem auto 4rem;
+    padding: 0 0.75rem;
+  }
+
+  .annex-sheet {
+    padding: 2.5rem 1.5rem;
+  }
+
+  /* Keep the masthead on one line: a wrapped wordmark leaves the plate
+     number baseline-aligned to the first line and reads as a misprint. */
+  .annex-wordmark {
+    font-size: 0.875rem;
+  }
+
+  .annex-marginalia {
+    font-size: 0.65rem;
+  }
+
+  .annex-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* A 200px thumbnail beside text leaves neither enough room on a phone. */
+  .annex-entry-link {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .annex-entry-frame {
+    flex-basis: auto;
+    width: 100%;
+    height: 160px;
+  }
+}
