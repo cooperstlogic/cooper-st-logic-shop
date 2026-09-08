@@ -2,9 +2,33 @@
   command = "npm run build"
   publish = "_site"
 
+# Applies to everything. The /assets/* blocks below override Cache-Control
+# only; these security headers still apply there.
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    Cache-Control = "public, max-age=31536000, immutable"
+    # HTML must revalidate. Netlify serves ETags, so this costs a 304, not a
+    # re-download. Never cache HTML "immutable": returning visitors get pinned
+    # to a stale page for the full max-age and a redeploy cannot dislodge it.
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Asset filenames carry no content hash (reset.css, cover.webp), so a long
+# immutable cache would serve old files after every edit. Short max-age plus
+# stale-while-revalidate keeps repeat views fast while updates land quickly.
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+# Images change far less often than CSS, and a briefly stale image is harmless.
+[[headers]]
+  for = "/assets/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"

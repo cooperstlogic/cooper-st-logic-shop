@@ -17,6 +17,12 @@ updates:
         update-types:
           - minor
           - patch
+      # Groups above only cover version updates. Without this, every advisory
+      # opens its own PR — the whole tree is build-time only, so batch them.
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"
 
   - package-ecosystem: github-actions
     directory: /
@@ -27,5 +33,9 @@ updates:
       prefix: chore(ci)
     groups:
       actions:
+        patterns:
+          - "*"
+      actions-security:
+        applies-to: security-updates
         patterns:
           - "*"
