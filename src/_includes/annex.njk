@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COOPER ST LOGIC SHOP | {{ title }}</title>
+
+  {# Unlisted by construction: annex pages are absent from navigation.json,
+     so nothing in the nav, the tabs or the table of contents points here.
+     This meta tag is the belt. The X-Robots-Tag header in netlify.toml is
+     the braces, and it is the only one of the two that reaches a bare PDF
+     or MP4, where a meta tag has nowhere to live. #}
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  {% if summary %}<meta name="description" content="{{ summary }}">{% endif %}
+
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon-light.svg" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon-dark.svg" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon-light.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/assets/css/workbench.css">
+</head>
+<body>
+
+  {# Supplies #inkBleed, used by the headings below. #}
+  {% include "filters.svg" %}
+
+  {# ============================================================
+     THE FOLD-OUT PLATE
+
+     Deliberately NOT base.njk. That layout derives everything —
+     which side the page sits on, which tabs stack left, which
+     neighbour renders beside it — from an id in navigation.json.
+     A page with no entry there resolves to currentId = 0, which
+     makes it a left page (0 % 2 == 0) paired with id 1, so it
+     would render silently and wrongly: your content on the left,
+     THE SHOP on the right, tabs stacked backwards, page numbers
+     blank. No error, just a broken spread.
+
+     So a plate is unbound. Same bench, same paper, same ink, no
+     spine and no fixed 800px height.
+     ============================================================ #}
+  <main class="annex-plate">
+    <article class="annex-sheet">
+
+      <header class="annex-header">
+        <a href="/" class="annex-wordmark">COOPER ST LOGIC SHOP</a>
+        <span class="annex-marginalia">{% if page.url != '/annex/' %}<a href="/annex/" class="annex-marginalia-link">ANNEX</a>{% else %}ANNEX{% endif %}{% if plateNo %} / {{ plateNo }}{% endif %}</span>
+      </header>
+
+      <h1 class="annex-title">{{ title }}</h1>
+      {% if summary %}<p class="annex-summary">{{ summary }}</p>{% endif %}
+
+      {% if video %}
+      <figure class="annex-media">
+        <video class="annex-video" controls preload="metadata" playsinline{% if poster %} poster="{{ poster }}"{% endif %}>
+          <source src="{{ video }}" type="{{ videoType or 'video/mp4' }}">
+          {% if captions %}<track kind="captions" src="{{ captions }}" srclang="en" label="English" default>{% endif %}
+          <p class="annex-fallback">
+            This browser will not play the file inline.
+            <a href="{{ video }}">Download it directly</a>.
+          </p>
+        </video>
+        {% if caption %}<figcaption class="annex-caption">{{ caption }}</figcaption>{% endif %}
+      </figure>
+      {% endif %}
+
+      {# A link, not an <iframe>. netlify.toml sets X-Frame-Options: DENY
+         site-wide, and DENY blocks framing even from the same origin — a
+         PDF preview would come back blank. Mobile Safari renders framed
+         PDFs badly regardless, so handing the file to the OS viewer is
+         both the working option and the better one. #}
+      {% if pdf %}
+      <a class="annex-doc" href="{{ pdf }}">
+        <svg class="annex-doc-mark" width="32" height="32" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M14 4 H40 L52 16 V60 H14 Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M40 4 V16 H52" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+        </svg>
+        <span class="annex-doc-text">
+          <strong>{{ pdfLabel or "Open the PDF" }}</strong>
+          {% if pdfMeta %}<small>{{ pdfMeta }}</small>{% endif %}
+        </span>
+      </a>
+      {% endif %}
+
+      {% if credit %}
+      <p class="annex-credit">{{ credit }}</p>
+      {% endif %}
+
+      <div class="annex-body{% if wide %} is-wide{% endif %}">
+        {{ content | safe }}
+      </div>
+
+      {# Provenance for material that lives somewhere else first. Every plate
+         built on a recording someone else published carries the original
+         alongside it — the excerpt is the exhibit, not the source. #}
+      {% if links %}
+      <section class="annex-references">
+        <h2 class="annex-references-title">REFERENCES</h2>
+        <ul class="annex-reference-list">
+          {% for link in links %}
+          <li>
+            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.label }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
+
+      <footer class="annex-footer">
+        <a href="/" class="annex-back">&#8592; COOPER ST LOGIC SHOP</a>
+        <span class="annex-copyright">&#169; 2026 Dylan Webster</span>
+      </footer>
+
+    </article>
+  </main>
+
+</body>
+</html>
