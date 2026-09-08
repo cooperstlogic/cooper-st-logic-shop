@@ -1153,6 +1153,30 @@ hr {
   margin: 2rem 0 0.5rem;
 }
 
+/* reset.css strips list markers site-wide, which is right for the nav and
+   the tabs and wrong for prose. A plate's body is the one place markdown
+   lists land, so put the marker and the indent back inside it only.
+
+   `:not([class])` is doing real work: the contents page renders its own
+   `.annex-contents` list through this same `.annex-body` wrapper, and a bare
+   `.annex-body ul` outranks that list's own `list-style: none`. Markdown
+   emits unclassed lists; every hand-written list here carries a class. */
+.annex-body ul:not([class]),
+.annex-body ol:not([class]) {
+  list-style: revert;
+  padding-left: 1.5rem;
+  margin: 0 0 1.25rem;
+}
+
+.annex-body ul:not([class]) li,
+.annex-body ol:not([class]) li {
+  margin-bottom: 0.5rem;
+}
+
+.annex-body li::marker {
+  color: rgba(26, 26, 26, 0.45);
+}
+
 .annex-body a {
   color: inherit;
   text-decoration: underline;
