@@ -804,6 +804,22 @@ hr {
   text-align: right;
 }
 
+/* Gutter arrows: only in single-page view.
+
+   PHYSICALISM: With both leaves on screen, the two arrows facing the gutter
+   point at pages the reader is already looking at - the left page's "next" is
+   the right page of the same spread, the right page's "prev" is the left page.
+   Following them reloads the same spread, so they read as broken. Above 1250px
+   only the outer arrows turn a leaf; below it, one page is visible at a time
+   and both of its arrows lead somewhere new. Hiding these also keeps swipe
+   navigation honest - clamp.js follows the first VISIBLE arrow. */
+@media (min-width: 1251px) {
+  .guide-page.left .footer-nav-arrow[aria-label="Next Page"],
+  .guide-page.right .footer-nav-arrow[aria-label="Previous Page"] {
+    display: none;
+  }
+}
+
 /* -----------------------------------------------------------
    RESPONSIVE: SINGLE PAGE VIEW (Tablet)
    

@@ -157,7 +157,7 @@ The C-icon is inline SVG with `stroke="currentColor"` so it inherits link color 
 
 #### Footer arrows and swipe
 
-The footer is a three-column grid: previous arrow and number, copyright, number and next arrow. An arrow renders only when a neighboring `id` exists. `clamp.js` maps horizontal swipes—over 50px horizontal, under 50px vertical, so scrolling never turns a page—onto the _visible_ footer arrows, so touch navigation obeys the same rules as the arrows and behaves correctly under the TOC overlay.
+The footer is a three-column grid: previous arrow and number, copyright, number and next arrow. An arrow renders only when a neighboring `id` exists. Above 1250px the two arrows facing the gutter—the left page's next, the right page's prev—are hidden: both leaves of that spread are already on screen, so following them reloads the same view. Only the outer arrows turn a leaf. Below 1250px one page is visible at a time and both of its arrows are shown. `clamp.js` maps horizontal swipes—over 50px horizontal, under 50px vertical, so scrolling never turns a page—onto the _visible_ footer arrows, so touch navigation obeys the same rules as the arrows and behaves correctly under the TOC overlay.
 
 Breakpoints are read with `window.matchMedia`, not `resize` listeners; the handler fires on breakpoint crossings only.
 
