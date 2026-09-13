@@ -27,6 +27,13 @@
       "tocLabel": "PERSONNEL",
       "id": 4,
       "number": "04"
+    },
+    {
+      "url": "/annex/",
+      "tabLabel": "ANNEX",
+      "tocLabel": "ANNEX",
+      "id": 5,
+      "number": "05"
     }
   ]
 }

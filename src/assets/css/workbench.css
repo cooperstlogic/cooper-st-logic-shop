@@ -587,6 +587,28 @@ hr {
   color: var(--c-zinc);
 }
 
+/* LIST OF PLATES (page 5, src/annex.md): the table of contents' sibling.
+   Same dashed rule and mono number at the right, plus a second line for the
+   medium and running time, which a contents page does not need and a list
+   of plates does. Grid rather than the TOC's flex so that line can sit under
+   the title without a wrapper element. */
+.plate-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 1rem;
+  row-gap: 0.25rem;
+  align-items: end;
+  margin-bottom: 1.25rem;
+}
+
+.plate-meta {
+  grid-column: 1 / -1;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--c-zinc);
+}
+
 /* -----------------------------------------------------------
    COMPONENTS: BOOKMARKS (Tabs)
    

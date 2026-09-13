@@ -33,6 +33,7 @@ function estimateContentHeight(markdownContent) {
   
   let inFrontMatter = false;
   let skipFrontMatter = false;
+  let inComment = false;
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -59,6 +60,17 @@ function estimateContentHeight(markdownContent) {
       continue;
     }
     
+    // HTML comments render nothing. Track them across lines so a wrapped
+    // comment is not counted as several paragraphs.
+    if (inComment) {
+      if (line.includes('-->')) inComment = false;
+      continue;
+    }
+    if (line.startsWith('<!--')) {
+      if (!line.includes('-->')) inComment = true;
+      continue;
+    }
+
     // Count different elements
     if (line.startsWith('# ')) {
       height += H1_HEIGHT;
@@ -69,9 +81,15 @@ function estimateContentHeight(markdownContent) {
     } else if (line.startsWith('<hr') || line.startsWith('---') && line.length >= 3) {
       height += HR_HEIGHT;
     } else if (line.length > 0) {
+      // Inline HTML is layout, not prose: measure the text a line carries,
+      // not its markup. A line that is only tags (<ul class="...">, </ul>)
+      // takes no line of its own.
+      const text = line.replace(/<[^>]*>/g, '').trim();
+      if (text.length === 0) continue;
+
       // Estimate paragraph height based on line length
       // Assuming ~80 characters per line at typical font size
-      const estimatedLines = Math.ceil(line.length / 80);
+      const estimatedLines = Math.ceil(text.length / 80);
       height += (estimatedLines * LINE_HEIGHT) + PARAGRAPH_SPACING;
     }
   }

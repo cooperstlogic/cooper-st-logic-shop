@@ -1,4 +1,3 @@
 {
-  "layout": "annex.njk",
-  "tags": "annex"
+  "layout": "annex.njk"
 }

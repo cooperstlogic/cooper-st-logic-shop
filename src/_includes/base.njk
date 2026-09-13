@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COOPER ST LOGIC SHOP | {{ title }}</title>
-  
+
+  {# Opt-in per page. A bound page that should stay out of the index (the
+     annex, page 5) sets `robots` in its front matter; everything else is
+     listed. netlify.toml carries the matching header for /annex/*. #}
+  {% if robots %}<meta name="robots" content="{{ robots }}">{% endif %}
+
   <!-- Favicons with dark mode detection -->
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon-light.svg" media="(prefers-color-scheme: light)">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon-dark.svg" media="(prefers-color-scheme: dark)">
