@@ -38,10 +38,12 @@ src/
 ├── _data/navigation.json # Single source of truth for pages, tabs, TOC
 ├── _includes/
 │   ├── base.njk          # The book: spread logic, tabs, headers, footers
+│   ├── annex.njk         # A fold-out plate (see 4.4)
 │   ├── nav.njk           # Table of contents
 │   └── filters.svg       # #inkBleed filter
 ├── assets/{css,img,js}   # Passthrough-copied verbatim
-└── *.md                  # Page content
+├── annex/*.md            # The plates; annex.json sets their layout
+└── *.md                  # Page content, including annex.md (page 5)
 _site/                    # Build output (gitignored)
 ```
 
@@ -73,7 +75,7 @@ Per item: `url`, `tabLabel` (bookmark tab), `tocLabel` (table of contents), `id`
 | ------ | ----------------- | ---------------------------------- |
 | (0, 1) | Table of contents | Shop                               |
 | (2, 3) | Inventory         | Fabrication                        |
-| (4, 5) | Personnel         | _unfilled — renders "coming soon"_ |
+| (4, 5) | Personnel         | Annex — the list of plates (4.4)   |
 
 There is no page 0; `/shop/` is special-cased to render the TOC on its left page.
 
@@ -99,7 +101,7 @@ The home page is the closed cover, modeled on the Whole Earth Catalog.
 
 We never squeeze two pages into a narrow viewport—that breaks the metaphor. We show one page at full scale, then let it recede.
 
-Below 900px the cover, the inner pages, and their stack leaves all share one pair of formulas and must stay in sync:
+Below 900px the cover, the inner pages, their stack leaves, and the fold-out plates (4.4) all share one pair of formulas and must stay in sync:
 
 ```css
 width: clamp(350px, calc(171.43px + 47.62vw), 600px); /* 600px @900 → 350px @375 */
@@ -107,6 +109,31 @@ height: clamp(467px, calc(228.57px + 63.49vw), 800px); /* 3:4 preserved */
 ```
 
 At the 375px floor the page reaches 350px, leaving the workbench visible at the margins. The book's transform transition is `0.6s cubic-bezier(0.25, 1, 0.5, 1)`.
+
+### 4.4 Fold-out Plates (The Annex)
+
+Some material—a recording, a poster—has no business being cropped to a leaf. A technical manual binds that in as a **fold-out plate**: a larger sheet folded to page size and tipped in at one page. Here that page is 5, ANNEX.
+
+**Page 5 is a leaf.** `src/annex.md` renders on `base.njk` like any other page: tab, TOC entry, spread (4, 5) facing PERSONNEL, and the 800px cap. It lists the plates in the TOC's own markup and rhythm—title and number, nothing else; plates carry their own captions and running times. The list is hand-written: `validate-content.js` reads page source line by line, so a generated list would leave page 5 unweighed.
+
+The binding limit here is not the 800px page but the phone-sized leaf (350 × 467px at the 375px floor, see 4.3), which holds about five list rows. A long title wraps and costs two. The validator does not model that—it weighs the desktop page and treats a row as one line of prose—so check page 5 in a narrow window before adding a plate. When it fills, shorten a list label (it need not match the plate's own title) or continue the list on page 6 by the rules in 4.1.
+
+**A plate is a sheet, not a leaf.** `src/annex/*.md` renders on `annex.njk`, and the sheet's physics follow from being a fold-out:
+
+| Viewport   | Sheet width      | Creases                                  |
+| ---------- | ---------------- | ---------------------------------------- |
+| ≥ 1251px   | 1200px (book)    | Down the middle at 600px; across every 800px |
+| 900–1250px | 600px (one leaf) | Across every 800px                       |
+| < 900px    | Fluid leaf (4.3) | Across every fluid page height           |
+
+- **Height runs to the content, by the panel.** There is no 800px cap—that is the point of a fold-out—but the paper is `paper-right.webp` tiled at one 600×800 leaf per panel, so the sheet grows the way a folded sheet grows. The tile's baked spine shading lands on the bound edge and again at the gutter fold; the tile seams sit under the creases. A sheet shorter than one panel is one panel, with the footer at the foot.
+- **Creases** are a `::before` under the content: a hair of shadow in, a 1px line, a shorter shadow out, painted with `repeating-linear-gradient` from `--panel-h`. Pasted plates (the video frame) are opaque and cover a crease; type sits over it the way ink does.
+- **Running heads and footer are the book's own.** `.guide-header` laid out as an open spread reads: contents link at each outer edge, the wordmark split across the fold with the gutter's 6rem between its halves. Below 1250px the right-hand group folds away and the header takes the left-page arrangement. The footer (`.guide-footer`, in flow) turns back to page 5 and carries the plate number where a page number would sit. CONTENTS on a plate is a plain link to `/shop/`; `clamp.js` is not loaded, because there is no overlay to flip to.
+- **The sheet does not end on a fold.** Its bottom edge falls wherever the content ends, mid-panel more often than not. Rounding up to whole panels needs a measurement CSS cannot make; it is left undone, deliberately.
+
+**Plates are unlisted, not private.** Page 5 sets `robots` in its front matter (a `base.njk` opt-in), `annex.njk` carries the same meta, and `netlify.toml` sends `X-Robots-Tag` for `/annex/*` and `/assets/docs/*`—the header reaches bare files, where a meta tag cannot. This is deliberately in place of a robots.txt `Disallow`, which would publish the very paths it hides. Note that a spread renders both leaves, so the plate titles appear in `/personnel/`'s HTML regardless.
+
+Plate URLs are their filenames under `/annex/`, and links to them have been sent out. Do not rename a plate.
 
 ---
 
@@ -214,7 +241,14 @@ Edit the relevant `src/*.md`. Prefer Markdown for structure; inline HTML only wh
 3. Mind the parity: an odd `id` lands the page on the right, an even `id` on the left, and it pairs with its neighbor. Adding to an unfilled spread completes it; adding past one starts a new spread.
 4. The TOC, bookmark tabs, spread pairing, and footer arrows all generate themselves.
 
-### SOP-03: Imagery
+### SOP-03: Adding a plate
+
+1. Create `src/annex/<slug>.md`. The directory's `annex.json` supplies the layout; front matter supplies `title`, `summary`, `plateNo` (`A-05`…), and one of `video` (+ `poster`, `caption`, `credit`, `links`) or `pdf` (+ `pdfLabel`, `pdfMeta`). Body copy is optional.
+2. Add a row to the list in `src/annex.md`—title and number—in plate order. The list label may be shorter than the plate's title.
+3. Run `npm run validate`, then check page 5 in a window under 400px wide: the phone leaf holds about five rows and the validator cannot see it (4.4). If it overflows, shorten a label or continue the list on a new page 6 (SOP-02); do not shrink the type.
+4. The slug is the URL. Pick it once.
+
+### SOP-04: Imagery
 
 Desaturate, threshold to high contrast, apply a halftone or dither, then save an optimized WebP into `src/assets/img/`.
 

@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Eleventy 3.x static site for COOPER ST LOGIC SHOP. No framework, no client-side
-router — one stylesheet, two layouts, five bound pages plus the annex.
+router — one stylesheet, two layouts, six bound pages plus the fold-out plates.
 
 Detailed documentation lives in [shop-manual.md](./shop-manual.md); read the
 relevant section before making structural or visual changes.
@@ -22,7 +22,8 @@ Netlify deploys `_site/` from `npm run build`.
 
 ```
 src/*.md          page content (front matter: layout: base.njk, title)
-src/annex/        unlisted plates (annex.json sets layout for the directory)
+src/annex.md      page 5, ANNEX — the hand-written list of plates
+src/annex/        the plates themselves (annex.json sets layout for the directory)
 src/_includes/    base.njk + annex.njk (layouts), nav.njk (TOC), filters.svg
 src/_data/        navigation.json — drives nav, tabs, and spread pairing
 src/assets/       passthrough-copied verbatim to _site/assets/
@@ -41,15 +42,27 @@ src/assets/docs/  PDFs served under a noindex header
   bookmark tab's vertical slot. Renumbering reshuffles the whole book.
 - Adding a page means: `src/<name>.md` + an entry in `navigation.json` with the
   next `id`/`number`. Nothing is auto-discovered.
-- **Annex plates are not book pages.** `src/annex/*.md` uses `annex.njk`, an
-  unbound sheet with no tabs, no spread and no 800px cap. Never point one at
-  `base.njk`: that layout derives everything from a `navigation.json` id, and a
-  page without an entry resolves to `currentId = 0`, rendering silently and
-  wrongly beside THE SHOP. Annex pages sit in a subdirectory so
-  `validate-content.js` (non-recursive over `src/`) leaves their height alone.
-  They are unlisted, not private — `netlify.toml` sends `X-Robots-Tag` for
-  `/annex/*` and `/assets/docs/*`, deliberately in place of a robots.txt
-  `Disallow`, which would publish the very paths it hides.
+- **The annex is a page; the plates are not.** `src/annex.md` is page 5, a
+  bound leaf on `base.njk` listing the plates. `src/annex/*.md` are the plates,
+  on `annex.njk`: fold-out sheets the width of the open book, creased at the
+  gutter and at every page height, with no tabs, no spread and no 800px cap.
+  Never point a plate at `base.njk`: that layout derives everything from a
+  `navigation.json` id, and a page without an entry resolves to
+  `currentId = 0`, rendering silently and wrongly beside THE SHOP. Plates sit
+  in a subdirectory so `validate-content.js` (non-recursive over `src/`) leaves
+  their height alone.
+- **Adding a plate means two places**, like adding a page: the file in
+  `src/annex/` and a row in `src/annex.md`'s list. The list is hand-written
+  so the validator can weigh page 5; nothing generates it. The real limit is
+  the phone leaf (~five rows; a wrapping title costs two), which the validator
+  does not model — check under 400px. URLs are the plate's filename under
+  `/annex/`, and links to them have been sent out — don't rename.
+- **The annex is unlisted, not private.** Page 5 sets `robots` in its front
+  matter (a `base.njk` opt-in), `annex.njk` carries the same meta, and
+  `netlify.toml` sends `X-Robots-Tag` for `/annex/*` and `/assets/docs/*` —
+  deliberately in place of a robots.txt `Disallow`, which would publish the
+  very paths it hides. Plate titles still appear in `/personnel/`'s HTML,
+  because a spread renders both leaves.
 - Use the tokens in `src/assets/css/variables.css` — especially the `--z-*`
   scale and `--tab-*` values — rather than raw z-indexes or magic offsets.
 

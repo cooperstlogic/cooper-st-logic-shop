@@ -36,10 +36,12 @@
 # ---------------------------------------------------------------------------
 # THE ANNEX
 #
-# Unlisted supplementary material — direct links handed out alongside a CV.
-# These pages are absent from navigation.json, so nothing on the site links
-# to them, but "unlinked" is not "unindexed": a URL that leaks into a browser
-# toolbar, a shared inbox or someone else's blogroll is fair game otherwise.
+# Supplementary material — direct links handed out alongside a CV. The
+# plates are bound in at page 5 (/annex/), so the book does link to them;
+# the intent is that search engines do not. Page 5 and every plate carry a
+# <meta name="robots"> to match (a `robots` front-matter key in base.njk,
+# hard-coded in annex.njk), and this header is the other half — it covers
+# the bare files too, where a <meta> tag has nowhere to live.
 #
 # X-Robots-Tag rather than a robots.txt Disallow, for two reasons:
 #   1. robots.txt is public, so listing /annex/ there advertises the exact
@@ -49,8 +51,6 @@
 #      page and never sees a noindex. A disallowed URL that gets linked from
 #      somewhere can still be indexed URL-only, off the strength of the link
 #      alone. The header is what actually removes a page from an index.
-#
-# The header also reaches bare files, where a <meta> tag has nowhere to live.
 # ---------------------------------------------------------------------------
 [[headers]]
   for = "/annex/*"
