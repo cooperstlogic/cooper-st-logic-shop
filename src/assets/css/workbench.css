@@ -585,28 +585,22 @@ hr {
   font-family: var(--font-mono);
   font-size: 0.9rem;
   color: var(--c-zinc);
+  /* A number never breaks, and a long label (the list of plates) wraps
+     before it can crowd one. */
+  white-space: nowrap;
+  margin-left: 1rem;
 }
 
-/* LIST OF PLATES (page 5, src/annex.md): the table of contents' sibling.
-   Same dashed rule and mono number at the right, plus a second line for the
-   medium and running time, which a contents page does not need and a list
-   of plates does. Grid rather than the TOC's flex so that line can sit under
-   the title without a wrapper element. */
-.plate-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  column-gap: 1rem;
-  row-gap: 0.25rem;
-  align-items: end;
-  margin-bottom: 1.25rem;
+/* The list of plates on page 5 (src/annex.md) is the same markup: a .toc-list
+   of .toc-item rows. It sits inside an <article>, where body links are
+   underlined; as the TOC's sibling it keeps the TOC's bare rows. */
+.guide-page article .toc-link {
+  text-decoration: none;
+  color: var(--c-carbon);
 }
 
-.plate-meta {
-  grid-column: 1 / -1;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.02em;
-  color: var(--c-zinc);
+.guide-page article .toc-link:hover {
+  color: var(--c-redwood);
 }
 
 /* -----------------------------------------------------------

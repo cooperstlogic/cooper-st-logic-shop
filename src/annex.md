@@ -9,20 +9,18 @@ robots: noindex, nofollow, noarchive, nosnippet
 
 ## ANNEX
 
-Odds and ends from outside the shop, bound in here as fold-out plates. Each unfolds to its own size.
+<!-- The table of contents' sibling, in the same markup and rhythm. Kept
+     to titles and numbers: the phone-sized leaf (350×467 at the 375px
+     floor) holds about five rows, and that, not the 800px page, is what
+     this list has to fit. Plates carry their own captions and running times.
 
-<!-- Hand-written, not generated: validate-content.js reads this file line by
-     line, so the list must be literal for the page height to be checked.
-     Adding a plate means a file in src/annex/ plus one entry here, the same
-     two-place rule as adding a page. Each entry is two source lines, title
-     then meta, so the estimate lands near the rendered height. -->
-<ul class="toc-list plate-list">
-<li class="toc-item plate-item"><a href="/annex/agbt-2025-software-roadmap/" class="toc-link">Software Roadmap at AGBT 2025</a><span class="toc-number">A-01</span>
-<span class="plate-meta">Video · AGBT 2025 · 13 min 52 sec</span></li>
-<li class="toc-item plate-item"><a href="/annex/xenium-launch-interview/" class="toc-link">Xenium Launch Interview</a><span class="toc-number">A-02</span>
-<span class="plate-meta">Video · BioTechTV · December 2023 · 7 min 12 sec</span></li>
-<li class="toc-item plate-item"><a href="/annex/single-cell-spatial-omics-poster/" class="toc-link">Democratizing single cell and spatial analysis with cloud infrastructure and agentic workflows</a><span class="toc-number">A-03</span>
-<span class="plate-meta">Poster · PDF · 36 × 44 in · 2.6 MB</span></li>
-<li class="toc-item plate-item"><a href="/annex/xenium-explorer-walkthrough/" class="toc-link">Xenium Explorer Walkthrough</a><span class="toc-number">A-04</span>
-<span class="plate-meta">Video · Xenium Explorer 2.0 · silent screen capture · 25 sec</span></li>
+     Hand-written, not generated, so validate-content.js can weigh it. Adding
+     a plate means a file in src/annex/ plus one line here, the same two-place
+     rule as adding a page. A list title may be shorter than the plate's own
+     (A-03 uses its pdfLabel); a row that wraps on a phone costs two rows. -->
+<ul class="toc-list">
+<li class="toc-item"><a href="/annex/agbt-2025-software-roadmap/" class="toc-link">Software Roadmap at AGBT 2025</a><span class="toc-number">A-01</span></li>
+<li class="toc-item"><a href="/annex/xenium-launch-interview/" class="toc-link">Xenium Launch Interview</a><span class="toc-number">A-02</span></li>
+<li class="toc-item"><a href="/annex/single-cell-spatial-omics-poster/" class="toc-link">Democratizing Single-Cell and Spatial Omics Analysis</a><span class="toc-number">A-03</span></li>
+<li class="toc-item"><a href="/annex/xenium-explorer-walkthrough/" class="toc-link">Xenium Explorer Walkthrough</a><span class="toc-number">A-04</span></li>
 </ul>
