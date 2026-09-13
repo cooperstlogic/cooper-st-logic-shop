@@ -31,6 +31,7 @@
   {# ============================================================
      THE FOLD-OUT PLATE
 
+     Bound in at page 5 (ANNEX, src/annex.md) and unfolded here.
      Deliberately NOT base.njk. That layout derives everything —
      which side the page sits on, which tabs stack left, which
      neighbour renders beside it — from an id in navigation.json.
@@ -40,15 +41,40 @@
      THE SHOP on the right, tabs stacked backwards, page numbers
      blank. No error, just a broken spread.
 
-     So a plate is unbound. Same bench, same paper, same ink, no
-     spine and no fixed 800px height.
+     So a plate is a sheet, not a leaf: the width of the open book,
+     creased at the gutter and at every page height, running to
+     whatever length its contents need. It borrows the book's
+     running heads and footer wholesale (.guide-header,
+     .guide-footer) so nothing on it is new to a reader who has
+     turned the pages either side.
      ============================================================ #}
   <main class="annex-plate">
     <article class="annex-sheet">
 
-      <header class="annex-header">
-        <a href="/" class="annex-wordmark">COOPER ST LOGIC SHOP</a>
-        <span class="annex-marginalia">{% if page.url != '/annex/' %}<a href="/annex/" class="annex-marginalia-link">ANNEX</a>{% else %}ANNEX{% endif %}{% if plateNo %} / {{ plateNo }}{% endif %}</span>
+      {# The open spread's two running heads on one sheet. CONTENTS is a
+         plain link here: clamp.js's in-place TOC flip belongs to a leaf,
+         and a plate has no overlay to flip to. The right-hand group folds
+         away with the second panel below 1250px. #}
+      <header class="guide-header annex-header">
+        <div class="header-contents-group">
+          <a href="/shop/" class="contents-link">
+            <svg class="contents-icon" width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="2" y="2" width="60" height="60" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M42 20 H 22 V 44 H 42" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="contents-label">CONTENTS</span>
+          </a>
+        </div>
+        <a href="/" class="guide-title annex-wordmark"><span>COOPER ST</span> <span>LOGIC SHOP</span></a>
+        <div class="header-contents-group">
+          <a href="/shop/" class="contents-link">
+            <span class="contents-label">CONTENTS</span>
+            <svg class="contents-icon" width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="2" y="2" width="60" height="60" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M42 20 H 22 V 44 H 42" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
       </header>
 
       <h1 class="annex-title">{{ title }}</h1>
@@ -90,9 +116,14 @@
       <p class="annex-credit">{{ credit }}</p>
       {% endif %}
 
-      <div class="annex-body{% if wide %} is-wide{% endif %}">
+      {# Only when there is body copy. The sheet is a flex column, where an
+         empty wrapper would hold its neighbours' margins apart instead of
+         letting them collapse. #}
+      {% if content | trim %}
+      <div class="annex-body">
         {{ content | safe }}
       </div>
+      {% endif %}
 
       {# Provenance for material that lives somewhere else first. Every plate
          built on a recording someone else published carries the original
@@ -110,9 +141,16 @@
       </section>
       {% endif %}
 
-      <footer class="annex-footer">
-        <a href="/" class="annex-back">&#8592; COOPER ST LOGIC SHOP</a>
-        <span class="annex-copyright">&#169; 2026 Dylan Webster</span>
+      {# The book's footer. The arrow turns back to page 5, where the plate
+         is bound; the plate number sits where a page number would. #}
+      <footer class="guide-footer annex-footer">
+        <span class="footer-page-num">
+          <a href="/annex/" class="footer-nav-arrow" aria-label="Back to the Annex, page 5">&#8592;</a> 5 <span class="annex-footer-word">ANNEX</span>
+        </span>
+        <span class="footer-copyright">&#169; 2026 Dylan Webster</span>
+        <span class="footer-page-num">
+          {% if plateNo %}<span class="annex-footer-word">PLATE</span> {{ plateNo }}{% endif %}
+        </span>
       </footer>
 
     </article>
