@@ -226,4 +226,4 @@ Source is GPL-3.0. Under GPLv3 §7 the name "COOPER ST LOGIC SHOP", `icon-c.svg`
 
 ---
 
-© 2026 Dylan Webster. Santa Cruz, California.
+© 2026 COOPER ST LOGIC SHOP. Santa Cruz, California.
