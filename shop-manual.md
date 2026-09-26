@@ -102,7 +102,11 @@ We never squeeze two pages into a narrow viewport—that breaks the metaphor. We
 Below 900px the cover, the inner pages, and their stack leaves all share one pair of formulas and must stay in sync:
 
 ```css
-width: clamp(350px, calc(171.43px + 47.62vw), 600px); /* 600px @900 → 350px @375 */
+width: clamp(
+  350px,
+  calc(171.43px + 47.62vw),
+  600px
+); /* 600px @900 → 350px @375 */
 height: clamp(467px, calc(228.57px + 63.49vw), 800px); /* 3:4 preserved */
 ```
 
