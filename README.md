@@ -33,4 +33,4 @@ If you fork this repository or redistribute this code, you **must remove** the i
 
 
 Santa Cruz, California  
-© 2026 Dylan Webster.
+© 2026 COOPER ST LOGIC SHOP.
