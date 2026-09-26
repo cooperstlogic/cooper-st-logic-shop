@@ -7,9 +7,9 @@
    ----------------------------------------------------------- */
 :root {
   /* Wood Palette */
-  --c-wood-base: #5D4037;
-  --c-wood-shadow: #3E2723;
-  
+  --c-wood-base: #5d4037;
+  --c-wood-shadow: #3e2723;
+
   /* Textures: the workbench background is deliberately NOT a token.
      A working WebP fallback needs two competing `background-image`
      declarations (see `body`), and var() would defeat that — a declaration
@@ -25,7 +25,7 @@
   --page-width: 600px;
   --page-height: 800px;
   --book-width: 1200px; /* Two pages side by side when open */
-  
+
   /* Cover Typography */
   --c-cover-text: #fdebc5; /* Warm vanilla off-white for dark cover background */
 }
@@ -56,9 +56,9 @@ body {
      'scroll' attachment means it stays with the element (body), so as you scroll down, 
      you see lower parts of the image (scanning down the bench).
   */
-  background-size: 1920px auto; 
-  background-attachment: scroll; 
-  
+  background-size: 1920px auto;
+  background-attachment: scroll;
+
   color: var(--c-carbon);
   font-family: var(--font-manual);
   min-height: 100vh;
@@ -93,20 +93,26 @@ body {
   transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   /* Simple entry animation */
   animation: settleBook 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  
+
   /* Physical depth: Book sitting on the workbench surface
      - First shadow: Soft contact shadow directly under the book
      - Second shadow: Larger diffused shadow for ambient depth
      - Third shadow: Subtle edge definition */
-  box-shadow: 
+  box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.15),
     0 8px 24px rgba(0, 0, 0, 0.2),
     0 16px 48px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes settleBook {
-  from { transform: translateY(10px) rotateX(2deg); opacity: 0; }
-  to { transform: translateY(0) rotateX(0); opacity: 1; }
+  from {
+    transform: translateY(10px) rotateX(2deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) rotateX(0);
+    opacity: 1;
+  }
 }
 
 /* -----------------------------------------------------------
@@ -133,13 +139,14 @@ body {
   z-index: 2;
 }
 
-
 /* -----------------------------------------------------------
    THE PHYSICAL STACK (Behind the Pages)
    ----------------------------------------------------------- */
 .page-stack {
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: var(--page-height); /* Fixed stack height matching page */
   z-index: -1; /* Behind the main content page */
   pointer-events: none;
@@ -147,18 +154,22 @@ body {
 
 .stack-leaf {
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: var(--page-height); /* Fixed leaf height matching page */
   background-color: #d8cdb0;
   border: 1px solid rgba(139, 119, 101, 0.1); /* Very subtle edge */
-  
+
   /* Texture: Uses baked paper textures via pseudo-element */
 }
 
 .stack-leaf::before {
   content: "";
   position: absolute;
-  top: 0; right: 0; left: 0;
+  top: 0;
+  right: 0;
+  left: 0;
   height: var(--page-height); /* Fixed texture height */
   background-size: cover;
   background-position: center;
@@ -181,12 +192,30 @@ body {
 }
 
 /* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
-.page-wrapper.left .layer-1 { transform: rotate(-0.05deg) translateY(0px); z-index: calc(var(--z-stack) - 1); }
-.page-wrapper.left .layer-2 { transform: rotate(-0.15deg) translateY(0.5px); z-index: calc(var(--z-stack) - 2); opacity: 0.98; }
-.page-wrapper.left .layer-3 { transform: rotate(-0.08deg) translateY(1.0px); z-index: calc(var(--z-stack) - 3); opacity: 0.95; }
-.page-wrapper.left .layer-4 { transform: rotate(-0.22deg) translateY(1.5px); z-index: calc(var(--z-stack) - 4); opacity: 0.90; }
-.page-wrapper.left .layer-5 { transform: rotate(-0.12deg) translateY(2.0px); z-index: calc(var(--z-stack) - 5); opacity: 0.85; }
-
+.page-wrapper.left .layer-1 {
+  transform: rotate(-0.05deg) translateY(0px);
+  z-index: calc(var(--z-stack) - 1);
+}
+.page-wrapper.left .layer-2 {
+  transform: rotate(-0.15deg) translateY(0.5px);
+  z-index: calc(var(--z-stack) - 2);
+  opacity: 0.98;
+}
+.page-wrapper.left .layer-3 {
+  transform: rotate(-0.08deg) translateY(1px);
+  z-index: calc(var(--z-stack) - 3);
+  opacity: 0.95;
+}
+.page-wrapper.left .layer-4 {
+  transform: rotate(-0.22deg) translateY(1.5px);
+  z-index: calc(var(--z-stack) - 4);
+  opacity: 0.9;
+}
+.page-wrapper.left .layer-5 {
+  transform: rotate(-0.12deg) translateY(2px);
+  z-index: calc(var(--z-stack) - 5);
+  opacity: 0.85;
+}
 
 /* RIGHT STACK DYNAMICS */
 .page-wrapper.right .stack-leaf {
@@ -203,12 +232,30 @@ body {
 }
 
 /* RANDOMIZED MICRO-IMPERFECTIONS for natural binding look */
-.page-wrapper.right .layer-1 { transform: rotate(0.08deg) translateY(0px); z-index: calc(var(--z-stack) - 1); }
-.page-wrapper.right .layer-2 { transform: rotate(0.18deg) translateY(0.5px); z-index: calc(var(--z-stack) - 2); opacity: 0.98; }
-.page-wrapper.right .layer-3 { transform: rotate(0.04deg) translateY(1.0px); z-index: calc(var(--z-stack) - 3); opacity: 0.95; }
-.page-wrapper.right .layer-4 { transform: rotate(0.25deg) translateY(1.5px); z-index: calc(var(--z-stack) - 4); opacity: 0.90; }
-.page-wrapper.right .layer-5 { transform: rotate(0.12deg) translateY(2.0px); z-index: calc(var(--z-stack) - 5); opacity: 0.85; }
-
+.page-wrapper.right .layer-1 {
+  transform: rotate(0.08deg) translateY(0px);
+  z-index: calc(var(--z-stack) - 1);
+}
+.page-wrapper.right .layer-2 {
+  transform: rotate(0.18deg) translateY(0.5px);
+  z-index: calc(var(--z-stack) - 2);
+  opacity: 0.98;
+}
+.page-wrapper.right .layer-3 {
+  transform: rotate(0.04deg) translateY(1px);
+  z-index: calc(var(--z-stack) - 3);
+  opacity: 0.95;
+}
+.page-wrapper.right .layer-4 {
+  transform: rotate(0.25deg) translateY(1.5px);
+  z-index: calc(var(--z-stack) - 4);
+  opacity: 0.9;
+}
+.page-wrapper.right .layer-5 {
+  transform: rotate(0.12deg) translateY(2px);
+  z-index: calc(var(--z-stack) - 5);
+  opacity: 0.85;
+}
 
 /* -----------------------------------------------------------
    THE MAIN CONTENT PAGE (Top Layer)
@@ -218,12 +265,12 @@ body {
   max-height: var(--page-height); /* Fixed height - paper doesn't grow */
   padding: 4rem 3rem;
   position: relative;
-  width: 100%; 
+  width: 100%;
   box-sizing: border-box;
   background-color: #d8cdb0;
   z-index: var(--z-page); /* Top of stack */
   overflow: hidden; /* Clip content that exceeds paper bounds */
-  
+
   /* Subtle shadow for page lift above the stack */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
@@ -241,7 +288,9 @@ body {
 .guide-page::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: var(--page-height); /* Fixed paper height - doesn't stretch */
   z-index: -1;
   background-position: center;
@@ -250,39 +299,40 @@ body {
   /* No filter here - texture is baked into the image */
 }
 
-
 /* Left Page Specifics */
 .guide-page.left {
-  border-right: none; 
+  border-right: none;
   /* Left Page Box Shadow: Left, Top, Bottom ONLY. No Right (Spine) Shadow */
-  box-shadow: -1px 1px 2px rgba(0,0,0,0.1);
+  box-shadow: -1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .guide-page.left::before {
   /* Spine Handling: Clip the RIGHT edge (inner) to be straight */
-  clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%); 
-  
+  clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%);
+
   /* Baked texture: paper-left.webp mirrored for left page (spine shadow falls right) */
   background-image: url("../img/paper-left.webp");
-  transform: scaleX(-1); /* Mirror the texture so spine shading falls toward center */
-  
-  right: -2px; 
+  transform: scaleX(
+    -1
+  ); /* Mirror the texture so spine shading falls toward center */
+
+  right: -2px;
 }
 
 /* Right Page Specifics */
 .guide-page.right {
   border-left: none;
   /* Right Page Box Shadow: Right, Top, Bottom ONLY. No Left (Spine) Shadow */
-  box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .guide-page.right::before {
   /* Spine Handling: Clip the LEFT edge (inner) to be straight */
   clip-path: polygon(0% -5%, 100% -5%, 100% 105%, 0% 105%);
-  
+
   /* Baked texture: paper-right.webp (spine shadow falls left toward binding) */
   background-image: url("../img/paper-right.webp");
-  
+
   left: -2px;
 }
 
@@ -297,7 +347,7 @@ body {
 
 .field-guide-container {
   /* Closed width = half of open width (approx) */
-  max-width: 600px; 
+  max-width: 600px;
 }
 
 /* COVER STATE (Home Page): Use cover.webp for the closed book cover
@@ -336,7 +386,7 @@ body:not([data-state="open"]) .guide-page.right .guide-header {
   right: 0;
   bottom: 0;
   z-index: calc(var(--z-page) + 1);
-  
+
   /* Hidden by default - will only show in single-page flip mode */
   display: none;
   pointer-events: none;
@@ -363,19 +413,19 @@ body:not([data-state="open"]) .guide-page.right .guide-header {
   .toc-overlay {
     display: block;
   }
-  
+
   /* Simple fade transition */
   .page-content,
   .toc-overlay {
     transition: opacity 0.2s ease;
   }
-  
+
   /* When showing TOC: hide content, show TOC */
   body[data-state="open"][data-flip="toc"] .page-content {
     opacity: 0;
     pointer-events: none;
   }
-  
+
   body[data-state="open"][data-flip="toc"] .toc-overlay {
     opacity: 1;
     pointer-events: auto;
@@ -427,12 +477,13 @@ body:not([data-state="open"]) .guide-page.right hr {
   font-family: var(--font-signage);
   font-weight: 800;
   font-optical-sizing: auto;
-  font-variation-settings: 'WONK' 1, 'SOFT' 100;
+  font-variation-settings:
+    "WONK" 1,
+    "SOFT" 100;
   color: var(--c-cover-text);
   mix-blend-mode: screen;
   filter: url(#inkBleed);
 }
-
 
 /* Open State: Show the left page & expand container */
 body[data-state="open"] .page-wrapper.left {
@@ -460,7 +511,6 @@ body[data-state="open"] .field-guide-container {
 
 /* Open State: Right page uses paper-right.webp with baked-in spine shadow (no override needed) */
 
-
 /* -----------------------------------------------------------
    INK SIMULATION (Performance-Optimized)
    
@@ -477,16 +527,18 @@ body[data-state="open"] .field-guide-container {
    ----------------------------------------------------------- */
 
 /* HEADINGS: Full ink treatment (filter + blend mode) */
-.guide-page h1, 
+.guide-page h1,
 .guide-page h2,
 .guide-header {
   font-family: var(--font-signage);
   font-weight: 800;
   font-optical-sizing: auto;
-  font-variation-settings: 'WONK' 1, 'SOFT' 100;
+  font-variation-settings:
+    "WONK" 1,
+    "SOFT" 100;
   mix-blend-mode: multiply;
-  color: #1a1a1a; 
-  filter: url(#inkBleed); 
+  color: #1a1a1a;
+  filter: url(#inkBleed);
 }
 
 /* Default heading sizes (desktop) */
@@ -511,12 +563,12 @@ body[data-state="open"] .field-guide-container {
 }
 
 /* BODY TEXT: Simulated ink via color/opacity (no filter, no blend mode) */
-.guide-page p, 
-.guide-page h3, 
-.guide-page h4, 
-.guide-page h5, 
-.guide-page h6, 
-.guide-page li, 
+.guide-page p,
+.guide-page h3,
+.guide-page h4,
+.guide-page h5,
+.guide-page h6,
+.guide-page li,
 .guide-page blockquote,
 .guide-page pre,
 .guide-page code,
@@ -541,8 +593,10 @@ hr {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(26, 26, 26, 0.2); 
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  text-decoration-color: rgba(26, 26, 26, 0.2);
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
 }
 
 .guide-page article a:hover {
@@ -607,7 +661,7 @@ hr {
   height: var(--tab-depth);
   background-color: #d8cdb0; /* Match page color - tabs are part of the paper */
   border: 1px solid rgba(139, 119, 101, 0.3);
-  box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -622,7 +676,7 @@ hr {
      --z-tab: Tabs sit between stack and page
      --z-stack: Stack leaves behind everything
   */
-  z-index: var(--z-tab); 
+  z-index: var(--z-tab);
   transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
   text-decoration: none;
   font-weight: 500; /* 400 and 500 are the loaded Plex Mono weights — no faux bold */
@@ -680,7 +734,9 @@ hr {
   font-weight: 800;
   text-transform: uppercase;
   font-optical-sizing: auto;
-  font-variation-settings: 'WONK' 1, 'SOFT' 100;
+  font-variation-settings:
+    "WONK" 1,
+    "SOFT" 100;
 }
 
 /* -----------------------------------------------------------
@@ -752,7 +808,7 @@ hr {
 
 .guide-footer {
   position: absolute;
-  bottom: 1rem; 
+  bottom: 1rem;
   left: 3rem;
   right: 3rem;
   padding-top: 1rem;
@@ -782,7 +838,9 @@ hr {
   text-decoration: none;
   color: inherit;
   opacity: 0.7; /* Increased from 0.4 */
-  transition: opacity 0.2s ease, color 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
   padding: 0 0.25rem;
   display: inline-block;
 }
@@ -838,17 +896,17 @@ hr {
   body[data-state="open"] .page-wrapper:not(.is-primary) {
     display: none !important;
   }
-  
+
   /* Hide bookmark tabs - they'd stick out awkwardly in single page view */
   body[data-state="open"] .bookmark-tab {
     display: none;
   }
-  
+
   /* Container sizes for single page (same as cover: 600px) */
   body[data-state="open"] .field-guide-container {
     max-width: var(--page-width);
   }
-  
+
   /* Center the book in the viewport */
   body[data-state="open"] .field-guide-book {
     justify-content: center;
@@ -981,56 +1039,56 @@ hr {
      FLUID TYPOGRAPHY: Smooth scaling from 900px down to 375px
      Using clamp() for seamless responsive text sizing
      ----------------------------------------------------------- */
-  
+
   /* Main headings: h1 scales from 3rem (48px) to 2rem (32px) */
   .guide-page h1 {
     font-size: clamp(2rem, 0.857rem + 2.86vw, 3rem);
   }
-  
+
   /* Secondary headings: h2 scales from 2rem (32px) to 1.5rem (24px) */
   .guide-page h2 {
     font-size: clamp(1.5rem, 1.071rem + 1.07vw, 2rem);
   }
-  
+
   /* Tertiary headings: h3 scales from 1.5rem (24px) to 1.125rem (18px) */
   .guide-page h3 {
-    font-size: clamp(1.125rem, 0.804rem + 0.80vw, 1.5rem);
+    font-size: clamp(1.125rem, 0.804rem + 0.8vw, 1.5rem);
   }
-  
+
   /* Smaller headings: h4, h5, h6 scale from 1.25rem to 1rem */
   .guide-page h4,
   .guide-page h5,
   .guide-page h6 {
     font-size: clamp(1rem, 0.714rem + 0.71vw, 1.25rem);
   }
-  
+
   /* Header title: scales from 1.5rem to 1.125rem */
   .guide-title {
-    font-size: clamp(1.125rem, 0.804rem + 0.80vw, 1.5rem);
+    font-size: clamp(1.125rem, 0.804rem + 0.8vw, 1.5rem);
   }
-  
+
   /* Body text: scales from 1rem to 0.9rem */
   .guide-page p,
   .guide-page li,
   .guide-page blockquote {
     font-size: clamp(0.9rem, 0.771rem + 0.32vw, 1rem);
   }
-  
+
   /* TOC links: scales from 1.1rem to 0.95rem */
   .toc-link {
     font-size: clamp(0.95rem, 0.821rem + 0.32vw, 1.1rem);
   }
-  
+
   /* TOC numbers: scales from 0.9rem to 0.8rem */
   .toc-number {
     font-size: clamp(0.8rem, 0.729rem + 0.18vw, 0.9rem);
   }
-  
+
   /* Contents label: scales from 0.65rem to 0.55rem */
   .contents-label {
     font-size: clamp(0.55rem, 0.479rem + 0.18vw, 0.65rem);
   }
-  
+
   /* Contents icon: scales from 28px to 22px */
   .contents-icon {
     width: clamp(22px, 17.714px + 1.07vw, 28px);
@@ -1098,7 +1156,9 @@ hr {
   font-family: var(--font-signage);
   font-weight: 800;
   font-optical-sizing: auto;
-  font-variation-settings: "WONK" 1, "SOFT" 100;
+  font-variation-settings:
+    "WONK" 1,
+    "SOFT" 100;
   font-size: 1.125rem;
   letter-spacing: 0.02em;
   color: #1a1a1a;
@@ -1119,7 +1179,9 @@ hr {
   font-family: var(--font-signage);
   font-weight: 800;
   font-optical-sizing: auto;
-  font-variation-settings: "WONK" 1, "SOFT" 100;
+  font-variation-settings:
+    "WONK" 1,
+    "SOFT" 100;
   mix-blend-mode: multiply;
   color: #1a1a1a;
   filter: url(#inkBleed);
@@ -1199,7 +1261,9 @@ hr {
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   text-decoration-color: rgba(26, 26, 26, 0.3);
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
 }
 
 .annex-body a:hover {
@@ -1249,7 +1313,9 @@ hr {
   background: rgba(255, 255, 255, 0.18);
   color: #1a1a1a;
   text-decoration: none;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .annex-doc:hover {
@@ -1362,7 +1428,9 @@ hr {
   font-family: var(--font-signage);
   font-weight: 800;
   font-optical-sizing: auto;
-  font-variation-settings: "WONK" 1, "SOFT" 100;
+  font-variation-settings:
+    "WONK" 1,
+    "SOFT" 100;
   font-size: 1.4rem;
   line-height: 1.2;
 }
@@ -1437,7 +1505,9 @@ hr {
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   text-decoration-color: rgba(26, 26, 26, 0.3);
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
 }
 
 .annex-reference-list a:hover {

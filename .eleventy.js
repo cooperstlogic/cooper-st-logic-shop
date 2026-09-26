@@ -18,8 +18,10 @@ module.exports = function (eleventyConfig) {
       .getFilteredByTag("annex")
       .filter((item) => item.url !== "/annex/")
       .sort((a, b) =>
-        String(a.data.plateNo || "").localeCompare(String(b.data.plateNo || ""))
-      )
+        String(a.data.plateNo || "").localeCompare(
+          String(b.data.plateNo || ""),
+        ),
+      ),
   );
 
   return {
@@ -27,7 +29,7 @@ module.exports = function (eleventyConfig) {
       input: "src",
       output: "_site",
       includes: "_includes",
-      data: "_data"
-    }
+      data: "_data",
+    },
   };
 };

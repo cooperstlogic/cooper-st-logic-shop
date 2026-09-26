@@ -81,28 +81,31 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleSwipe() {
     const deltaX = touchEndX - touchStartX;
     const deltaY = touchEndY - touchStartY;
-    
+
     // Thresholds:
     // 1. Min Horizontal Swipe: > 50px (prevents accidental taps)
     // 2. Max Vertical Variance: < 50px (prevents triggering during scrolling)
     if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 50) {
-      
       // Helper to find the first VISIBLE arrow
       const findVisibleArrow = (selector) => {
         const arrows = Array.from(document.querySelectorAll(selector));
-        return arrows.find(arrow => arrow.offsetParent !== null); // offsetParent is null if hidden
+        return arrows.find((arrow) => arrow.offsetParent !== null); // offsetParent is null if hidden
       };
 
       if (deltaX < 0) {
         // SWIPE LEFT -> NEXT PAGE
-        const nextLink = findVisibleArrow('.footer-nav-arrow[aria-label="Next Page"]');
-        if (nextLink) window.location.href = nextLink.getAttribute('href');
-      } 
-      
+        const nextLink = findVisibleArrow(
+          '.footer-nav-arrow[aria-label="Next Page"]',
+        );
+        if (nextLink) window.location.href = nextLink.getAttribute("href");
+      }
+
       if (deltaX > 0) {
         // SWIPE RIGHT -> PREVIOUS PAGE
-        const prevLink = findVisibleArrow('.footer-nav-arrow[aria-label="Previous Page"]');
-        if (prevLink) window.location.href = prevLink.getAttribute('href');
+        const prevLink = findVisibleArrow(
+          '.footer-nav-arrow[aria-label="Previous Page"]',
+        );
+        if (prevLink) window.location.href = prevLink.getAttribute("href");
       }
     }
   }
