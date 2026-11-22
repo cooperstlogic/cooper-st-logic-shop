@@ -17,8 +17,8 @@
     "node": ">=22"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^3.1.6",
-    "prettier": "^3.9.8",
+    "@11ty/eleventy": "^3.1.7",
+    "prettier": "^3.9.10",
     "htmlhint": "^1.9.2"
   }
 }
