@@ -1,6 +1,5 @@
-/* IMPORT DEPENDENCIES */
-@import "variables.css";
-@import "reset.css";
+/* DEPENDENCIES: variables.css and reset.css are linked before this file in
+   base.njk (not @import), so each carries its own cache-busting version. */
 
 /* -----------------------------------------------------------
    5.1 PROTOCOL A: THE WORKBENCH (Warm Wood)
