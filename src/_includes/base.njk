@@ -14,7 +14,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="/assets/css/workbench.css">
+  {# Linked individually (not @import) so each file carries its own version. #}
+  <link rel="stylesheet" href="{{ '/assets/css/variables.css' | versioned }}">
+  <link rel="stylesheet" href="{{ '/assets/css/reset.css' | versioned }}">
+  <link rel="stylesheet" href="{{ '/assets/css/workbench.css' | versioned }}">
 </head>
 <body {% if page.url != '/' %}data-state="open"{% endif %}>
 
@@ -331,6 +334,6 @@
     </div>
   </main>
   
-  <script src="/assets/js/clamp.js"></script>
+  <script src="{{ '/assets/js/clamp.js' | versioned }}"></script>
 </body>
 </html>

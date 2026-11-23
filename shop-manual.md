@@ -199,7 +199,7 @@ Paper has fixed dimensions, so content must fit:
 
 ## 7.0 SHIPPING
 
-Netlify runs `npm run build` and publishes `_site`. `netlify.toml` sets `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and tiered caching: HTML revalidates on every request, CSS and JS cache for an hour and images for a week, both with `stale-while-revalidate`. Nothing is cached `immutable`, since asset filenames carry no content hash. It also 301s the retired `/annex/*` paths to `/fabrication/`, so links handed out before the annex was retired still land on a live page. The plates themselves were retired, not moved.
+Netlify runs `npm run build` and publishes `_site`. `netlify.toml` sets `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and tiered caching: HTML revalidates on every request, CSS and JS cache for an hour and images for a week, both with `stale-while-revalidate`. Nothing is cached `immutable`. CSS and JS links in `base.njk` go through the `versioned` filter (`.eleventy.js`), which appends `?v=` plus a hash of the file's contents, so a deploy that changes a stylesheet or script hands every cache (Cloudflare, browsers) a new URL; the max-age only governs unchanged files. Images are not versioned. It also 301s the retired `/annex/*` paths to `/fabrication/`, so links handed out before the annex was retired still land on a live page. The plates themselves were retired, not moved.
 
 The Node version is unpinned—no `.nvmrc`, no `engines`—so Netlify uses its own default, which can drift from CI's Node 22.
 

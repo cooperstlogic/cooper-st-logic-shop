@@ -14,9 +14,11 @@
     # to a stale page for the full max-age and a redeploy cannot dislodge it.
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Asset filenames carry no content hash (reset.css, cover.webp), so a long
-# immutable cache would serve old files after every edit. Short max-age plus
-# stale-while-revalidate keeps repeat views fast while updates land quickly.
+# Asset filenames carry no content hash (cover.webp), so a long immutable
+# cache would serve old files after every edit. CSS/JS links add ?v=<hash>
+# (the `versioned` filter), so edits to those land on a fresh URL anyway.
+# Short max-age plus stale-while-revalidate keeps repeat views fast while
+# updates land quickly.
 [[headers]]
   for = "/assets/css/*"
   [headers.values]
