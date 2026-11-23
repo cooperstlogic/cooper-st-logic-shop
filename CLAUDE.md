@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Eleventy 3.x static site for COOPER ST LOGIC SHOP. No framework, no client-side
-router — one stylesheet, two layouts, five bound pages plus the annex.
+router — one stylesheet, one layout, five bound pages.
 
 Detailed documentation lives in [shop-manual.md](./shop-manual.md); read the
 relevant section before making structural or visual changes.
@@ -22,11 +22,9 @@ Netlify deploys `_site/` from `npm run build`.
 
 ```
 src/*.md          page content (front matter: layout: base.njk, title)
-src/annex/        unlisted plates (annex.json sets layout for the directory)
-src/_includes/    base.njk + annex.njk (layouts), nav.njk (TOC), filters.svg
+src/_includes/    base.njk (layout), nav.njk (TOC), filters.svg
 src/_data/        navigation.json — drives nav, tabs, and spread pairing
 src/assets/       passthrough-copied verbatim to _site/assets/
-src/assets/docs/  PDFs served under a noindex header
 ```
 
 ## Things that will bite you
@@ -41,15 +39,12 @@ src/assets/docs/  PDFs served under a noindex header
   bookmark tab's vertical slot. Renumbering reshuffles the whole book.
 - Adding a page means: `src/<name>.md` + an entry in `navigation.json` with the
   next `id`/`number`. Nothing is auto-discovered.
-- **Annex plates are not book pages.** `src/annex/*.md` uses `annex.njk`, an
-  unbound sheet with no tabs, no spread and no 800px cap. Never point one at
-  `base.njk`: that layout derives everything from a `navigation.json` id, and a
-  page without an entry resolves to `currentId = 0`, rendering silently and
-  wrongly beside THE SHOP. Annex pages sit in a subdirectory so
-  `validate-content.js` (non-recursive over `src/`) leaves their height alone.
-  They are unlisted, not private — `netlify.toml` sends `X-Robots-Tag` for
-  `/annex/*` and `/assets/docs/*`, deliberately in place of a robots.txt
-  `Disallow`, which would publish the very paths it hides.
+- **Every page is a bound page.** There are no loose sheets, unlisted pages
+  or alternate layouts; anything worth showing goes on a page in the book.
+  `base.njk` derives everything from a `navigation.json` id, and a page
+  without an entry resolves to `currentId = 0`, rendering silently and
+  wrongly beside THE SHOP. `/annex/*` is retired and 301s to `/fabrication/`
+  via `netlify.toml`.
 - Use the tokens in `src/assets/css/variables.css` — especially the `--z-*`
   scale and `--tab-*` values — rather than raw z-indexes or magic offsets.
 

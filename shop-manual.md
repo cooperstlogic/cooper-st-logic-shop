@@ -199,7 +199,7 @@ Paper has fixed dimensions, so content must fit:
 
 ## 7.0 SHIPPING
 
-Netlify runs `npm run build` and publishes `_site`. `netlify.toml` sets `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and long-lived immutable caching.
+Netlify runs `npm run build` and publishes `_site`. `netlify.toml` sets `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and long-lived immutable caching. It also 301s the retired `/annex/*` paths to `/fabrication/`, so links handed out before the book absorbed them still land.
 
 The Node version is unpinned—no `.nvmrc`, no `engines`—so Netlify uses its own default, which can drift from CI's Node 22.
 
