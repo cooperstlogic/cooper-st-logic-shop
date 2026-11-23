@@ -33,8 +33,11 @@
   [headers.values]
     Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
 
-# The book has no loose sheets. Links once handed out to /annex/ land on the
-# page that now carries the same work.
+# The book has no loose sheets. The annex plates (talk recordings, a poster)
+# were retired, not moved: no page carries them. Links once handed out to
+# /annex/ land on Fabrication, which names the day job behind the shop.
+# 301 is deliberate and browsers cache it indefinitely, so reviving an /annex/
+# path later will not reach anyone who already followed one of these links.
 [[redirects]]
   from = "/annex"
   to = "/fabrication/"
