@@ -164,7 +164,7 @@
               </a>
             </div>
             <a href="/" class="guide-title">
-              COOPER ST
+              COOPER ST<span class="title-full-only"> LOGIC SHOP</span>
             </a>
           </header>
           {% include "nav.njk" %}
@@ -188,7 +188,7 @@
               </a>
             </div>
             <a href="/" class="guide-title">
-              COOPER ST
+              COOPER ST<span class="title-full-only"> LOGIC SHOP</span>
             </a>
           </header>
   
@@ -208,9 +208,9 @@
             </article>
           {% else %}
             {# FALLBACK: No paired content available #}
-            <div class="pending-content">
-               (Field notes for this section are pending...)
-            </div>
+            {# A real manual's convention for an unprinted leaf. It reads as
+               the book, not as a site with an empty slot. #}
+            <p class="pending-content">THIS PAGE INTENTIONALLY LEFT BLANK</p>
           {% endif %}
 
           <div class="guide-footer">
@@ -263,7 +263,7 @@
               </a>
             </div>
             <a href="/" class="guide-title">
-              COOPER ST
+              COOPER ST<span class="title-full-only"> LOGIC SHOP</span>
             </a>
           </header>
           {% include "nav.njk" %}
@@ -279,7 +279,7 @@
           <!-- Inner page Header (Title) -->
           <header class="guide-header">
             <a href="/" class="guide-title">
-              LOGIC SHOP
+              <span class="title-full-only">COOPER ST </span>LOGIC SHOP
             </a>
             <div class="header-contents-group">
               <a href="#" class="contents-link" data-contents-nav>
@@ -304,9 +304,9 @@
             </article>
           {% else %}
             {# FALLBACK: No paired content available #}
-            <div class="pending-content">
-               (Next section coming soon...)
-            </div>
+            {# A real manual's convention for an unprinted leaf. It reads as
+               the book, not as a site with an empty slot. #}
+            <p class="pending-content">THIS PAGE INTENTIONALLY LEFT BLANK</p>
           {% endif %}
 
           <div class="guide-footer">

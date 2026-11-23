@@ -73,7 +73,7 @@ Per item: `url`, `tabLabel` (bookmark tab), `tocLabel` (table of contents), `id`
 | ------ | ----------------- | ---------------------------------- |
 | (0, 1) | Table of contents | Shop                               |
 | (2, 3) | Inventory         | Fabrication                        |
-| (4, 5) | Personnel         | _unfilled — renders "coming soon"_ |
+| (4, 5) | Personnel         | _unfilled — renders "THIS PAGE INTENTIONALLY LEFT BLANK"_ |
 
 There is no page 0; `/shop/` is special-cased to render the TOC on its left page.
 
@@ -199,7 +199,7 @@ Paper has fixed dimensions, so content must fit:
 
 ## 7.0 SHIPPING
 
-Netlify runs `npm run build` and publishes `_site`. `netlify.toml` sets `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and long-lived immutable caching.
+Netlify runs `npm run build` and publishes `_site`. `netlify.toml` sets `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and tiered caching: HTML revalidates on every request, CSS and JS cache for an hour and images for a week, both with `stale-while-revalidate`. Nothing is cached `immutable`, since asset filenames carry no content hash. It also 301s the retired `/annex/*` paths to `/fabrication/`, so links handed out before the annex was retired still land on a live page. The plates themselves were retired, not moved.
 
 The Node version is unpinned—no `.nvmrc`, no `engines`—so Netlify uses its own default, which can drift from CI's Node 22.
 
