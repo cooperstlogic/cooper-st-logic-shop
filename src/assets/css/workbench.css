@@ -855,6 +855,7 @@ hr {
   font-weight: 400; /* Regular weight (was 600) */
   color: var(--c-carbon);
   opacity: 0.6;
+  white-space: nowrap; /* Arrow and number stay on one line */
 }
 
 .footer-nav-arrow {
@@ -1047,6 +1048,16 @@ hr {
   body[data-state="open"] .stack-leaf,
   body[data-state="open"] .stack-leaf::before {
     height: clamp(467px, calc(228.57px + 63.49vw), 800px);
+  }
+
+  /* Footer insets match the 1.5rem page padding above, and the copyright
+     steps down with the page (same fluid curve as the cover footer) so the
+     page-number slots keep room for "← 2" on one line. */
+  body[data-state="open"] .guide-footer {
+    left: 1.5rem;
+    right: 1.5rem;
+    column-gap: 0.5rem;
+    font-size: clamp(0.65rem, 0.286rem + 1.14vw, 0.8rem);
   }
 
   .field-guide-book {
